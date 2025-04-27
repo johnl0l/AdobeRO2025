@@ -1,0 +1,599 @@
+// Cash Shop Database
+// Contains the items sold in the ingame cash shop.
+//
+// Structure of Database:
+// Type,ItemID,Price
+//
+// Type:
+//    0: New
+//    1: Hot
+//    2: Limited
+//    3: Rental
+//    4: Gear
+//    5: Buff
+//    6: Heal
+//    7: Other
+//    8: Sale
+//
+// Price:
+//    Item cost, in cash points (#CASHPOINTS).
+
+//New
+0, 24012, 100	//S_Promotion_Weapon
+0, 24013, 100	//S_Promotion_Armor
+0, 24014, 100	//S_Promotion_Shoes
+0, 24015, 100	//S_Promotion_Shield
+0, 24016, 100	//S_Promotion_Earring
+0, 24017, 100	//S_Promotion_Pendant
+0, 4480, 25000	//Sealed_Kiel_Card
+0, 4481, 25000	//Sealed_Ktullanux_Card
+0, 4482, 25000	//Sealed_Boss_Ygnizem_Card
+0, 4485, 25000	//Sealed_Gloom_Card
+0, 4486, 25000	//Sealed_Berzebub_Card
+0, 4487, 25000	//Sealed_Ifrit_Card
+0, 4488, 25000	//Sealed_Dark_Lord_Card
+0, 4492, 25000	//led_Orc_Hero_Card
+0, 4493, 25000	//Sealed_Tao_Gunka_Card
+0, 4495, 25000	//Sealed_Amon_Ra_Card
+0, 4497, 25000	//Sealed_Knight_of_Windstorm_Card
+0, 4499, 25000	//Sealed_Incantation_Samurai_Card
+0, 4498, 25000	//Sealed_Lady_Tanee_Card
+0, 4500, 25000	//Sealed_Orc_Load_Card
+0, 4503, 25000	//Sealed_Vesper_Card
+0, 4504, 25000	//Sealed_Eddga_Card
+0, 4539, 25000	//Sealed_F_Bishop_Card
+
+//Headgear
+1, 18934, 10000  //Fox Ears Bell Ribbon
+1, 5380, 10000   //Fish Head Hat
+1, 5381, 10000   //Santa Poring Hat
+1, 5382, 10000   //Bell Ribbon
+1, 2214, 5000    //Bunny Band
+1, 2217, 500     //Biretta
+1, 2227, 500     //Cap
+1, 2229, 500     //Helm
+1, 2252, 1000    //Wizard Hat
+1, 2280, 1000    //Sakkat
+1, 2285, 500	//Apple of Archer
+1, 2287, 1000    //Pirate Bandana
+1, 5119, 500     //Super Novice Hat
+1, 5120, 1000    //Bucket Hat
+1, 2281, 1000	//Phantom of Opera
+1, 5087, 500     //Expressionless Faced Mask
+1, 5088, 500     //Suprised Eyes Mask
+1, 5089, 500     //Annoyed looking Mask
+1, 5090, 500     //Goblin Leader's Mask
+1, 2225, 500     //Goggles
+1, 2264, 500     //Munak Hat
+1, 5046, 500     //Bongun Hat
+1, 2213, 500     //Kitty Band
+1, 2269, 500     //Romantic Flower
+1, 2270, 500     //Romantic Leaf
+1, 2299, 500     //Orc Helm
+1, 5008, 500     //Puppy Love
+1, 5082, 500     //Mushroom Band
+1, 2245, 500    	//Sweet Gent
+1, 2286, 500    	//Elven Ears
+1, 5014, 500     //Fin Helm
+1, 2296, 1000    //Binoculars
+1, 5118, 500     //Puppy Headband
+1, 2248, 1000    //Western Grace
+1, 5035, 1000    //Poring Hat
+1, 2254, 5000    //Angel Wing
+1, 2233, 500     //Circlet
+1, 2231, 1000    //Gemmed Sallet
+1, 2255, 5000    //Evil Wing
+1, 2258, 5000    //Spiky Band
+1, 2295, 5000    //Blinker
+1, 5026, 5000    //hat of Cooker
+1, 5032, 5000    //Picnic Hat
+1, 5210, 12000   //Flapping Angel Wing
+1, 2234, 1000    //Tiara
+1, 2235, 1000    //Crown
+1, 2271, 1000    //Jack a Dandy
+1, 5229, 1000    //Brown Deviruchi Hat
+1, 5227, 1000    //Red Deviruchi Hat
+1, 5228, 1000    //Gray Deviruchi Hat
+1, 5233, 1000    //Blue Drooping Cat
+1, 5231, 1000    //Brown Drooping Cat
+1, 5232, 1000    //Pink Drooping Cat
+1, 5230, 1000    //Gray Drooping Cat
+1, 5234, 1000    //Yellow Drooping Cat
+1, 5236, 1000    //Blue Beanie
+1, 5235, 1000    //Brown Beanie
+1, 5237, 1000    //Pink Beanie
+1, 5241, 1000    //Blue Mage Hat
+1, 5240, 1000    //Brown Mage Hat
+1, 5238, 1000    //Red Mage Hat
+1, 5239, 1000    //Gray Mage Hat
+1, 5242, 1000    //Yellow Mage Hat
+1, 5294, 10000   //Whisper Mask
+1, 5292, 10000   //Dragon Skull
+1, 5291, 10000   //Kettle Hat
+1, 5284, 10000   //Water Lily Crown
+1, 5139, 10000   //Hibiscus
+1, 5140, 10000   //Charming Ribbon
+1, 5213, 10000   //Black Bunny Band
+1, 5286, 10000   //Pecopeco Hairband
+1, 2249, 1000    //Coronet
+1, 5096, 5000    //Assassin Mask
+1, 5151, 10000   //Note Headphone
+1, 5431, 10000   //Cuckoo Hat
+1, 5410, 10000   //Brown Paperbag Hat
+1, 5478, 10000   //Classic Hat
+1, 5385, 10000   //Yoyo Hat
+1, 5137, 10000   //Alice Doll Hat
+1, 5491, 10000   //Outlaw's Hat
+1, 5335, 10000   //Jumping Poring
+1, 5463, 10000   //Rainbow Scarf
+1, 5293, 10000   //Ramen Hat
+1, 5198, 10000   //Party Rabbit Hat
+1, 5289, 10000   //Vanilmirth Hat
+1, 5258, 10000   //Afro Wig
+1, 5143, 10000   //Kabuki Mask
+1, 5334, 10000   //I-want-to-fly Angeling
+1, 5099, 10000   //Cat Hat
+1, 5211, 10000   //Dress Hat
+1, 5288, 10000   //Red Glasses
+1, 5257, 10000   //Soulless Wing
+1, 5285, 10000   //Vane Hairpin
+1, 5189, 10000   //Hat of Falling Leaf
+1, 5146, 10000   //Elephant Hat
+1, 5142, 10000   //Crescent Helm
+1, 5188, 10000   //Minstrel Hat
+1, 5212, 10000   //Satellite Hairband
+1, 5181, 10000   //Helm of Darkness
+1, 5182, 10000   //Puppy Hat
+1, 5183, 10000   //Bird Nest Hat
+1, 5185, 10000   //Laurel Wreath
+1, 5186, 10000   //Geographer Band
+1, 5253, 10000   //Lif Doll Hat
+1, 5256, 10000   //Valkyrie Feather Band
+1, 5287, 10000   //Vacation Hat
+1, 5490, 10000   //Anubis Helm
+1, 5501, 10000   //Pride Of Pirates
+1, 5502, 10000   //Necromencer's Hood
+1, 5498, 10000   //Wondering Wolf Helm
+1, 5495, 10000   //Power of Thor
+1, 5503, 10000   //Rabbit Magic Hat
+1, 5499, 10000   //Pizza Hat
+1, 5505, 10000   //Asara Fairy Hat
+1, 5496, 10000   //Dice Hat
+1, 2289, 500     //Poo Poo Hat
+1, 5066, 5000    //Succubus Horns
+1, 5072, 5000    //Inccubus Horns
+1, 5003, 500     //Joker Jester
+1, 5497, 10000   //King Tiger Doll Hat
+1, 5504, 5000    //Special Wedding Veil
+1, 5508, 10000   //Shark Hat
+1, 5467, 10000   //Helm Of Dragoon
+1, 5655, 10000   //Dark Snake Lord's Hat
+1, 5546, 10000   //Aries Crown
+1, 5545, 10000   //Aries Diadem
+1, 2291, 500     //Masquerade
+1, 2274, 5000    //Ghost Bandana
+1, 5550, 10000   //Taurus Crown
+1, 5549, 10000   //Taurus Diadem
+1, 5547, 10000   //Flower Katusa
+1, 5657, 5000    //Captain's Pipe
+1, 5548, 5000    //Scarlet Rose
+1, 5537, 10000   //Quati Hat
+1, 5538, 10000   //Tucan Hat
+1, 5539, 10000   //Jaguar Hat
+1, 5470, 10000   //Darkness Eyes
+1, 5471, 10000   //Reginleif's Wing
+1, 5511, 10000   //Samanbaia
+1, 5526, 10000   //Lady Tanee Hat
+1, 5529, 10000   //Evil`s Bone Hat
+1, 5527, 10000   //Lunatic Hat
+1, 5509, 10000   //Sting Hat
+1, 5363, 10000   //Helm Of Abyss
+1, 5395, 10000   //Tiraya Bonnet
+1, 5464, 10000   //White Lady Doll
+1, 5563, 10000   //Dolor Hat
+1, 5528, 10000   //King Frog Hat
+1, 5558, 10000   //Saci Hat
+1, 5554, 10000   //Octopus Hat
+1, 5555, 10000   //Leaf Cat Hat
+1, 5556, 10000   //Fur Seal Hat
+1, 5557, 10000   //Wild Rose Hat
+1, 5514, 10000   //Pisces Diadem
+1, 5515, 10000   //Pisces Crown
+1, 5316, 10000   //Umbrella Hat
+1, 5396, 10000   //Jasper Crest
+1, 5573, 10000   //Dokkaebi Horn
+1, 5172, 500     //Beret
+1, 5413, 10000   //Popcorn Hat
+1, 5594, 10000   //Donut In Mouth
+1, 5585, 10000   //Rune Hairband
+1, 18533, 10000  //Honeybee Hat
+1, 5777, 10000   //Remover Hat
+1, 18531, 10000  //Drooping Permeter
+1, 5148, 10000   //Guildmaster's Cap
+1, 5530, 10000   //Raven Cap
+1, 5359, 10000   //Master's Hat
+1, 18616, 50000  //Long Tongue
+1, 18618, 10000  //Airplane Hat
+1, 18626, 10000  //Gelato Hat
+1, 18589, 10000  //Strawberry Hat
+1, 18596, 10000  //Sprout Hat
+1, 18619, 10000  //Thief's Bandana
+1, 18620, 5000   //Heart Eye Patch
+1, 18574, 10000  //Helm Of Death
+1, 18697, 10000  //Syringe In Mouth
+1, 18698, 10000  //Cheesy Snack In Mouth
+1, 18729, 10000  //MVP Basketball Hat
+1, 18692, 10000  //Mike Hat
+1, 18694, 10000  //Red Hood
+1, 18695, 10000  //Phoenix Crown
+1, 5045, 500	//Magician Hat
+1, 5403, 10000   /Fish In Mouth
+1, 5020, 10000   /Kafra Band
+1, 18713, 10000  //Monkey On Fur Hat
+1, 18759, 10000  //Stretched Nose M
+1, 18630, 10000  //Drooping Alicel
+1, 18636, 10000  //Ribbon of Bride
+1, 18665, 10000  //Orange In Mouth
+1, 18666, 10000  //CD In Mouth
+1, 18676, 10000  //64-type Glasses
+1, 18679, 10000  //Abacus In Mouth
+1, 18681, 10000  //Puppy Ears Hat
+1, 5575, 10000   //Rice Ball Hat
+1, 5591, 10000   //Desert Prince
+1, 5388, 10000   //Snake Hat
+1, 13906, 15000  //Kitty Set Box
+1, 13908, 12000  //Deviruchi Set Box
+1, 5584, 10000   //Majestic Devil Horn
+1, 5765, 10000   //Black Tail Ribbon
+1, 5766, 10000   //Amistr Cap
+1, 5767, 10000   //Samurai Mask
+1, 2855, 10000   //Whikebain's Black Tail
+1, 5789, 10000   //Thanatos's Mal Mask
+1, 5790, 10000   //Holy Mom Love
+1, 18516, 10000	//RTC_2nd_Helm
+1, 18550, 10000	//Asgard Blessing
+1, 18745, 10000	//Choco Stick In Mouth
+1, 18748, 10000	//Gold Ingot Poring Hat
+1, 18750, 10000	//Poker Card In Mouth
+1, 18754, 10000	//Blood_Sucker
+1, 18756, 10000	//Black_Shiba_Inu_Hat
+1, 18832, 10000	//Rolf_Von_Gigue_the666th
+1, 19589, 10000	//Fallen_Angel's_beloning
+1, 18785, 10000	//King Poring Hat
+1, 18885, 10000	//Jejecap
+1, 18887, 10000	//Aqua Bunny Band
+1, 18888, 10000	//Maroon Bunny Band
+1, 18889, 10000	//Golden Bunny Band
+1, 18890, 10000	//Gray Bunny Band
+1, 18891, 10000	//Husky Hat
+1, 18892, 10000	//UFO Poring Hat
+1, 18893, 10000	//Dragon Claw Helm
+1, 18894, 10000	//Rainbow Star
+1, 18895, 10000	//Celestial Dark Flame
+1, 18896, 10000	//Pterios_Fins
+1, 18897, 10000	//Azure Diadem
+1, 18898, 10000	//Yggdrasil_Herald_Crown
+1, 18908, 10000	//Isabella Red Ear
+1, 18909, 10000	//Isabella Brown Ear
+1, 18910, 10000	//Isabella Blue Ear
+1, 18821, 10000	//Rainbow_Feather_Decoration
+1, 18625, 10000	//Rocket_Helm
+1, 18673, 10000	//Tare_Pope
+1, 18823, 10000	//Imperial_Feather
+1, 5610, 10000	//Ice_Wing_Ear
+1, 2948, 10000	//Demon_Wing
+1, 18859, 10000	//Angeling_Bubble
+1, 18642, 10000	//Scissorhand
+1, 18643, 10000	//Rockhand
+1, 18644, 10000	//Paperhand
+
+//Limited
+2, 6231, 1000	//+6 Weapon Refine Ticket
+2, 6230, 3000	//+7 Weapon Refine Ticket
+2, 6229, 5000	//+8 Weapon Refine Ticket
+2, 6228, 7000	//+9 Weapon Refine Ticket
+2, 6235, 1000	//+6 Armor Refine Ticket
+2, 6234, 3000	//+7 Armor Refine Ticket
+2, 6233, 5000	//+8 Armor Refine Ticket
+2, 6232, 7000	//+9 Armor Refine Ticket
+2, 6238, 9000	//+11 Weapon Refine Ticket
+2, 6870, 11000	//13 Weapon Certificate
+2, 6871, 13000	//14 Weapon Certificate
+2, 6872, 15000	//15 Weapon Certificate
+2, 6239, 9000	//+11 Armor Refine Ticket
+2, 6876, 11000	//13 Armor Certificate
+2, 6877, 13000	//14 Armor Certificate
+2, 6878, 15000	//15 Armor Certificate
+2, 6873, 17000	//16 Weapon Certificate
+2, 6874, 19000	//17 Weapon Certificate
+2, 6875, 21000	//18 Weapon Certificate
+2, 6864, 23000	//19 Weapon Certificate
+2, 6879, 17000	//16 Armor Certificate
+2, 6880, 19000	//17 Armor Certificate
+2, 6881, 21000	//18 Armor Certificate
+2, 6865, 23000	//19 Armor Certificate
+
+//Rental
+3, 13419, 1000	//Holy_Saber
+3, 1578, 1000	//Book_Of_Prayer
+3, 1982, 1000	//Phenomena_Whip
+3, 1642, 1000	//Staff_Of_Darkness
+3, 1828, 1000	//Monk_Knuckle
+3, 1547, 1000	//Mace_Of_Madness
+3, 1427, 1000	//Spear_Of_Excellent
+3, 1744, 1000	//Bow_Of_Evil
+3, 1283, 1000	//Katar_Of_Speed
+3, 13111, 1000	//Sharpshooter_Revolver
+3, 2686, 1000	//Neo_Elven_Ears
+3, 2687, 1000	//Steel_Flower
+3, 2688, 1000	//Neo_Critical_Ring
+3, 2689, 1000	//Earring
+3, 2690, 1000	//Ring
+3, 2691, 1000	//Necklace
+3, 2692, 1000	//Glove
+3, 2693, 1000	//Brooch
+3, 2694, 1000	//Rosary
+3, 2695, 1000	//Safety_Ring
+3, 2696, 1000	//Vesper_Core_01
+3, 2697, 1000	//Vesper_Core_02
+3, 2698, 1000	//Vesper_Core_03
+3, 2699, 1000	//Vesper_Core_04
+3, 5265, 1000	//Neo_Apple_of_Archer
+3, 5266, 1000	//Neo_Bunny_Band
+3, 5267, 1000	//Neo_Sakkat
+3, 5268, 1000	//Grand_Circlet
+3, 1173, 1000	//Neo_Muramasa
+3, 1267, 1000	//Infiltrator
+3, 1372, 1000	//Light_Epsilon
+3, 1728, 1000	//Neo_Ballista
+3, 13401, 1000	//Neo_Excalibur
+3, 13021, 1000	//Neo_Combat_Knife
+3, 13022, 1000	//Dagger_of_Counter
+3, 13023, 1000	//Asura
+3, 1419, 1000	//Poll_Axe
+3, 1563, 1000	//Sage's_Diary
+3, 1623, 1000	//Mighty_Staff
+3, 1817, 1000	//Neo_Kaiser_Knuckle
+3, 2384, 1000	//Neo_Spiritual_Tunic
+3, 2385, 1000	//Neo_Recuperative_Armor
+3, 2132, 1000	//Neo_Shelter_Resistance
+3, 2543, 1000	//Neo_Sylphid_Manteau
+3, 2439, 1000	//Neo_Refresh_Shoes
+3, 2741, 1000	//Neo_All_In_One_Ring
+3, 13175, 1000	//Neo_Lever_Action_Rifle
+3, 1274, 1000	//Neo_Unholy_Touch
+3, 1378, 1000	//Neo_Great_Axe
+3, 1424, 1000	//Neo_Skewer
+3, 1567, 1000	//Neo_Hardback
+3, 1628, 1000	//Neo_Survival_Rod
+3, 2710, 1000	//Neo_Bloody_Iron_Ball
+3, 2711, 1000	//Neo_Spiritual_Ring
+3, 5279, 1000	//Neo_Drooping_Kitty
+3, 5327, 1000	//Neo_Orc_Hero_Helm
+3, 5328, 1000	//Neo_Evil_Wing_Ears
+3, 5331, 1000	//Neo_Corsair
+3, 13407, 1000	//Neo_Nagan
+3, 13408, 1000	//Neo_Fire_Blend
+3, 1928, 1000	//Neo_Berserk_Guitar#
+3, 14321, 1000	//Holy_Sabre_Box
+3, 14322, 1000	//Book_Of_Prayer_Box
+3, 14323, 1000	//Phenomena_Whip_Box
+3, 14324, 1000	//Staff_Of_Darkness_Box
+3, 14325, 1000	//Monk_Knuckle_Box
+3, 14326, 1000	//Mace_Of_Madness_Box
+3, 14327, 1000	//Spear_Of_Excellent_Box
+3, 14328, 1000	//Bow_Of_Evil_Box
+3, 14329, 1000	//Katar_Of_Speed_Box
+3, 14330, 1000	//Sharpshooter_Revolver_Box
+3, 12935, 1000	//Infiltrator_Box
+3, 12936, 1000	//Neo_Muramasa_Box
+3, 12937, 1000	//Neo_Excalibur_Box
+3, 12938, 1000	//Neo_Combat_Knife_Box
+3, 12939, 1000	//Dagger_of_Counter_Box
+3, 12940, 1000	//Neo_Kaiser_Knuckle_Box
+3, 12941, 1000	//Poll_Axe_Box
+3, 12942, 1000	//Mighty_Staff_Box
+3, 12943, 1000	//Light_Epsilon_Box
+3, 12944, 1000	//Neo_Ballista_Box
+3, 12945, 1000	//Sage's_Diary_Box
+3, 12946, 1000	//Asura_Box
+3, 12947, 1000	//Neo_Apple_of_Archer_Box
+3, 12948, 1000	//Neo_Bunny_Band_Box
+3, 12949, 1000	//Neo_Sakkat_Box
+3, 12950, 1000	//Grand_Circlet_Box
+3, 12951, 1000	//Neo_Elven_Ears_Box
+3, 12952, 1000	//Steel_Flower_Box
+3, 12953, 1000	//Neo_Critical_Ring_Box
+3, 12954, 1000	//Earring_Box
+3, 12955, 1000	//Ring_Box
+3, 12956, 1000	//Necklace_Box
+3, 12957, 1000	//Glove_Box
+3, 12958, 1000	//Brooch_Box
+3, 12959, 1000	//Rosary_Box
+3, 12960, 1000	//Safety_Ring_Box
+3, 12961, 1000	//Vesper_Core_01_Box
+3, 12962, 1000	//Vesper_Core_02_Box
+3, 12963, 1000	//Vesper_Core_03_Box
+3, 12964, 1000	//Vesper_Core_04_Box
+3, 13502, 1000	//Neo_Drooping_Kitty_Box
+3, 13766, 1000	//Neo_Nagan_Box
+3, 13767, 1000	//Neo_Skewer_Box
+3, 13768, 1000	//Neo_Survival_Rod_Box
+3, 13770, 1000	//Neo_Great_Axe_Box
+3, 13772, 1000	//Neo_Hardback_Box
+3, 13773, 1000	//Neo_Fire_Blend_Box
+3, 13775, 1000	//Neo_Unholy_Touch_Box
+3, 13778, 1000	//Neo_Orc_Hero_Helm_Box
+3, 13779, 1000	//Neo_Evil_Wing_Ears_Box
+3, 13782, 1000	//Neo_Corsair_Box
+3, 13783, 1000	//Neo_Bloody_Iron_Ball_Box
+3, 13784, 1000	//Neo_Spiritual_Ring_Box
+3, 13952, 1000	//Neo_Lever_Action_Rifle_Box
+3, 13953, 1000	//Neo_All_In_One_Ring_Box
+3, 13957, 1000	//Neo_Sylphid_Manteau_Box
+3, 13958, 1000	//Neo_Refresh_Shoes_Box
+3, 14426, 1000	//Neo_Fortune_Sword_Box#
+3, 14427, 1000	//Neo_House_Auger_Box#
+3, 14428, 1000	//Neo_Kamaitachi_Box#
+3, 14429, 1000	//Neo_Berserk_Guitar_Box#
+3, 14430, 1000	//Neo_Doom_Slayer_Box#
+3, 14431, 1000	//Neo HuumaBlazeShurikenBox#
+3, 14432, 1000	//Neo_Odin's_Blessing_Box#
+3, 14433, 1000	//Neo_Ring_Of_Flame_Lord_Box#
+3, 14434, 1000	//Neo_Ring_Of_Resonance_Box#
+3, 14435, 1000	//Neo_Boys_Cap_Box#
+3, 14436, 1000	//Neo_Ulle's_Cap_Box#
+3, 14437, 1000	//Neo_Sphinx_Helm_Box#
+
+//Equips
+4, 22018, 5000	//Shoes Of Wise Man
+4, 22042, 5000	//Talaria Shoes
+4, 22072, 5000	//Hiking Boots
+4, 2481, 5000	//Rune Boots
+4, 1670, 5000	//RWC Memorial Staff
+4, 2966, 5000	//RWC Ring 2012
+4, 2967, 5000	//RWC Chambered 2012 Ring
+4, 2968, 5000	//RWC Pedant 2012
+4, 2969, 5000	//RWC Chambered 2012 Pedant
+4, 13092, 5000	//RWC_Memory_Knife
+4, 16026, 5000	//RWC_Memory_Mace
+4, 1292, 5000	//Upgrage_Katar
+4, 1394, 5000	//Upgrade_Two_Handed_Axe
+4, 1491, 5000	//Upgrade_Lance
+4, 1585, 5000	//Upgrade_Book
+4, 2015, 5000	//Upgrade_Staff
+4, 13071, 5000	//Upgrade_Dagger
+4, 13115, 5000	//Upgrade_Revolver
+4, 16019, 5000	//Upgrade_Mace
+4, 18112, 5000	//Upgrade_Bow
+4, 21000, 5000	//Upgrade_Twohand_Sword
+4, 20707, 5000	//Kirin Wing
+4, 22014, 5000	//Enhanced Variant Shoes
+4, 1322, 5000	//Blue_Axe
+4, 1936, 5000	//Blue_Violin
+4, 1991, 5000	//Blue_Whip
+4, 13097, 5000	//Blue_Dagger
+4, 13098, 5000	//Blue_Ashura
+4, 28103, 5000	//Blue_Twohand_Axe
+4, 13099, 5000	//Blue_Knife
+4, 1677, 5000	//Blue_Wand
+4, 1441, 5000	//Blue_Spear
+4, 13451, 5000	//Blue_Sword
+4, 18126, 5000	//Blue_Bow
+4, 16036, 5000	//Blue_Mace
+4, 28005, 5000	//Blue_Katar
+4, 28600, 5000	//Blue_Book
+4, 13075, 5000	//Kurenai
+4, 13076, 5000	//Raksasa_Dagger
+4, 13077, 5000	//Kagekiri
+4, 13078, 5000	//Mikatsuki
+4, 13311, 5000	//Huuma_Shadow
+4, 13313, 5000	//Huuma_Swirling_Petal
+4, 13314, 5000	//Huuma_Fluttering_Snow
+4, 13315, 5000	//Huuma_Thunderstorm
+4, 13316, 5000	//Upg_Huuma_Shuriken
+4, 2172, 5000	//Wolf_Armguard
+4, 2173, 5000	//Crescent_Armguard
+4, 1837, 5000	//Iron_Nail
+
+//Scrolls
+5, 12199, 2	//Rice_Scroll (Soul Linker)
+
+//Usables
+6, 13739, 200	//Glass_of_Illusion_10_Box
+6, 13740, 25	//Shadow_Armor_Scroll_5_Box
+6, 13741, 50	//Shadow_Armor_Scroll_10_Box
+6, 13742, 75	//Shadow_Armor_Scroll_30_Box
+6, 13743, 25	//Holy_Armor_Scroll_5_Box
+6, 13744, 50	//Holy_Armor_Scroll_10_Box
+6, 13745, 75	//Holy_Armor_Scroll_30_Box
+6, 13746, 25	//Small_Defense_Potion_10_Box
+6, 13747, 50	//Small_Defense_Potion_30_Box
+6, 13748, 75	//Small_Defense_Potion_50_Box
+6, 13749, 100	//Big_Defense_Potion_10_Box
+6, 13750, 125	//Big_Defense_Potion_30_Box
+6, 13751, 150	//Big_Defense_Potion_50_Box
+6, 13752, 25	//Small_Magic_Defense_Potion_10_Box
+6, 13753, 50	//Small_Magic_Defense_Potion_30_Box
+6, 13754, 75	//Small_Magic_Defense_Potion_50_Box
+6, 13755, 100	//Big_Magic_Defense_Potion_10_Box
+6, 13756, 125	//Big_Magic_Defense_Potion_30_Box
+6, 13757, 150	//Big_Magic_Defense_Potion_50_Box
+6, 13809, 100	//100 Blue_Gemstone_Box
+6, 13810, 50	//Blue_Potion_Box
+6, 13811, 25	//Food_Box_Vol_1
+6, 13812, 50	//Food_Box_Vol_2
+6, 13813, 75	//Food_Box_Vol_3
+6, 13814, 100	//Healing Box
+6, 7621,  200	//Token Of Siegfried
+6, 12211, 1500	//Kafra Card Box 10
+6, 17432, 2500	//Lucky Silvervine Fruit Box II(10)
+6, 17433, 20000	//Lucky Silvervine Fruit Box II(110)
+6, 12910 ,375     //Giant Fly Wing Box
+6, 12213 ,25000   //Neuralizer
+6, 12214 ,250     //Convex Mirror
+6, 12221 ,75      //Megaphone
+6, 12210 ,200     //Bubble Gum
+6, 12208 ,200     //Battle Manual
+6, 12209 ,250     //Life Insurance
+6, 12887, 5000	//Infinite Flywing
+6, 12884, 3000	//Infinite Concentration Potion
+6, 12885, 4000	//Infinite Awakening Potion
+6, 12886, 5000	//Infinite Berserk Potion
+6, 14611, 8000	//M Def Potion
+6, 14612, 8000	//M Mdef Potion
+6, 12622, 10000	//Reins Of Mount
+
+//Other
+7, 7825, 1	//Heroic_Stone
+7, 12142, 200	//Magic_Book
+7, 6438, 2000	//Blessed Ore Weapon
+7, 6439, 2000	//Blessed Ore Armor
+7, 6240, 2000	//HD_Oridecon
+7, 6241, 2000	//HD_Elunium
+7, 6225, 5000	//HD_Carnium
+7, 6226, 5000	//HD_Bradium
+7, 6223, 75		//Carnium
+7, 6224, 100	//Bradium
+7, 7619, 2000	//Enriched_Elunium
+7, 7620, 2000	//Enriched_Oridecon
+7, 12580, 1000	//Vending_Search_Scroll
+7, 12581, 1000	//Vending_Search_Scroll2
+7, 16677, 7500	//Vending_Scroll2_Box10
+7, 16678, 35000	//Vending_Scroll2_Box50
+7, 7776, 1000	//Max_Weight_Up_Scroll
+7, 13710, 7500	//Max_Weight_Up_Box
+7, 6153, 5000	//Special_Exchange_Coupon
+//7, 6665, 5000	//RWC Coupon
+7, 13553, 500	//Dungeon_Teleport_Scroll_5_Box
+7, 13721, 1000	//Dungeon_Teleport_Scroll_10_Box
+7, 6673, 5	//Bossnia_Ticket
+
+//Sale	|	use: /limitedsale	|	depois coloque o nome do item
+8, 28605, 50000		//Book_of_Vicious_Mind
+8, 18121, 50000		//Bow_of_Vicious_Mind
+//8, 31236, 1		//C_Subject_Aura_V
+8, 20132, 50000		//C_Aura_Vicious_Mind
+8, 31122, 50000		//C_Bloody_Stop_Bandage
+8, 20407, 50000		//C_Vicious_Mind_Aura_Crimson
+8, 19825, 50000		//C_Vicious_Stop_Bandage
+8, 28706, 50000		//Dagger_of_Vicious_Mind
+//8, 1844, 1		//Sinister_Fist_J
+8, 1800, 50000		//Fist_of_Vicious_Mind
+8, 13328, 50000		//Huuma_Shuriken_of_Vicious_Mind
+8, 28008, 50000		//Katar_of_Vicious_Mind
+8, 1450, 50000		//Lance_of_Vicious_Mind
+8, 16041, 50000		//Mace_of_Vicious_Mind
+8, 13128, 50000		//Revolver_of_Vicious_Mind
+8, 1600, 50000		//Rod_of_Vicious_Mind
+8, 13455, 50000		//Saber_of_Vicious_Mind
+8, 1400, 50000		//Spear_of_Vicious_Mind
+//8, 2037, 1		//Sinister_Staff_J
+8, 2026, 50000		//Staff_of_Vicious_Mind
+8, 28107, 50000		//Two_Handed_Axe_of_Vicious_Mind
+8, 21016, 50000		//Two_Handed_Sword_of_Vicious_Mind
+//8, 15134, 1		//Vicious_Cloth
+//8, 19439, 1		//Subject_Aura
+//8, 1947, 1		//Sinister_Viollin_J
+8, 1900, 50000		//Violin_of_Vicious_Mind
+8, 1996, 50000		//Wire_of_Vicious_Mind
