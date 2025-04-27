@@ -1,0 +1,75 @@
+prontera.gat,172,172,3	script	Potion Creation	800,{
+
+switch(select("Poison Bottle:White Potion:Blue Potion:Condensed White Potion:Bottle Grenade:Acid Bottle:Glistening Coat")) 
+{
+case 1: callsub Create1,678,7033,657,713,937,939,952,972;
+//callsub <label>,<potion>,<book>,<items>,<required>;
+case 2: callsub Create2,504,7144,509,1093,7134;
+case 3: callsub Create2,505,7144,510,911,1093,7134;
+case 4: callsub Create2,547,7133,504,1061,1092,7134;
+case 5: callsub Create2,7135,7128,713,970,1057,7134;
+case 6: callsub Create2,7136,7129,713,929,7134;
+case 7: callsub Create2,7139,7132,7134,713,950,970,1044;
+Create1:
+set @success,0;
+set @success,@success+(blvl)/2;
+if ((bDex+bLuk) > 219) set @success,@success+5.5; 
+mes "[Name]";
+mes "You have a "+(@success/100)+"% success rate.";
+mes "How many "+(getitemname(getarg(0)))+" do you want to make?";
+mes "You may enter 0 if you wish to cancel.";
+input @input;
+if (@input==0) {
+next;
+mes "[Name]";
+mes "Alright, I've cancelled the potion creation.";
+close;
+} else {
+next; mes "[Name]";
+for (.@i=1; .@i<getargcount(); .@i++){
+    if (countitem(getarg(.@i))<@input){@error = 1;}
+    mes "You Need ["+countitem(getarg(.@i))+"/"+@input+"] "+getitemname(getarg(.@i));
+	}
+if (@error=!1) mes "Either return with the requested amount, or try again with a different amount request."; close;}
+next;
+mes "[Name]";
+mes "Thanks";
+for (.@i=1; .@i<getargcount(); .@i++){
+delitem getarg(.@i),@input; }
+getitem getarg(0),@input*(@success/100);
+close;
+Create2:
+if (countitem(getarg(1)) < 1){
+	mes "[Name]";
+	mes "You don't even have "+(getitemname(getarg(1)))+"!";
+	close;
+	}
+set @success,0;
+set @success,@success+(blvl)/2;
+if ((bDex+bLuk+bInt) > 329) set @success,@success+7.5;
+mes "[Name]";
+mes "You have a "+(@success/100)+"% success rate.";
+mes "How many "+(getitemname(getarg(0)))+" do you want to make?";
+mes "You may enter 0 if you wish to cancel.";
+input @input;
+if (@input==0) {
+next;
+mes "[Name]";
+mes "Alright, I've cancelled the potion creation.";
+close;
+} else {
+next; mes "[Name]";
+for (.@i=2; .@i<getargcount(); .@i++){
+    if (countitem(getarg(.@i))<@input){@error = 1;}
+    mes "You Need ["+countitem(getarg(.@i))+"/"+@input+"] "+getitemname(getarg(.@i));
+	}
+if (@error=!1) mes "Either return with the requested amount, or try again with a different amount request."; close;}
+next;
+mes "[Name]";
+mes "Thanks";
+for (.@i=2; .@i<getargcount(); .@i++){
+delitem getarg(.@i),@input; }
+getitem getarg(0),@input*(@success/100);
+close;
+}
+}

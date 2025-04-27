@@ -1,0 +1,37 @@
+/*
+-	script	hateffect	-1,{
+OnPcLoginEvent:
+if(getgroupid() == 5){
+	specialeffect 70;
+}
+}
+/*
+remove ','
+
+hateffect ID,true;
+*/
+-	script	hateffect	-1,{
+OnPcLoginEvent:
+	// Normal Player can get the buff
+	// Filter with group_id.conf (Lv : 0)
+	if(getgroupid() < 1){
+		specialeffect 70;
+		sleep 500;
+		end;
+	}
+	
+	// VIP Player can get the additional HEAL
+	// Filter with group_id.conf (Lv : 5)
+	else if(getgroupid() == 5){
+		percentheal 100,100;
+		specialeffect 70;
+		sleep 500;
+	}
+	
+	// GM Account with Lv : 99 on group_id.conf
+	else if(getgroupid() >= 99){
+		specialeffect 383;
+		percentheal 100,100;
+		sleep 500;
+	}
+}

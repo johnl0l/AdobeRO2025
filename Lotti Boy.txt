@@ -1,0 +1,61 @@
+prontera,157,180,4	script	Lotti Boy	4_M_HUBOY,{
+function LinkItem_;
+
+	.@name$ = strcharinfo(0);
+	.@rand = rand(.chances);
+	.@i = 0;
+	
+	if( countitem(.itm_p) < .itm_a ){
+		mes " ";
+		mes .n$;
+		mes "You don't have any";
+		mes .itm_a+" x "+.itm_n$;
+		mes "in your inventory.";
+		mes " ";
+		mes "Please come back to me if you have it already.";
+		close;
+	}
+	mes " ";
+	mes .n$;
+	mes rand(2) ? ""+callfunc("F_Hi")+" ^0000FFI'm Lotti Boy^000000, of Arlandria Rune-Midgard City." 
+	: ""+callfunc("F_Hi")+" ^0000FFI'm Lotti Boy^000000, of Arlandria Rune-Midgard City."; 
+	mes "Required Item: "+.itm_a+" x "+(.itm_n$)+"";
+	mes " ";
+	mes "Would you risk to play this game?";
+	next;
+	if( select("- Play Game","- Cancel") == 2 ) {
+		mes .n$;
+		mes "Alright! "+ strcharinfo(0) +" come back anytime you want.";
+		close;
+	}
+	while (( .@rand -= .item_Rate[.@i] ) >= 0 ) .@i++;
+	progressbar "0x11CC99",.loading; specialeffect2 EF_REMOVETRAP;
+	getitem .item_ID[.@i], 1;
+	delitem .itm_p, 1;
+	announce "[ Lotti Boy ]: Player "+ .@name$ +" obtained 1 x "+ getitemname(.item_ID[.@i]) +" with "+ .item_Rate[.@i] +"%.",0;
+	mes .n$;
+	mes "You have obtained 1 x ^FF3000"+ getitemname(.item_ID[.@i]) +"^000000 with "+ .item_Rate[.@i] +"%.";
+	close;
+	
+function	LinkItem_	{
+	.@id = getarg(0);
+	.@showslot = getarg(1,0);
+	.@slot = getitemslots(.@id);
+	return "<ITEM>"+(.@slot&&.@showslot?getitemname(.@id)+" ["+.@slot+"]":getitemname(.@id))+"<INFO>"+.@id+"</INFO></ITEM>";
+}	
+
+OnInit:
+	.n$ = "[ Lotti Boy ]";
+	.loading = 1; 												// 0 = No Delay
+	.itm_p = 7922;												// Required Item
+	.itm_a = 1;													// Required Amount
+	.itm_n$ = LinkItem_(.itm_p);
+	setarray .item_ID, 607,502,503,504,505,506,507,508,509;		// Item ID List
+	setarray .item_Rate, 100,10,10,10,3,10,10,10,10;			// Item ID Chances
+	.@i = 0;
+	while ( .item_ID[.@i] ) {
+		.chances += .item_Rate[.@i];
+		.@i++;
+	}
+	end;
+}

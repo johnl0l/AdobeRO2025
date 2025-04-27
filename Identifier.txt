@@ -1,0 +1,221 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+/*
+prontera.gat,148,189,5	script	Identifier	919,{
+	getinventorylist;
+	for( set .@i,0; .@i < @inventorylist_count; set .@i, .@i + 1 ) {
+		if ( @inventorylist_identify[.@i] == 1 ) continue;
+
+		// Merchant's Identify skill
+		if ( getskilllv(40) == 1 && sp >= 10 ) heal 0,-10;
+
+		// check if there is any Magnifier
+		else if ( countitem(611) ) delitem 611,1;
+
+		// base on Magnifier price, Rogue's Compulsion Discount skill
+		else if ( getskilllv(224) && zeny >= ( 100 - ( 5 + 4 * getskilllv(224) ) )* 2/5 )
+			set zeny, zeny - ( 100 - ( 5 + 4 * getskilllv(224) ) )* 2/5;
+
+		// base on Magnifier price, Merchants that not enough sp and learned Discount skill
+		else if ( getskilllv(37) && zeny >= ( 100 - ( 5 + 2 * getskilllv(37) ) )* 2/5 )
+			set zeny, zeny - ( 100 - ( 5 + 2 * getskilllv(37) ) )* 2/5;
+
+		// if none of the above, deduct the zeny
+		else if ( zeny >= 40 )  set zeny, zeny - 40;
+
+		// or stop the script if there the person not enough money
+		else break;
+		delitem2 @inventorylist_id[.@i],1,0,0,0,0,0,0,0;
+		getitem @inventorylist_id[.@i],1;
+	}
+}
+*/
+
+/*
+prontera.gat,148,189,5	script	Identifier	919,{
+	mes "[ ^0066FFIdentifier^000000 ]";
+
+	getinventorylist;
+	.@identified = 0;
+
+	for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+		if (@inventorylist_identify[.@i] == 1)
+			continue;
+
+		// Merchant's Identify skill (ID 40)
+		if (getskilllv(40) == 1 && sp >= 10) {
+			heal 0, -10;
+		}
+		// Magnifier (ID 611)
+		else if (countitem(611)) {
+			delitem 611, 1;
+		}
+		// Rogue's skill Compulsion Discount (ID 224)
+		else if (getskilllv(224) && zeny >= ((100 - (5 + 4 * getskilllv(224))) * 2 / 5)) {
+			zeny -= ((100 - (5 + 4 * getskilllv(224))) * 2 / 5);
+		}
+		// Merchant's Discount skill (ID 37)
+		else if (getskilllv(37) && zeny >= ((100 - (5 + 2 * getskilllv(37))) * 2 / 5)) {
+			zeny -= ((100 - (5 + 2 * getskilllv(37))) * 2 / 5);
+		}
+		// Default: 40z per identification
+		else if (zeny >= 40) {
+			zeny -= 40;
+		}
+		else {
+			mes "^FF0000You don't have enough resources to identify more items^000000.";
+			break;
+		}
+
+		delitem2 @inventorylist_id[.@i], 1, 0, 0, 0, 0, 0, 0, 0;
+		getitem @inventorylist_id[.@i], 1;
+		.@identified++;
+	}
+
+	if (.@identified > 0)
+		mes "Successfully identified ^00FF00" + .@identified + "^000000 item(s).";
+	else
+		mes "You have no unidentified items.";
+
+	close;
+}
+*/
+
+/*
+prontera.gat,148,189,5	script	Identifier	919,{
+	mes "[ ^0066FFIdentifier^000000 ]";
+
+	getinventorylist;
+	.@identified = 0;
+
+	for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+		if (@inventorylist_identify[.@i] == 1) continue;
+
+		if (getskilllv(40) == 1 && sp >= 10) {
+			heal 0, -10;
+		}
+		else if (countitem(611)) {
+			delitem 611, 1;
+		}
+		else if (getskilllv(224)) {
+			.@cost = (100 - (5 + 4 * getskilllv(224))) * 2 / 5;
+			if (zeny >= .@cost)
+				zeny -= .@cost;
+			else {
+				mes "^FF0000Not enough zeny. You need at least " + .@cost + " zeny (with Rogue's Discount).^000000";
+				break;
+			}
+		}
+		else if (getskilllv(37)) {
+			.@cost = (100 - (5 + 2 * getskilllv(37))) * 2 / 5;
+			if (zeny >= .@cost)
+				zeny -= .@cost;
+			else {
+				mes "^FF0000Not enough zeny. You need at least " + .@cost + " zeny (with Merchant Discount).^000000";
+				break;
+			}
+		}
+		else if (zeny >= 40) {
+			zeny -= 40;
+		}
+		else {
+			// Decide o que está faltando
+			if (getskilllv(40) == 1 && sp < 10)
+				mes "^FF0000You need at least 10 SP to use Identify skill.^000000";
+			else if (!countitem(611))
+				mes "^FF0000You need a ^808080Magnifier^FF0000 or enough zeny to identify.^000000";
+			else
+				mes "^FF0000You don't have enough zeny. Required: 40z.^000000";
+			break;
+		}
+
+		delitem2 @inventorylist_id[.@i], 1, 0, 0, 0, 0, 0, 0, 0;
+		getitem @inventorylist_id[.@i], 1;
+		.@identified++;
+	}
+
+	if (.@identified > 0)
+		mes "Successfully identified ^00FF00" + .@identified + "^000000 item(s).";
+	else
+		mes "You have no unidentified items.";
+
+	close;
+}
+*/
+
+
+prontera.gat,148,189,5	script	Identifier	919,{
+	mes "[ ^0066FFIdentifier^000000 ]";
+
+	getinventorylist;
+	.@unidentified = 0;
+
+	// Primeiro, checa se tem itens não identificados
+	for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+		if (@inventorylist_identify[.@i] == 0)
+			.@unidentified++;
+	}
+
+	if (.@unidentified == 0) {
+		mes "^FF0000You have no unidentified items^000000.";
+		close;
+	}
+
+	// Começa o processo de identificação
+	.@identified = 0;
+
+	for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+		if (@inventorylist_identify[.@i] == 1) continue;
+
+		if (getskilllv(40) == 1 && sp >= 10) {
+			heal 0, -10;
+		}
+		else if (countitem(611)) {
+			delitem 611, 1;
+		}
+		else if (getskilllv(224)) {
+			.@cost = (100 - (5 + 4 * getskilllv(224))) * 2 / 5;
+			if (zeny >= .@cost)
+				zeny -= .@cost;
+			else {
+				mes "^FF0000Not enough zeny. You need at least " + .@cost + " zeny (with Rogue's Discount)^000000.";
+				break;
+			}
+		}
+		else if (getskilllv(37)) {
+			.@cost = (100 - (5 + 2 * getskilllv(37))) * 2 / 5;
+			if (zeny >= .@cost)
+				zeny -= .@cost;
+			else {
+				mes "^FF0000Not enough zeny. You need at least " + .@cost + " zeny (with Merchant Discount)^000000.";
+				break;
+			}
+		}
+		else if (zeny >= 40) {
+			zeny -= 40;
+		}
+		else {
+			if (getskilllv(40) == 1 && sp < 10)
+				mes "^FF0000You need at least 10 SP to use Identify skill^000000.";
+			else if (!countitem(611))
+				mes "^FF0000You need a ^808080Magnifier^FF0000 or enough zeny to identify^000000.";
+			else
+				mes "^FF0000You don't have enough zeny. Required: 40z^000000.";
+			break;
+		}
+
+		delitem2 @inventorylist_id[.@i], 1, 0, 0, 0, 0, 0, 0, 0;
+		getitem @inventorylist_id[.@i], 1;
+		.@identified++;
+	}
+
+	mes "Successfully identified ^00FF00" + .@identified + "^000000 item(s).";
+	close;
+}

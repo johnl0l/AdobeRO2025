@@ -1,0 +1,199 @@
+/*
+-	script	MVP_DROP	FAKE_NPC,{
+    OnNPCKillEvent:
+		if(!getmonsterinfo(killedrid, MOB_MVPEXP)) end;
+
+		.@rowCount = getarraysize(.itemInfos) / .columnCount;
+
+		for (.@i = 0; .@i < .@rowCount; .@i++) {
+			.@index = .@i * .@rowCount;
+			.@randIndex = rand(.@i, .@rowCount - 1) * .@rowCount;
+
+			copyarray .tmpItemInfo[0], .itemInfos[.@randIndex], .columnCount;
+			copyarray .itemInfos[.@randIndex], .itemInfos[.@index], .columnCount;
+			copyarray .itemInfos[.@index], .tmpItemInfo[0], .columnCount;
+		}
+
+		for(.@i = 0; .@i < getarraysize(.itemInfos); .@i += .columnCount) {
+			if(rand(1, 100) <= .itemInfos[.@i + 2]) {
+				getitem .itemInfos[.@i], .itemInfos[.@i + 1];
+				announce "Congratulations! Player " + strcharinfo(0) + " has obtained "+ getitemname(.itemInfos[.@i]) +" [" + .itemInfos[.@i + 1] + "] from "+ getmonsterinfo(killedrid, 0) +" (chance: " + .itemInfos[.@i + 2] + "%) MVP Drop(s).", bc_all, 0x00FF00;
+				
+				if(.onlyOneDrop) end;
+			}
+		}
+    end;
+
+    OnInit:
+		//	item id, item amount, item chance in %
+		//	(<structure,<item_id>,<chances>)
+        setarray .itemInfos[0],
+		7179, 1, 5,	//Proof of Donation    Item ID# 7179 (Donation_Card)
+		7227, 1, 25,	//TCG Card    Item ID# 7227 (TCG_Card)
+		7539, 1, 50;	//Poring Coin    Item ID# 7539 (Poring_Coin)
+
+		.onlyOneDrop = true;			//Dropa um tipo de moeda por vez
+
+		.columnCount = 3;		//Tipo do Anuncio
+}
+*/
+
+
+-	script	MVP_DROP	FAKE_NPC,{
+    OnNPCKillEvent:
+		if(!getmonsterinfo(killedrid, MOB_MVPEXP)) end;
+
+		.@rowCount = getarraysize(.itemInfos) / .columnCount;
+
+		for (.@i = 0; .@i < .@rowCount; .@i++) {
+			.@index = .@i * .@rowCount;
+			.@randIndex = rand(.@i, .@rowCount - 1) * .@rowCount;
+
+			copyarray .tmpItemInfo[0], .itemInfos[.@randIndex], .columnCount;
+			copyarray .itemInfos[.@randIndex], .itemInfos[.@index], .columnCount;
+			copyarray .itemInfos[.@index], .tmpItemInfo[0], .columnCount;
+		}
+
+		for(.@i = 0; .@i < getarraysize(.itemInfos); .@i += .columnCount) {
+			if(rand(1, 100) <= .itemInfos[.@i + 2]) {
+				getitem .itemInfos[.@i], .itemInfos[.@i + 1];
+				announce "Congratulations! Player " + strcharinfo(0) + " has obtained " + .itemInfos[.@i + 1] + " "+ getitemname(.itemInfos[.@i]) +" from "+ getmonsterinfo(killedrid, 0) +" (chance: " + .itemInfos[.@i + 2] + "%) MVP Drop(s).", bc_all, 0x00FF00;
+				
+				if(.onlyOneDrop) end;
+			}
+		}
+    end;
+
+    OnInit:
+		//	item id, item amount, item chance in %
+		//	(<structure,<item_id>,<chances>)
+        setarray .itemInfos[0],
+		7179, 1, 5,	//Proof of Donation    Item ID# 7179 (Donation_Card)
+		7227, 1, 25,	//TCG Card    Item ID# 7227 (TCG_Card)
+		7539, 1, 50;	//Poring Coin    Item ID# 7539 (Poring_Coin)
+
+		.onlyOneDrop = true;			//Dropa um tipo de moeda por vez
+
+		.columnCount = 3;		//Tipo do Anuncio
+}
+
+/*
+//Só MVPs específicos vão dropar (configuráveis).
+//Mais de um item pode cair (ou só um, se quiser).
+//Mensagem de anúncio estilizada.
+//Embaralhamento dos itens pra não ser sempre o mesmo.
+
+-	script	MVP_DROP_PLUS	FAKE_NPC,{
+	OnNPCKillEvent:
+		if (!getmonsterinfo(killedrid, MOB_MVPEXP)) end; // Não é MVP? Sai.
+
+		// Verifica se existe drop configurado para esse MVP
+		.@mvpId = killedrid;
+		.@hasCustomDrop = false;
+		
+		for (.@i = 0; .@i < getarraysize(.MvpList); .@i++) {
+			if (.MvpList[.@i] == .@mvpId) {
+				.@hasCustomDrop = true;
+				break;
+			}
+		}
+		
+		if (!.@hasCustomDrop) end;
+
+		// Embaralha os itens
+		.@rowCount = getarraysize(.itemInfos) / .columnCount;
+		for (.@i = 0; .@i < .@rowCount; .@i++) {
+			.@index = .@i * .columnCount;
+			.@randIndex = rand(.@i, .@rowCount - 1) * .columnCount;
+			copyarray .tmpItemInfo[0], .itemInfos[.@randIndex], .columnCount;
+			copyarray .itemInfos[.@randIndex], .itemInfos[.@index], .columnCount;
+			copyarray .itemInfos[.@index], .tmpItemInfo[0], .columnCount;
+		}
+
+		// Dropa os itens
+		for (.@i = 0; .@i < getarraysize(.itemInfos); .@i += .columnCount) {
+			if (rand(1, 100) <= .itemInfos[.@i + 2]) {
+				getitem .itemInfos[.@i], .itemInfos[.@i + 1];
+				announce "Parabéns! Jogador " + strcharinfo(0) + " recebeu " + (.itemInfos[.@i + 1] > 1 ? .itemInfos[.@i + 1] + "x " : "") + getitemname(.itemInfos[.@i]) + " do MVP " + getmonsterinfo(killedrid, 0) + "!", bc_all, 0x00FF00;
+				
+				if (.onlyOneDrop) end;
+			}
+		}
+	end;
+
+	OnInit:
+		// Defina os MVPs que participarão dos drops
+		setarray .MvpList,
+			1511, // Baphomet
+			1647, // Ifrit
+			1751; // Valkyrie Randgris
+
+		// Define os itens: id, quantidade, chance
+		setarray .itemInfos,
+			7179, 1, 5, // Proof of Donation
+			7227, 1, 20, // TCG
+			7539, 2, 50, // 2x Poring Coin
+			12210, 3, 30; // 3x Old Blue Box
+		
+		.onlyOneDrop = false; // true = só um item por MVP
+		.columnCount = 3;
+	end;
+}
+
+*/
+
+
+/*
+
+//Lista configurável de MVPs específicos.
+//Lista de itens específica para cada MVP.
+//Controle de chance individual por item.
+//Opção de cair vários itens ou apenas um.
+
+// MVP_DROP_PLUS
+-	script	MVP_DROP_PLUS	FAKE_NPC,{
+
+	// Lista de MVPs permitidos
+	setarray .mvplist[0],
+		1511, // Golden Thief Bug
+		1647, // Tao Gunka
+		1785; // Ifrit
+
+	// Configuração de itens (por MVP)
+	// Exemplo: MVP ID, Item ID, Quantidade, Chance (%)
+	setarray .dropInfos[0],
+		1511, 7179, 1, 5,
+		1511, 7227, 1, 20,
+		1647, 7539, 2, 30,
+		1785, 501, 10, 50; // Red Potion
+
+	.onlyOneDrop = false; // true = só um item cai, false = pode cair vários
+
+	OnNPCKillEvent:
+		if(!inarray(.mvplist, killedrid)) end; // Verifica se o mob morto está na lista
+
+		.@charName$ = strcharinfo(0);
+		.@mvpName$ = getmonsterinfo(killedrid, 0);
+
+		// Procura drops para este MVP
+		for (.@i = 0; .@i < getarraysize(.dropInfos); .@i += 4) {
+			if (.dropInfos[.@i] == killedrid) {
+				.@itemID = .dropInfos[.@i+1];
+				.@amount = .dropInfos[.@i+2];
+				.@chance = .dropInfos[.@i+3];
+
+				if (rand(1,100) <= .@chance) {
+					getitem .@itemID, .@amount;
+					announce "[MVP DROP] " + .@charName$ + " conseguiu "+.@amount+"x " + getitemname(.@itemID) + " do MVP: " + .@mvpName$ + "!", bc_all, 0x00FF00;
+
+					if (.onlyOneDrop) end;
+				}
+			}
+		}
+	end;
+
+	OnInit:
+		end;
+}
+
+*/

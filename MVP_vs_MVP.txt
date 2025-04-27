@@ -1,0 +1,186 @@
+-	script	MVP_vs_MVP	FAKE_NPC,{
+	
+	OnMinute00:
+		if (gettime(DT_HOUR) % 2 || .start) end;
+		goto OnStart;
+		end;
+	
+	OnStart:
+		mapwarp "1@dth3", "prontera", 150, 150;
+		killmonster "1@dth3", "All";
+		.start = 1;
+		announce .npc$ + " We are going to have a MVP vs MVP Event.", bc_all;
+		sleep 7000;
+		announce .npc$ + " For those who want to join, you can participate by using @mvpjoin", bc_all;
+		sleep 7000;
+		announce .npc$ + " We will start the event after 1 minute", bc_all;
+		sleep 60000;
+		announce .npc$ + " The entry to the event is now closed", bc_all;
+		.start = 2;
+		sleep 7000;
+		
+		if (getmapusers("1@dth3") < 1) {
+			announce .npc$ + " Not enough participants to continue the event", 0;
+			.start = 0;
+			end;
+		}
+		
+		mapannounce "1@dth3", .npc$ + " The rules for this event is simple", bc_map;
+		sleep 7000;
+		mapannounce "1@dth3", .npc$ + " Two MVP's will spawn at the center of the map and will attack each other", bc_map;
+		sleep 7000;
+		mapannounce "1@dth3", .npc$ + " Before these MVP's spawn, I will give you 1 minute to make a bet", bc_map;
+		sleep 7000;
+		mapannounce "1@dth3", .npc$ + " The bet cost for this event is " + F_InsertComma(.bet_cost) + "z and when your chosen MVP wins you'll get as much as " + F_InsertComma(.bet_rewd) + "z !!!", bc_map;
+		sleep 7000;
+		mapannounce "1@dth3", .npc$ + " All good?? Let's start betting !!!", bc_map;
+		sleep 7000;
+		mapannounce "1@dth3", .npc$ + " To make a bet please use @mvpbet command, I will give 1 minute for you guys to make a bet", bc_map;
+		
+		.start = 3;
+		sleep 55000;
+		mapannounce "1@dth3", .npc$ + " Betting will close in 5...", bc_map;
+		sleep 1000;
+		mapannounce "1@dth3", .npc$ + " 4...", bc_map;
+		sleep 1000;
+		mapannounce "1@dth3", .npc$ + " 3...", bc_map;
+		sleep 1000;
+		mapannounce "1@dth3", .npc$ + " 2...", bc_map;
+		sleep 1000;
+		mapannounce "1@dth3", .npc$ + " 1...", bc_map;
+		sleep 1000;
+		.start = 4;
+		mapannounce "1@dth3", .npc$ + " Betting is now closed !!!", bc_map;
+		
+		sleep 7000;
+		mapannounce "1@dth3", .npc$ + " Let's get ready to RUMBLE !!!", bc_map;
+		
+		.@mid = .MVP[rand(.size)];
+		monster "1@dth3", 68, 68, "MVP A", .@mid, 1, strnpcinfo(1) + "::OnDie1", Size_Small, AI_NONE;
+		.ma = $@mobid;
+		monster "1@dth3", 71, 68, "MVP B", .@mid, 1, strnpcinfo(1) + "::OnDie2", Size_Small, AI_ATTACK;
+		.mb = $@mobid;
+		
+		unitattack .ma, .mb;
+		unitattack .mb, .ma;
+		
+		end;
+		
+	OnDie1:
+    unittalk .mb, "[MVP B] Mwahaha!~ Such a weak opponent!";
+    sleep 7000;
+    killmonster "1@dth3", "All";
+    .start = 0;
+    addrid(5, 0, "1@dth3");
+
+    if (2 == @mvp_bet) {
+        message strcharinfo(0), "Congratulations! You won the event, Good choice!";
+        Zeny += .bet_rewd;
+    }
+
+    @mvp_bet = 0;
+    setpcblock PCBLOCK_ATTACK | PCBLOCK_IMMUNE, false;
+    warp "SavePoint", 0, 0;
+    end;
+
+OnDie2:
+    unittalk .ma, "[MVP A] Mwahaha!~ Such a weak opponent!";
+    sleep 7000;
+    killmonster "1@dth3", "All";
+    .start = 0;
+    addrid(5, 0, "1@dth3");
+
+    if (1 == @mvp_bet) {
+        message strcharinfo(0), "Congratulations! You won the event, Good choice!";
+        Zeny += .bet_rewd;
+    }
+
+    @mvp_bet = 0;
+    setpcblock PCBLOCK_ATTACK | PCBLOCK_IMMUNE, false; 
+    warp "SavePoint", 0, 0;
+    end;
+
+	
+	OnEventBet:
+	mes .npc$;
+	if (!.start)
+		mes "The event is not active.";
+	else if (.start != 3)
+		mes "The event cannot accept bets at the moment.";
+	else if (Zeny < .bet_cost)
+		mes "You don't have enough zeny to make a bet.";
+	else if (@mvp_bet)
+		mes "You already placed your bet.";
+	else if (strcharinfo(3) != "1@dth3")
+		mes "Hmm~";
+	else {
+		mes "Which mvp will you bet on this match???";
+		next;
+		.@s = select("MVP A:MVP B");
+		mes .npc$;
+		mes "Are you sure you want to bet " + F_InsertComma(.bet_cost) + " on " + (.@s == 1 ? "MVP A" : "MVP B") + "?";
+		next;
+		if (select("Yes:No") & 2) end;
+		if (.start != 3) { // in case they delay the select ???
+			setpcblock PCBLOCK_ATTACK | PCBLOCK_IMMUNE, false;
+			warp "SavePoint", 0, 0;
+			end;
+		}
+		mes .npc$;
+		mes "Good luck and have fun!";
+		Zeny -= .bet_cost;
+		@mvp_bet = .@s;
+	}
+	end;
+
+	
+	OnEventJoin:
+		if (!.start)
+			message strcharinfo(0), "The event is not active.";
+		else if (.start != 1)
+			message strcharinfo(0), "The event is not yet allowing participants to enter.";
+		else {
+			setpcblock PCBLOCK_ATTACK | PCBLOCK_IMMUNE, true;
+			switch (rand(1,4)) {
+				case 1:
+					warp "1@dth3", 49, 50;
+					break;
+				case 2:
+					warp "1@dth3", 49, 88;
+					break;
+				case 3:
+					warp "1@dth3", 89, 88;
+					break;
+				case 4:
+					warp "1@dth3", 89, 50;
+					break;
+			}
+		}
+		end;
+	
+	OnInit:
+		bindatcmd "mvpjoin", strnpcinfo(1) + "::OnEventJoin";
+		bindatcmd "mvpbet", strnpcinfo(1) + "::OnEventBet";
+		bindatcmd "mvpstart", strnpcinfo(1) + "::OnStart", 99, 99;
+		
+		// List of MVP's
+		setarray .MVP[0], 1112, 1115, 1147, 1150, 1157, 1159;
+		.size = getarraysize(.MVP);
+	
+		.npc$ = "[MVP vs MVP Event]";
+		
+		.bet_cost = 5000; // 5,000z to bet in the event
+		.bet_rewd = 1000000; // 1,000,000z if bet wins
+		
+		end;
+}
+
+1@dth3	mapflag	monster_noteleport
+1@dth3	mapflag	noskill
+1@dth3	mapflag	noloot
+1@dth3	mapflag	noitemconsumption
+1@dth3	mapflag	nomemo
+1@dth3	mapflag	nosave	SavePoint
+1@dth3	mapflag	nowarpto
+1@dth3	mapflag	nowarp
+1@dth3	mapflag	noteleport

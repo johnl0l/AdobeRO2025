@@ -1,0 +1,260 @@
+//////////////////////////////////////////////
+//	Jobchanger eA-Jobsystem		    //
+//////////////////////////////////////////////
+//	script by icescope		    //
+//////////////////////////////////////////////
+//	V. 1.5	 Added Rebirth controle	    //
+//	V. 1.4.2 Killed bugs from 1.4.1     //
+//	V. 1.4   Change to Baby, stat       //
+//               bonus on rebirth           //
+//	V. 1.3.4 Insert jump over Rebirth   //
+//	V. 1.3.3 Better walk through NPC    //
+//	V. 1.3.2 Added Price Controle	    //
+//	V. 1.2 	 Added Platinums	    //
+//	V. 1.1.1 (Labelfree)		    //
+//////////////////////////////////////////////
+
+
+prontera,160,150,4	script	Job Changer	800,{
+
+	if(!$multi_reb) set reb_times, 0;
+
+	setarray @dialogues$,
+	"Choose the Job which fits the best to you.",
+	"You already have reached your last Job.",
+	"Are you sure to choose ^00AA00",
+	"Then make your choose later ^^",
+	"Do you want to reborn?",
+	"You are now reborn.",
+	"^cc1100[Job Changer]^000000",
+	"Error Message: Please Report this to an GM!",
+	"Please come again soon.",
+	"You don't have enough Base/JobLevel to change.",
+	"Please use up all of your Skillpoints first.",
+	"Please don't use a Cart/Peco Peco/Falcon if you want to change.",
+	"This will need a payment of ",
+	" zeny!!!",
+	"You don't have enough zeny.";
+
+	function SF_End_Message;
+	function SF_yn;
+	function SF_givePlat;
+
+	if(skillpoint)	SF_End_Message(@dialogues$[10]);
+	if(checkfalcon() || checkcart() || checkriding()) SF_End_Message(@dialogues$[11]);
+
+	mes @dialogues$[6];
+	set .@eaj, eaclass();
+	if((!(.@eaj&EAJ_BASEMASK)^EAJ_NOVICE))
+	{
+		if(!(.@eaj&EAJL_2))
+		{
+			// 1st Jobs
+			if($1_Min>$min_B && $max_B>=JobLevel && $min_B<=JobLevel && $1_Min != JobLevel && !(.@eaj&EAJL_BABY)) SF_yn(roclass(.@eaj|EAJL_BABY),$fst_price);
+			if(JobLevel<$1_Min) SF_End_Message(@dialogues$[9]);
+			if(!lastjob2)
+			{
+				mes @dialogues$[0];
+				setarray .@jobs[1], roclass(.@eaj|EAJ_SWORDMAN), roclass(.@eaj|EAJ_MAGE), roclass(.@eaj|EAJ_ARCHER), roclass(.@eaj|EAJ_ACOLYTE), roclass(.@eaj|EAJ_MERCHANT), roclass(.@eaj|EAJ_THIEF), .@eaj|EAJL_2_1,  roclass(.@eaj|EAJ_TAEKWON),  roclass(.@eaj|EAJ_GUNSLINGER), roclass(.@eaj|EAJ_NINJA),roclass(.@eaj|EAJL_BABY);
+				set .@selected$, callfunc("getJobName",(.@jobs[1]))+":"+callfunc("getJobName",(.@jobs[2]))+":"+callfunc("getJobName",(.@jobs[3]))+":"+callfunc("getJobName",(.@jobs[4]))+":"+callfunc("getJobName",(.@jobs[5]))+":"+callfunc("getJobName",(.@jobs[6]));
+				if(.@jobs[8]^-1) set .@selected$,.@selected$+":"+callfunc("getJobName",roclass(.@jobs[7]))+":"+callfunc("getJobName",(.@jobs[8]))+":"+callfunc("getJobName",(.@jobs[9]))+":"+callfunc("getJobName",(.@jobs[10]));
+				else set .@push, 6;
+				if($min_B<=JobLevel && $max_B>= JobLevel && !(.@eaj&(EAJL_UPPER|EAJL_BABY)))
+				{
+					set .@push, .@push+1;
+					set .@selected$, .@selected$+":"+callfunc("getJobName",(.@jobs[11]));	
+				}
+				if(.@eaj&EAJL_BABY)
+				{
+					set .@push, .@push-1;
+					set .@selected$, .@selected$+":"+callfunc("getJobName",roclass(.@jobs[7]));
+				}
+				set .@selected$, .@selected$+":Cancel";
+				if((select(.@selected$)+.@push)^13 ) SF_yn(.@jobs[@menu],$fst_price);
+				SF_End_Message(@dialogues$[8]);
+			}
+			SF_yn(roclass((lastjob2&EAJ_BASEMASK)|EAJL_UPPER),$fst_price);						
+		}
+		else if(!$multi_reb) SF_End_Message(@dialogues$[1]);
+	}
+
+	if(.@eaj&EAJL_2 || (!(roclass(.@eaj|EAJL_2)^-1) && $multi_reb) || ((.@eaj&EAJL_2) && !(roclass(.@eaj|EAJL_UPPER)^-1) && $multi_reb))
+	{
+		// Rebirth
+		if((.@eaj&(EAJL_UPPER|EAJL_BABY) || !(roclass(.@eaj|EAJL_UPPER)^-1)) && (!$multi_reb||!$allowBreb) ) SF_End_Message(@dialogues$[1]);
+		if(reb_times>127 || (!$Reb_Base[reb_times]|!$Reb_Job[reb_times])) setarray .@needed, (!$Reb_Base[reb_times])?($Reb_Base[getarraysize($Reb_Base)-1]):($Reb_Base[reb_times]), (!$Reb_Job[reb_times])?($Reb_Job[getarraysize($Reb_Job)-1]):($Reb_Job[reb_times]);
+		else setarray .@needed, $Reb_Base[reb_times], $Reb_Job[reb_times];
+		if(BaseLevel<.@needed || JobLevel<.@needed[1]) SF_End_Message(@dialogues$[9]);
+		if($needReb) SF_yn(roclass(.@eaj|EAJL_UPPER),$reb_price);
+		if((.@eaj&EAJL_BABY) && !$allowBreb) SF_End_Message(@dialogues$[1]);
+		mes @dialogues$[4];
+		if($prices_on) mes @dialogues$[12]+$reb_price+@dialogues$[13];
+		if(select("No:Yes")-1)
+		{
+			if(zeny<$reb_price && $prices_on) SF_End_Message(@dialogues$[14]);
+			if($prices_on) set zeny, zeny-$reb_price;
+			if($Job_Tree) set lastjob2, .@eaj;
+			if((roclass(.@eaj|EAJL_UPPER)^-1)) jobchange Job_Novice_High;
+			else
+			{
+				if(.@eaj&EAJL_BABY)
+				{
+					jobchange Job_Baby;
+					set statuspoint, $startBstats;
+				}
+				else
+				{
+					jobchange Job_Novice;
+					set statuspoint, 100;
+				}
+			}
+			resetlvl(1);
+			skill 142,1,0;
+			skill 143,1,0;
+			if(!$inc_type) set statuspoint, statuspoint+(reb_times>0)*$extra_stats+(((reb_times-1)>0)*(reb_times-1))*$increasement;
+			else set statuspoint, statuspoint+(reb_times>0)*$extra_stats*(pow($increasement,(reb_times-1)));
+			if($multi_reb) set reb_times, reb_times+1;
+			mes @dialogues$[5];
+		}
+		else mes @dialogues$[3];
+		SF_End_Message(@dialogues$[8]);
+	}
+	else
+	{
+		if(JobLevel<$2_Min) SF_End_Message(@dialogues$[9]);
+		if(!lastjob2)
+		{
+			// 2nd Jobs	
+			set .@choose1, roclass(.@eaj|EAJL_2_1);
+			set .@choose2, roclass(.@eaj|EAJL_2_2);
+			if(!(.@choose1^-1)) SF_End_Message(@dialogues$[1]);
+			mes @dialogues$[0];
+			SF_yn(getd(".@choose"+select(callfunc("getJobName",(.@choose1))+":"+callfunc("getJobName",(.@choose2)))),$scn_price);
+		}
+		else
+		{
+			set .@choosed, roclass(lastjob2|EAJL_UPPER);
+			SF_yn(.@choosed, $scn_price);
+		}
+		
+	}
+	SF_End_Message(@dialogues$[7]);
+
+function SF_End_Message {
+	mes getarg(0);
+	close;
+}
+
+function SF_yn {
+	if(!((getarg(0)&EAJ_BASEMASK)^EAJ_NOVICE))
+	{
+		if(BaseLevel<$SN_Min) SF_End_Message(@dialogues$[9]);
+		else set getarg(0), roclass(getarg(0));
+	}
+	mes @dialogues$[2]+callfunc("getJobName",getarg(0))+"^000000 as your Job ?";
+	if($prices_on) mes @dialogues$[12]+getarg(1)+@dialogues$[13];
+	if(select("No:Yes")-1)
+	{
+		if(zeny<getarg(1) && $prices_on) SF_End_Message(@dialogues$[14]);
+		if($prices_on) set zeny, zeny-getarg(1);
+		callfunc "Job_Change", getarg(0);
+		SF_givePlat(eaclass());
+		if($needReb) set statuspoint, statuspoint+52;
+	}
+	else
+	{
+		mes @dialogues$[6];
+		SF_End_Message(@dialogues$[3]);
+	}			
+	SF_End_Message(@dialogues$[8]);
+}
+
+function SF_givePlat {
+	if(getarg(0)&EAJL_2)
+	{
+		if(!(getarg(0)^(EAJ_MERCHANT|EAJL_2_2))) skill 238,1,0;
+		else
+		for(set .@i,0;.@i<getarraysize($job2_skills); set.@i,.@i+1)
+		{
+			if(!($job2_skills[.@i]^getarg(0))) skill 1001+.@i,1,0;
+		}	
+		
+	}
+	else
+	{
+		skill 142,1,0;
+		for(set .@i,0;.@i<getarraysize($job1_skills); set.@i,.@i+1)
+		{
+			if(!($job1_skills[.@i]^getarg(0))) skill 143+.@i,1,0;
+		}	
+	}
+}
+
+OnInit:
+	//
+	set $extra_stats, 0;
+	set $increasement, 0;
+	set $inc_type, 0;
+	set $allowBreb, 0;
+	set $startBstats, 0;
+	set $inc_base, 0;
+	set $inc_job, 0;
+	deletearray $Reb_Base[0], 127;
+	deletearray $Reb_Job[0], 127;
+	set $fst_price, 0;
+	set $scn_price, 0;
+	set $reb_price, 0;
+	// reset options on OnInit!
+
+	set $needReb, 1; // No Rebirth needed for Upper Jobs ( 1 - yes ; 0 - no )
+
+	set $multi_reb, 0; // Allow multirebirth for extra Stats ( 1 - yes ; 0 - no )
+
+	if($multi_reb)
+	{
+		set $extra_stats, 100; // Extra stats per rebirth.
+		set $increasement, 2; // Increasement of extra stats per rebirth.
+		set $inc_type, 1; // Type for increasement : ( 0 - Real stats more ; 1 - $extra_stats*$increasement per rebirth! )
+		set $allowBreb, 1; // Allows Baby Jobs to rebirth
+		if($allowBreb)	set $startBstats, 80; // Amount of stats a Baby job has after a rebirth
+		//NOTE: Baby Jobs Rebirth as Baby again!
+		set $inc_base, 1; // Base Level needed can increase per rebirth
+		set $inc_job, 1;  // Job Level needed can increase per rebirth
+	}
+
+	set $Job_Tree, 0; // Use lastjob2 for saving Job before Rebirth ( 1 - yes ; 0 - no )
+
+	// NOTE: If $needReb = 1 , $Job_Tree is senceless!
+
+	set $1_Min, 10; // Minimum Joblvl to Change into 1st Cls
+	set $2_Min, 40; // Minimum Joblvl to Change into 2nd Cls
+	set $Reb_Base, 99; // Minimum Baselvl to Rebirth
+	set $Reb_Job, 50; // Minimum Joblvl to Rebirth
+	if($inc_base&$multi_reb) setarray $Reb_Base[1], 150, 255; // Base Level neeeded for 2nd, 3rd, 4th,.... rebirth
+	if($inc_job&$multi_reb) setarray $Reb_Job[1], 70, 0; // Job Level neeeded for 2nd, 3rd, 4th,.... rebirth
+	// Note: If you delete a number from this arrays its better to use 0 instead of empty.
+
+
+	set $SN_Min, 45; // Minimum Baselvl to Change into Super Novice
+
+	set $min_B, 5; // Minimum Joblevel to change into a Baby Job
+	set $max_B, 10; // Maximum Joblevel to change into a Baby Job
+	// NOTE: Change from Novice into Baby Novice only by now.
+
+	set $G1_Plat, 1; // Give 1st Cls Platinum Skills on Jobchange ( 1 - yes ; 0 - no )
+	set $G2_Plat, 1; // Give 2nd Cls Platinum Skills on Jobchange ( 1 - yes ; 0 - no )
+	set $prices_on, 1; // If you want to have prices for Jobchanges.
+
+	if($prices_on)
+	{
+ 		set $fst_price, 10000; // Price to change to 1st Jobs
+		set $scn_price, 100000; // Price to change to 2nd Jobs
+		set $reb_price, 1000000; // Price to Rebirth
+	}
+
+
+	if($G1_Plat) setarray $job1_skills, EAJ_NOVICE, EAJ_SWORDMAN, EAJ_SWORDMAN, EAJ_SWORDMAN, EAJ_ARCHER, EAJ_ARCHER, EAJ_THIEF, EAJ_THIEF, EAJ_THIEF, EAJ_THIEF, EAJ_MERCHANT, EAJ_MERCHANT, EAJ_MERCHANT, EAJ_ACOLYTE, EAJ_MAGE;
+	if($G2_Plat) setarray $job2_skills, EAJ_SWORDMAN|EAJL_2_1, EAJ_SWORDMAN|EAJL_2_2, EAJ_THIEF|EAJL_2_1, EAJ_THIEF|EAJL_2_1, EAJ_THIEF|EAJL_2_2, EAJ_MAGE|EAJL_2_1, EAJ_MAGE|EAJL_2_2, EAJ_MAGE|EAJL_2_2, EAJ_ARCHER|EAJL_2_1, EAJ_ARCHER|EAJL_2_2, EAJ_ARCHER|EAJL_2_2, EAJ_MERCHANT|EAJL_2_1, EAJ_MERCHANT|EAJL_2_1, EAJ_ACOLYTE|EAJL_2_1, EAJ_ACOLYTE|EAJL_2_2, EAJ_ACOLYTE|EAJL_2_2, EAJ_MAGE|EAJL_2_2, EAJ_MAGE|EAJL_2_2, EAJ_MAGE|EAJL_2_2;
+	end;
+
+}

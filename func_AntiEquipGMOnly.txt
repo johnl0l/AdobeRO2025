@@ -1,0 +1,153 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+//Funciona!
+//2199,Some_Shield,Some Shield,5,0,,10,,,,,0xFFFFFFFF,7,2,,,,,,{ callfunc("func_AntiEquipGMOnly", 99, 2199); }
+//1599,Some_Mace,Some Mace,5,0,,10,,,,,0xFFFFFFFF,7,2,,,,,,{ callfunc("func_AntiEquipGMOnly", 99, 1599); }
+
+//1599,Some_Mace,Some Mace,5,0,,10,,,,,0xFFFFFFFF,7,2,,,,,,{ callfunc("func_AntiEquipGMOnly", 99); }
+//2199,Some_Shield,Some Shield,5,0,,10,,,,,0xFFFFFFFF,7,2,,,,,,{ callfunc("func_AntiEquipGMOnly", 99); }
+
+/*
+function	script	func_AntiEquipGMOnly	{
+	.@gm_level_required = getarg(0);
+	
+	if (getgmlevel() < .@gm_level_required && getgroupid() < 5) {
+		dispbottom "Você não tem permissão para equipar este item.";
+		
+		// Verifica todos os slots de equipamento
+		for (.@i = EQI_HEAD_TOP; .@i <= EQI_AMMO; .@i++) {
+			.@eid = getequipid(.@i);
+			if (.@eid == getequipweapon() || .@eid == getequipshield()) {
+				unequip(.@i); // Desequipa do slot correspondente
+			}
+		}
+		end;
+	}
+	return;
+}
+*/
+
+/*
+function	script	func_AntiEquipGMOnly	{
+	.@gm_level_required = getarg(0);
+
+	if (getgmlevel() < .@gm_level_required && getgroupid() < 5) {
+		dispbottom "Você não tem permissão para equipar este item.";
+
+		// Salva o item que acabou de ser equipado
+		.@new_item_id = getequipid(getarg(1)); // slot que chamou a função
+
+		// Loop por todos os slots de equipamento
+		for (.@i = EQI_HEAD_TOP; .@i <= EQI_AMMO; .@i++) {
+			if (getequipid(.@i) == .@new_item_id) {
+				unequip(.@i);
+			}
+		}
+		end;
+	}
+	return;
+}
+*/
+
+//Funciona!
+/*
+function	script	func_AntiEquipGMOnly	{
+	.@gm_level_required = getarg(0);
+	.@forbidden_item_id = getarg(1);
+
+	if (getgmlevel() < .@gm_level_required && getgroupid() < 5) {
+		//dispbottom "Você não tem permissão para equipar este item.";
+		dispbottom "[SISTEMA]: VOCÊ NÃO TEM AUTORIDADE PARA TOCAR NISSO, INSETO!";
+
+		// Verifica todos os slots
+		for (.@i = EQI_HEAD_TOP; .@i <= EQI_AMMO; .@i++) {
+			if (getequipid(.@i) == .@forbidden_item_id) {
+				unequip(.@i);
+			}
+		}
+		end;
+	}
+	return;
+}
+*/
+
+/*
+function	script	func_AntiEquipGMOnly	{
+	.@gm_level_required = getarg(0);
+	.@forbidden_item_id = getarg(1);
+
+	if (getgmlevel() < .@gm_level_required && getgroupid() < 5) {
+		dispbottom "[SISTEMA]: VOCÊ NÃO TEM AUTORIDADE PARA TOCAR NISSO, INSETO!";
+		specialeffect EF_EXPLOSION; // efeito visual
+		//soundeffect "explosion.wav", 0; // som (opcional, depende do client)
+
+		for (.@i = EQI_HEAD_TOP; .@i <= EQI_AMMO; .@i++) {
+			if (getequipid(.@i) == .@forbidden_item_id) {
+				unequip(.@i); // remove do jogador
+
+				// Força o drop do item no chão
+				delitem .@forbidden_item_id, 1;
+				makeitem .@forbidden_item_id, 1, strcharinfo(0);
+				getmapxy(.@map$, .@x, .@y, BL_PC);
+				makeitem .@forbidden_item_id, 1, .@map$, .@x, .@y;
+			}
+		}
+		end;
+	}
+	return;
+}
+*/
+
+function	script	func_AntiEquipGMOnly	{
+	.@gm_level_required = getarg(0);
+	.@forbidden_item_id = getarg(1);
+
+	if (getgmlevel() < .@gm_level_required && getgroupid() < 5) {
+		//dispbottom "[SISTEMA]: VOCÊ NÃO TEM AUTORIDADE PARA TOCAR NISSO, INSETO!";
+		dispbottom "[SISTEMA]: VOCÊ É UM MERDA";
+		//specialeffect EF_SUI_EXPLOSION; // efeito visual
+		//soundeffect "thunder.wav", 0; // som de explosão (opcional) // seu arquivo *.wav personalizado deve ser do tipo PCM e mono // 16bit, 44100Hz, mono
+		soundeffect "Shao Kahn Suck.wav", 0;
+
+		// Pega posição do jogador
+		getmapxy(.@map$, .@x, .@y, BL_PC);
+
+		for (.@i = EQI_HEAD_TOP; .@i <= EQI_AMMO; .@i++) {
+			if (getequipid(.@i) == .@forbidden_item_id) {
+				unequip(.@i); // Desequipa o item
+				delitem .@forbidden_item_id, 1; // Remove do inventário
+				makeitem .@forbidden_item_id, 1, .@map$, .@x, .@y; // Dropa no chão
+			}
+		}
+		end;
+	}
+	return;
+}
+
+
+/*
+
+function	script	func_AntiEquipGMOnly	{
+	// @param <gm_level_to_bypass> Ex: 99
+	.@gm_level_required = getarg(0);
+	
+	if (getgmlevel() < .@gm_level_required && getgroupid() < 5) {
+		dispbottom "Você não tem permissão para equipar este item.";
+		// Obtém ID do item equipado automaticamente
+		.@eid = getequipid(EQI_HAND_R); // Exemplo: mão direita, pode ajustar
+		if (.@eid)
+			unequipbyid(.@eid);
+		end;
+	}
+	return;
+}
+
+
+*/

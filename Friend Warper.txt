@@ -1,0 +1,72 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+/*
+sec_in02.gat,148,180,2	script	Friend Warper	794,{
+	query_sql( "SELECT `char_id`,`account_id`,`name` FROM `char` WHERE `char_id` IN ( SELECT `friend_id` FROM `friends` WHERE `char_id`='"+getcharid(0)+"' )",.@char_id,.@account_id,.@name$ );
+	.@total = getarraysize( .@char_id );
+	if( .@total ){
+		for( .@i = 0; .@i < .@total; .@i++ )
+			.@menu$ = .@menu$ + ( ( isloggedin( .@account_id[.@i],.@char_id[.@i] ) )?"^0055FF[ ONLINE ]":"^FF0000[ OFFLINE ]" )+" "+.@name$[.@i] +"^000000:";
+		
+		.@i = select( implode( .@menu$,":" ) ) - 1;
+		if( isloggedin( .@account_id[.@i],.@char_id[.@i] ) ){
+			getmapxy( .@map$,.@x,.@y,0,.@name$[.@i] );
+			warp .@map$,.@x,.@y;
+		}else{
+			mes "Your friends is not online.";
+		}
+	
+	}else{
+		mes "You dont have any friends.";
+	}
+	end;
+}
+*/
+
+//Mensagens mais amigáveis e corretas.
+//Verificação do retorno da query_sql.
+//Melhor organização de código e segurança nas chamadas.
+//Correção da lógica do menu.
+//Atualizado: 25/04/25 - 09:18
+
+sec_in02.gat,148,180,2	script	Friend Warper	794,{
+
+	mes "[ ^4D4DFFFriend Warper^000000 ]";
+	mes "Looking for your friends...";
+	next;
+
+	if (query_sql( 
+		"SELECT `char_id`,`account_id`,`name` FROM `char` WHERE `char_id` IN ( SELECT `friend_id` FROM `friends` WHERE `char_id`='"+getcharid(0)+"' )",
+		.@char_id,.@account_id,.@name$ ) > 0) {
+
+		.@total = getarraysize(.@char_id);
+
+		for ( .@i = 0; .@i < .@total; .@i++ )
+			.@menu$ = .@menu$ + ( isloggedin( .@account_id[.@i], .@char_id[.@i] ) ? "^0055FF[ONLINE]^000000 " : "^FF0000[OFFLINE]^000000 " ) + .@name$[.@i] + ":";
+
+		.@i = select(.@menu$) - 1;
+
+		if ( isloggedin( .@account_id[.@i], .@char_id[.@i] ) ) {
+			getmapxy(.@map$, .@x, .@y, 0, .@name$[.@i]);
+			warp .@map$, .@x, .@y;
+		} else {
+			mes "[ ^4D4DFFFriend Warper^000000 ]";
+			mes "Your friend is not online.";
+			close;
+		}
+
+	} else {
+		mes "[ ^4D4DFFFriend Warper^000000 ]";
+		mes "You don't have any friends.";
+		close;
+	}
+
+	end;
+}

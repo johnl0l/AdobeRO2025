@@ -1,0 +1,69 @@
+prontera,161,179,3	script	Prontera Church Priest	4_GEFFEN_09,7,7,{
+OnTouch:
+	.@Delay = 25;	// Delay, in seconds
+
+	if (@HD > gettimetick(2)) {
+		npctalk strnpcinfo(1) + " : " + strcharinfo(0) + " I've just buffed you! Wait some more time", strnpcinfo(0), bc_self;
+		end;
+	}
+	if (.@Delay)
+		@HD = gettimetick(2) + .@Delay;
+
+	unitskillusepos .id,"PR_SANCTUARY",10,.x,.y,-10;
+	sleep2 500;
+	callsub S_Check;
+	if (!getstatus(SC_BLESSING))
+		npcskill "AL_BLESSING",10,1,1;
+	callsub S_Check;
+	if (getstatus(SC_ORCISH) || getstatus(SC_POISON) || getstatus(SC_CURSE) || getstatus(SC_SILENCE) || getstatus(SC_CONFUSION) || getstatus(SC_BLIND) || getstatus(SC_BLEEDING)) {
+		npcskill F_Rand("AL_CURE", "PR_STRECOVERY"),1,1,1;
+		sc_end SC_ORCISH;
+		sc_end SC_POISON;
+		sc_end SC_CURSE;
+		sc_end SC_SILENCE;
+		sc_end SC_CONFUSION;
+		sc_end SC_BLIND;
+		sc_end SC_BLEEDING;
+		callsub S_Check;
+	}	
+	npcskill "AL_INCAGI",10,1,1;
+	callsub S_Check;
+	npcskill "AL_ANGELUS",10,1,1;
+	callsub S_Check;
+	npcskill "PR_IMPOSITIO",5,1,1;
+	callsub S_Check;
+	npcskill "PR_SUFFRAGIUM",3,1,1;
+	callsub S_Check;
+	npcskill "PR_MAGNIFICAT",5,1,1;
+	callsub S_Check;
+	npcskill "PR_GLORIA",5,1,1;
+	callsub S_Check;
+	npcskill "PR_KYRIE",10,1,1;
+	callsub S_Check;
+	npcskill "HP_ASSUMPTIO",5,1,1;
+	callsub S_Check;
+	if (checkre(0)) {
+		unitskillusepos .id,"AB_EPICLESIS",5,rand(.x-3,.x+3),rand(.y-3,.y+3),-10;
+		callsub S_Check;
+		npcskill "AB_RENOVATIO",4,1,1;
+		callsub S_Check;
+		npcskill "AB_SECRAMENT",5,1,1;
+		callsub S_Check;
+	}
+	npctalk strnpcinfo(1) + " : Come back anytime " + strcharinfo(0) + "!", strnpcinfo(0), bc_self;
+	end;
+
+S_Check:
+	sleep2 rand(700,2000);
+	getmapxy(.@pc_map$,.@pc_x, .@pc_y);
+	if (distance(.x,.y,.@pc_x,.@pc_y) > 7) {
+		npctalk strnpcinfo(1) + " : " + strcharinfo(0) + " I'm not walking just to buff you. Please come closer.", strnpcinfo(0), bc_self;
+		end;
+	}
+	return;
+
+OnInit:
+	.id = getnpcid(0, strnpcinfo(0));
+	getmapxy(.map$, .x, .y, BL_NPC);
+	end;
+}

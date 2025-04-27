@@ -1,0 +1,15 @@
+prontera,155,181,5	script	Chemical Protection	558,{
+	if (Zeny < 5000 || !countitem(7139)) {
+		npctalk "You required "+getitemname(7139)+" and 5,000 Zeny to use it.";
+	}
+	else {
+		if (!checkre(0)) {
+			//progressbar_npc("0xFFFFFF", 2, getnpcid(0));
+			 sleep2 2000;
+		}
+		Zeny -= 5000;
+		delitem 7139, 1;
+		npcskill "CR_FULLPROTECTION", 5, 99, 99;
+	}
+	end;
+}

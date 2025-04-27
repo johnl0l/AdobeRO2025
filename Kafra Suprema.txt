@@ -1,0 +1,187 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+prontera,143,179,6	script	Kafra Suprema	894,{
+function Go; function Disp; function Pick; function Restrict;
+
+function Go {
+	set lastwarp$, getarg(0);
+	set lastwarpx, getarg(1,0);
+	set lastwarpy, getarg(2,0);
+	warp getarg(0),getarg(1,0),getarg(2,0);
+	end;
+}
+function Disp {
+	if (getargcount() < 3)
+		set @menu$, getarg(0);
+	else {
+		set @menu$,"";
+		for (set .@i,getarg(1); .@i<=getarg(2); set .@i,.@i+1)
+			set @menu$, @menu$+getarg(0)+" "+.@i+":";
+	}
+	return;
+}
+function Pick {
+	set .@warp_block,@warp_block;
+	set @warp_block,0;
+	set .@select, select(@menu$);
+	if (getarg(0) == "") {
+		set .@i, .@select;
+		set .@map$, getarg(.@i);
+	} else {
+		set .@i, .@select-getarg(1,0);
+		set .@map$, getarg(0)+((.@i<10)?"0":"")+.@i;
+	}
+	if (.@warp_block & (1<<.@select)) {
+		message strcharinfo(0),"This map is not enabled in "+((checkre(0))?"":"Pre-")+"Renewal.";
+		end;
+	}
+	set .@x, @c[.@i*2];
+	set .@y, @c[.@i*2+1];
+	deletearray @c[0],getarraysize(@c);
+	Go(.@map$,.@x,.@y);
+}
+function Restrict {
+	if ((getarg(0) == "RE" && !checkre(0)) || (getarg(0) == "Pre-RE" && checkre(0))) {
+		if (getarg(1,0)) {
+			set @warp_block,0;
+			for (set .@i,1; .@i<getargcount(); set .@i,.@i+1)
+				set @warp_block, @warp_block | (1<<getarg(.@i));
+		} else {
+			message strcharinfo(0),"This map is not enabled in "+((checkre(0))?"":"Pre-")+"Renewal.";
+			end;
+		}
+	}
+	return;
+}
+
+mes "[ ^FF8000Kafra Suprema^000000 ]";
+mes "Olá, ^0000CD"+strcharinfo(0)+"^000000 Estou aqui para servi-lo! Por favor selecione um serviço.";
+menu "-^FFD700Salvar^000000.",-,"-^808000Towns^000000",Towns,"-^006400Teleporte WoE^000000.",woe,"-^800000Nada Obrigado^000000.",nao;
+next;
+M_Save:
+	savepoint "prontera",155,184;
+	callfunc "F_KafEnd",0,1,"na cidade de Prontera";
+
+// --------------------------------------------------
+	Towns:
+// --------------------------------------------------
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Por favor ^0000CD"+strcharinfo(0)+"^000000 selecione a cidade:";
+menu	"Prontera",G1, "Alberta",G2, "Aldebaran",G3, "Amatsu",G4, "Ayothaya",G5,
+    	"Brasilis",G6, "Comodo",G7, "Dewata",G8, "Eclage",G9, "Einbech",G10, 
+    	"Einbroch",G11, "El Dicastes",G12, "Geffen",G13, "Gonryun",G14, "Hugel",G15,
+    	"Izlude",G16, "Jawaii",G17, "Lighthalzen",G18, "Louyang",G19, "Lutie",G20,
+    	"Malangdo",G21, "Malaya",G22, "Manuk",G23, "Midgarts Expedition Camp",G24,
+    	"Mora",G25, "Morroc",G26, "Moscovia",G27, "Nameless Island",G28,
+    	"Niflheim",G29, "Payon",G30, "Rachel",G31, "Splendide",G32, "Thor Camp",G33,
+    	"Umbala",G34, "Veins",G35, "Yuno",G36;
+
+G1: Go("prontera",155,183);
+G2: Go("alberta",28,234);
+G3: Go("aldebaran",140,131);
+G4: Go("amatsu",198,84);
+G5: Go("ayothaya",208,166);
+G6: Restrict("RE");
+	Go("brasilis",196,217);
+G7: Go("comodo",209,143);
+G8: Restrict("RE");
+	Go("dewata",200,180);
+G9: Restrict("RE");
+	Go("ecl_in01",48,53);
+G10: Go("einbech",63,35);
+G11: Go("einbroch",64,200);
+G12: Restrict("RE");
+	 Go("dicastes01",198,187);
+G13: Go("geffen",119,59);
+G14: Go("gonryun",160,120);
+G15: Go("hugel",96,145);
+G16: Go("izlude",128,(checkre(3)?146:114));
+G17: Go("jawaii",251,132);
+G18: Go("lighthalzen",158,92);
+G19: Go("louyang",217,100);
+G20: Go("xmas",147,134);
+G21: Restrict("RE");
+	 Go("malangdo",140,114);
+G22: Restrict("RE");
+	 Go("malaya",231,200);
+G23: Go("manuk",282,138);
+G24: Go("mid_camp",210,288);
+G25: Restrict("RE");
+	 Go("mora",55,146);
+G26: Go("morocc",156,93);
+G27: Go("moscovia",223,184);
+G28: Go("nameless_n",256,215);
+G29: Go("niflheim",202,174);
+G30: Go("payon",179,100);
+G31: Go("rachel",130,110);
+G32: Go("splendide",201,147);
+G33: Go("thor_camp",246,68);
+G34: Go("umbala",97,153);
+G35: Go("veins",216,123);
+G36: Go("yuno",157,51);
+
+woe:
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Por favor ^0000CD"+strcharinfo(0)+"^000000 selecione o castelo:";
+menu "-Kriemhild.",-,"-Brynhildr.",bry,"-Hrist",hri,"-Gondul.",gon,"-Skoegul",sko,"Nenhum, Obrigado.",nao;
+
+//Kiremhild
+
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Boa viagem!";
+warp "prt_gld",135,64;
+end;
+
+//Brynhildr
+
+bry:
+next;
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";;
+mes "Boa viagem!";
+warp "prt_gld",153,136;
+end;
+
+//Hrist
+
+hri:
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Boa viagem!";
+warp "prt_gld",240,129;
+end;
+
+//Gondul
+
+gon:
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Boa viagem!";
+warp "prt_gld",198,239;
+end;
+
+//Skoegul
+
+sko:
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Boa viagem!";
+warp "prt_gld",121,240;
+end;
+
+nao:
+next;
+mes "[ ^FF8000Kafra Express^000000 ]";
+mes "Tudo bem, volte quando quiser!";
+close;
+}

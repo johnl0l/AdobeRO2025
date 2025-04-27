@@ -1,0 +1,191 @@
+//===== eAthena Script ======================================= 
+//= Commands activation on player's login
+//===== By: ================================================== 
+//= Damlug, rev lighta
+//===== Current Version: ===================================== 
+//= 1.3
+//===== Compatible With: ===================================== 
+//= eAthena SVN 14250 (previous version untested but probably working)
+//===== Description: ========================================= 
+//= Allow a player to choose which commands activate automatically on login
+//= Works for autoloot, showexp, guildhp, main, whosell
+//= For autoloot, players can choose the percent limit
+//= For whosell, players can choose 1 items ID
+//Bits des commandes
+	//Autoloot: 	startCommands	bit 0 [0;1]
+	//Showexp: 			bit 1 [1;2]
+	//Guildhp: 			bit 2 [2;4] 
+	//Ally	chat	startCommands2	bit 0 [0;1]
+	//Main chat			bit 1 [1;2]
+	//autosell			bit 2 [2:4]
+//===== Additional Comments: ================================= 
+//= 1.0 - Works for autoloot, showexp, guildhp 	[2010/09/07]
+//= 1.1 - Updated revision for char with space 	[2010/12/10]
+//= 1.2 - Add Main chat and whosell		[2011/01/13]
+//= 1.3 - Add Ally chat
+//============================================================ 
+
+/*
+//lof_vana,91,134,5	script	Serge	89,{
+prontera,164,155,3	script	Serge	89,{	
+	while(1) {
+		mes "Status of start commands";
+		mes "[ " + ((startCommands>>0)%2?"^FFA500"+ startAutolootRate +"^000000%":"^FF0000OFF") + "^000000 ] Autoloot";
+		mes "[ " + ((startCommands>>1)%2?"^FF0000OFF":"^009900ON") + "^000000 ] Showexp";	//On inverse, vu que activée par défaut
+		mes "[ " + ((startCommands>>2)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Guildhp";
+		mes "[ " + ((startCommands2>>0)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Ally chat";
+		mes "[ " + ((startCommands2>>1)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Main chat";
+		mes "[ " + ((startCommands2>>2)%2?" Item ^1E90FF"+whosellitem :"^FF0000OFF") + "^000000 ] Auto whosell";
+		mes "Choose the command to modify";
+		switch(select("Autoloot:Showexp:Guildhp:Ally chat:Main chat:Whosell")) {
+			case 1:													//Autoloot
+				if(! ((startCommands>>0)%2)) {									//Activation
+					mes "Enter the maximum percentage";
+					//On limite la valeur entrée à 0-100
+					do {
+					input startAutolootRate;
+					if (startAutolootRate<0 || startAutolootRate>100) mes "Invalid rates please try again";
+					} while (startAutolootRate<0 || startAutolootRate>100);
+					//Et si la valeur est comprise entre 1 et 100, on active la commande
+					if(startAutolootRate) set startCommands, startCommands +1;
+				} 												//Désactivation
+				else set startCommands, startCommands -1;
+				break;
+			case 2:													//Showexp
+				if(! ((startCommands>>1)%2)) set startCommands, startCommands +2; 				//Activation
+				else set startCommands, startCommands -2;							//Désactivation
+				break;
+			case 3:													//Guildhp
+				if(! ((startCommands>>2)%2)) set startCommands, startCommands +4;				//Activation
+				else set startCommands, startCommands -4;							//Désactivation
+				break;
+			case 4:													//Ally chat
+				if(! ((startCommands2>>0)%2)) set startCommands2, startCommands2 +1;				//Activation
+				else set startCommands2, startCommands2 -1;							//Désactivation									break;
+			case 5:													//Main chat
+				if(! ((startCommands2>>1)%2)) set startCommands2, startCommands2 +2;				//Activation
+				else set startCommands2, startCommands2 -2;							//Désactivation
+				break;
+			case 6:													//Whosell
+				if(! ((startCommands2>>2)%2)) {									//Activation
+					mes "Enter the item ID";
+					//On limite l'ID d'entrée à >0
+					do {
+						input whosellitem;
+						if (whosellitem<0) mes "Invalid ID please try again";
+					} while (whosellitem<0);			//ID max ?
+					if(whosellitem) set startCommands2, startCommands2 +4;
+				} 												//Désactivation
+				else set startCommands2, startCommands2 -4;
+				break;
+		}
+		mes "Saved changes !";
+		next;
+	}
+	
+	OnPCLoginEvent:		//Activation des commandes au moment du log
+		if((startCommands>>0)%2) atcommand "@autoloot "+startAutolootRate;	//Autoloot
+		if((startCommands>>1)%2) atcommand "@showexp";				//Showexp
+		if((startCommands>>2)%2) atcommand "@guildhp";				//Guildhp
+		if((startCommands2>>0)%2) atcommand "@ally on";				//Ally chat
+		if((startCommands2>>1)%2) atcommand "@main on";				//Main chat
+		if((startCommands2>>2)%2) atcommand "@whosell "+whosellitem;		//Auto whosell
+		end;
+OnInit:
+	waitingroom "Start Commands",0;
+	end;
+}
+*/
+
+
+prontera,164,155,3	script	Serge	89,{
+	while(1) {
+		mes "Status of start commands";
+		mes "[ " + ((startCommands>>0)%2?"^FFA500"+ startAutolootRate +"^000000%":"^FF0000OFF") + "^000000 ] Autoloot";
+		mes "[ " + ((startCommands>>1)%2?"^FF0000OFF":"^009900ON") + "^000000 ] Showexp";
+		mes "[ " + ((startCommands>>2)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Guildhp";
+		mes "[ " + ((startCommands2>>0)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Ally chat";
+		mes "[ " + ((startCommands2>>1)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Main chat";
+		mes "[ " + ((startCommands2>>2)%2?" Item ^1E90FF"+whosellitem :"^FF0000OFF") + "^000000 ] Auto whosell";
+		mes "[ " + ((startCommands>>3)%2?"^009900ON":"^FF0000OFF") + "^000000 ] NoAsk";
+		mes "[ " + ((startCommands>>4)%2?"^009900ON":"^FF0000OFF") + "^000000 ] NoKS";
+		mes "[ " + ((startCommands>>5)%2?"^009900ON":"^FF0000OFF") + "^000000 ] NoTrade";
+		mes "[ " + ((startCommands>>6)%2?"^009900ON":"^FF0000OFF") + "^000000 ] Request Block";
+
+		switch(select("Autoloot:Showexp:Guildhp:Ally chat:Main chat:Whosell:NoAsk:NoKS:NoTrade:Request Block")) {
+			case 1:
+				if(! ((startCommands>>0)%2)) {
+					mes "Enter the maximum percentage";
+					do {
+						input startAutolootRate;
+						if (startAutolootRate<0 || startAutolootRate>100) mes "Invalid rates please try again";
+					} while (startAutolootRate<0 || startAutolootRate>100);
+					if(startAutolootRate) set startCommands, startCommands +1;
+				}
+				else set startCommands, startCommands -1;
+				break;
+			case 2:
+				if(! ((startCommands>>1)%2)) set startCommands, startCommands +2;
+				else set startCommands, startCommands -2;
+				break;
+			case 3:
+				if(! ((startCommands>>2)%2)) set startCommands, startCommands +4;
+				else set startCommands, startCommands -4;
+				break;
+			case 4:
+				if(! ((startCommands2>>0)%2)) set startCommands2, startCommands2 +1;
+				else set startCommands2, startCommands2 -1;
+				break;
+			case 5:
+				if(! ((startCommands2>>1)%2)) set startCommands2, startCommands2 +2;
+				else set startCommands2, startCommands2 -2;
+				break;
+			case 6:
+				if(! ((startCommands2>>2)%2)) {
+					mes "Enter the item ID";
+					do {
+						input whosellitem;
+						if (whosellitem<0) mes "Invalid ID please try again";
+					} while (whosellitem<0);
+					if(whosellitem) set startCommands2, startCommands2 +4;
+				}
+				else set startCommands2, startCommands2 -4;
+				break;
+			case 7:
+				if(! ((startCommands>>3)%2)) set startCommands, startCommands +8;
+				else set startCommands, startCommands -8;
+				break;
+			case 8:
+				if(! ((startCommands>>4)%2)) set startCommands, startCommands +16;
+				else set startCommands, startCommands -16;
+				break;
+			case 9:
+				if(! ((startCommands>>5)%2)) set startCommands, startCommands +32;
+				else set startCommands, startCommands -32;
+				break;
+			case 10:
+				if(! ((startCommands>>6)%2)) set startCommands, startCommands +64;
+				else set startCommands, startCommands -64;
+				break;
+		}
+		mes "Saved changes!";
+		next;
+	}
+
+OnPCLoginEvent:
+	if((startCommands>>0)%2) atcommand "@autoloot "+startAutolootRate;
+	if((startCommands>>1)%2) atcommand "@showexp";
+	if((startCommands>>2)%2) atcommand "@guildhp";
+	if((startCommands2>>0)%2) atcommand "@ally on";
+	if((startCommands2>>1)%2) atcommand "@main on";
+	if((startCommands2>>2)%2) atcommand "@whosell "+whosellitem;
+	if((startCommands>>3)%2) atcommand "@noask";
+	if((startCommands>>4)%2) atcommand "@noks";
+	if((startCommands>>5)%2) atcommand "@notrade";
+	if((startCommands>>6)%2) atcommand "@request";
+	end;
+
+OnInit:
+	waitingroom "Start Commands",0;
+	end;
+}

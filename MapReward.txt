@@ -1,0 +1,126 @@
+//===== eAthena Script ============================================
+//= #itemall
+//===== By: =======================================================
+//= Originally by goddameit
+//= redo by ~AnnieRuru~
+//===== Current Version: ==========================================
+//= 1.0
+//===== Compatible With: ==========================================
+//= eAthena 14910 Trunk TXT/SQL
+//===== Description: ==============================================
+//= give items to all players in the map, or on the server
+//===== Topic =====================================================
+//= http://www.eathena.ws/board/index.php?showtopic=276326
+//===== Additional Comments: ======================================
+//= topic splitted
+//=================================================================
+//Exemplo: npc:itemall    all#511#3
+-	script	itemall	-1,{
+OnWhisperGlobal:
+	if ( getgmlevel() < 89 ) end; // configure minimum GM level here
+	if ( compare( @whispervar0$, "map" ) )
+		set .@map$, strcharinfo(3);
+	else if ( compare( @whispervar0$, "all" ) == 0 ) {
+		dispbottom "[itemall] Please enter \"map#<item id>#<item amount>\" or \"all#<item id>#<item amount>\"";
+		end;
+	}
+	set .@itemid, atoi( @whispervar1$ );
+	set .@amount, atoi( @whispervar2$ );
+	if ( getiteminfo( .@itemid, 0 ) == -1 ) {
+		dispbottom "[itemall] Invalid item ID";
+		end;
+	}
+	if ( .@amount == 0 )
+		set .@amount, 1;
+	set .@origin$, strcharinfo(0);
+	while ( .@i < $online_count ) {
+		attachrid getd("$online_aid"+ .@i );
+		if ( .@map$ == "" || strcharinfo(3) == .@map$ ) {
+			message strcharinfo(0), .@origin$ +" gives all players online in this map "+ .@amount +" "+ getitemname(.@itemid);
+			getitem .@itemid, .@amount;
+		}
+		set .@i, .@i +1;
+	}
+	end;
+
+OnPCLoginEvent:
+	setd "$online_aid"+ $online_count, getcharid(3);
+	set $online_count, $online_count +1;
+	end;
+OnPCLogoutEvent:
+	while ( .@i < $online_count && getd("$online_aid"+ .@i ) != getcharid(3) )
+		set .@i, .@i +1;
+	if ( $online_count == .@i ) end; // prevent @loadnpc/@reloadscript bug becos not in the array
+	while ( .@i < $online_count ) {
+		setd "$online_aid"+ .@i, getd("$online_aid"+ ( .@i +1 ) );
+		set .@i, .@i +1;
+	}
+	set $online_count, $online_count -1;
+	end;
+OnInit:
+	if ( getusers(1) ) end;
+	while ( .@i < $online_count ) {
+		setd "$online_aid"+ .@i, 0;
+		set .@i, .@i +1;
+	}
+	set $online_count, 0;
+	end;
+}
+//================================================================================================
+// How to use?
+// @giveitem <itemid> <amount> <area|map|all>
+
+-	script	atcmd_giveitem	-1,{
+function F_GiveItem;
+OnInit:
+	// Ignore players who are vending?
+	.novend = true;
+	
+	// Ignore players who are in pubs/chatroom? 
+	.nopub = true;
+	
+	// Ignore idle players? if yes, set how many seconds/min/hours to be considered as idle?
+	// sec * min * hour
+	// Default : 5 mins
+	.idle_time = 60 * 5; 
+	
+	bindatcmd "giveitem",strnpcinfo(0)+"::OnGiveItem",60,99;
+	end;
+	
+OnGiveItem:
+	.@flag$ = .@atcmd_parameters$[2];
+	.@area = getbattleflag("area_size");
+	$@itemid_var = atoi( .@atcmd_parameters$[0] );
+	$@amt_var = atoi( .@atcmd_parameters$[1] );
+	if ( getitemname($@itemid_var) == "null" ) { 
+		message strcharinfo(0), "@giveitem failed";
+		dispbottom "Invalid item id.", 0xff0000;
+	}
+	getmapxy(@map$, @x, @y, BL_PC);
+	if ( .@atcmd_numparameters < 3 ) {
+		message strcharinfo(0), "@giveitem failed";
+		dispbottom "Lacking parameter. Requires 3 parameters.", 0xff0000;
+		dispbottom "@giveitem <itemid> <amount> < area | map | all>", 0xff0000;
+		end;
+	}
+	if ( .@flag$ == "area" ) {
+		addrid(4,0,@x+.@area, @y+.@area, @x-.@area, @y-.@area);
+		F_GiveItem;
+	} else if ( .@flag$ == "map" ) {
+		addrid(1);
+		F_GiveItem;
+	} else if ( .@flag$ == "all" ) {
+		addrid(0);
+		F_GiveItem;
+	} else {
+		message strcharinfo(0), "@giveitem failed";
+		dispbottom "'"+ .@flag$ +"' parameter is invalid or non-existent.", 0xff0000;
+	}
+	end;
+	
+	function	F_GiveItem	{
+		if ( checkvending() && .novend || checkchatting() && .nopub || checkidle() > .idle_time ) end;
+		getitem $@itemid_var, $@amt_var;
+		return;
+	}
+}

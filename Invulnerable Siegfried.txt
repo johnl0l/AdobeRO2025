@@ -1,0 +1,26 @@
+prontera,156,182,4	script	Invulnerable Siegfried	647,3,3,{
+//-	script	Invulnerable Siegfried	-1,{
+	end;
+	
+OnTouch:
+	if( .sbragi < gettimetick(2) ){			// triggered within area 7x7, start bragi if not on delay
+		unitskilluseid getnpcid(0),313,5;	// Invulnerable Siegfried ID#321 level 5 / Elemental 80%, Ailments 50%
+		//unitskilluseid getnpcid(0),321,10;	// A Poem of Bragi ID#321 level 10
+		//unitskilluseid getnpcid(0),320,10;	// Assassin Cross of Sunset ID#320 level 10
+		//unitskilluseid getnpcid(0),322,10;	// The Apple of Idun ID#322 level 10
+		//unitskilluseid getnpcid(0),319,10;	// A Whistle ID#319 level 10
+		set .sbragi,gettimetick(2) + 0;	// delay 3 minute for npc to cast song
+	}
+	end;
+	
+OnInit:
+	//setunitdata getnpcid(0),UNPC_INT,170;	// set NPC INT 150
+	//setunitdata getnpcid(0),UNPC_DEX,170;	// set NPC DEX 150
+	//setunitdata getnpcid(0),UNPC_AGI,170;	// set NPC AGI 150
+	setunitdata(getnpcid(0),UNPC_PLUSALLSTAT,150);
+	end;
+}
+
+//guild_vs3,50,81,3	duplicate(Invulnerable Siegfried)	Invulnerable Siegfried#guildvs3	647,3,3
+//guild_vs1,50,91,3	duplicate(Invulnerable Siegfried)	Invulnerable Siegfried#guildvs1	647,3,3
+//guild_vs4,50,91,3	duplicate(Invulnerable Siegfried)	Invulnerable Siegfried#guildvs4	647,3,3

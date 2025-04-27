@@ -1,0 +1,246 @@
+//===== rAthena Script =======================================
+//= In-game Item Descriptions Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+/*
+-	script	itemdescs	-1,{
+end;
+
+OnInit:
+	bindatcmd "ii2",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "itemdesc",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand: if ( getgmlevel() >= 99 || getgroupid() >= 1 ){
+  mes " ";
+  mes "[ ^3355FFItem Description Search^000000 ]";
+  .@item = atoi(.@atcmd_parameters$[0]);
+  mes "<ITEM>^FF00FF"+getitemname(.@item)+"<INFO>"+.@item+"</INFO></ITEM>^000000";
+  mes "Click on the name of the item above.";
+  end;
+	}	else	  {
+	dispbottom "Become a VIP and enjoy exclusive benefits.";
+	end;
+	}
+}
+*/
+/*
+-	script	itemdescs	-1,{
+/*
+function	F_MesItemInfo	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+	if (.@itemname$ == "null")
+		.@itemname$ = "Unknown Item";
+	if (PACKETVER >= 20150729)
+		return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+	else if (PACKETVER >= 20130130)
+		return sprintf("<ITEMLINK>%s<INFO>%d</INFO></ITEMLINK>", .@itemname$, .@item);
+	else
+		return .@itemname$;
+}
+*/
+/*
+function	script	F_MesItemInfo	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+	if (.@itemname$ != "null") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot)
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+	}
+	else
+		.@itemname$ = "Unknown Item";
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+OnInit:
+	bindatcmd "ii2",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "itemdesc",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand:
+	mes " ";
+	mes "[ ^3355FFItem Description Search^000000 ]";
+	.@item = atoi(.@atcmd_parameters$[0]);
+	mes F_MesItemInfo(.@item);
+	mes "Click on the name of the item above.";
+	end;
+}
+*/
+
+/*
+//===== rAthena Script =======================================
+//= In-game Item Descriptions Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+-	script	itemdescs	-1,{
+
+function	script	F_MesItemInfo	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+	
+	if (.@itemname$ != "null") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot > 0) {
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+		}
+	} else {
+		.@itemname$ = "Unknown Item";
+	}
+	
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+OnInit:
+	bindatcmd "ii2",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "itemdesc",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand:
+	if (getgmlevel() >= 99 || getgroupid() >= 1) {
+		mes " ";
+		mes "[ ^3355FFItem Description Search^000000 ]";
+		
+		if (.@atcmd_parameters$ == "") {
+			mes "Usage: @ii2 <item ID>";
+			end;
+		}
+		
+		.@item = atoi(.@atcmd_parameters$[0]);
+		
+		// Verifica se o item existe
+		if (getitemname(.@item) == "null") {
+			mes "^FF0000Invalid item ID.^000000";
+			end;
+		}
+
+		mes F_MesItemInfo(.@item);
+		mes "Click on the name of the item above.";
+	} else {
+		dispbottom "Become a VIP and enjoy exclusive benefits.";
+	}
+	end;
+}
+*/
+
+
+//===== rAthena Script =======================================
+//= In-game Item Descriptions Script
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+-	script	itemdescs	-1,{
+
+function	F_MesItemInfo	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+	
+	if (.@itemname$ != "null") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot > 0) {
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+		}
+	} else {
+		.@itemname$ = "Unknown Item";
+	}
+	
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+OnInit:
+	bindatcmd "ii2",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "itemdesc",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand:
+	if (getgmlevel() >= 99 || getgroupid() >= 1) {
+		mes " ";
+		mes "^000000[ ^3355FFItem Description Search^000000 ]^FF00FF";
+		
+		if (.@atcmd_parameters$ == "") {
+			mes "^000000Usage: @ii2 <^FF0000item ID>^000000";
+			end;
+		}
+		
+		.@item = atoi(.@atcmd_parameters$[0]);
+		
+		// Verifica se o item existe
+		if (getitemname(.@item) == "null") {
+			mes "^FF0000Invalid item ID.^000000";
+			end;
+		}
+
+		mes F_MesItemInfo(.@item);
+		mes "^000000Click on the name of the item above.";
+	} else {
+		dispbottom "Become a VIP and enjoy exclusive benefits.";
+	}
+	end;
+}
+
+
+
+/*
+//===== rAthena Script =======================================
+//= In-game Item Descriptions Script (Colored Name)
+//===== By: ==================================================
+//= Nova http://www.novaragnarok.com
+//============================================================
+
+-	script	itemdescs	-1,{
+
+function F_MesItemInfo {
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+	
+	if (.@itemname$ != "null") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot > 0) {
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+		}
+	} else {
+		.@itemname$ = "Unknown Item";
+	}
+
+	// Retorna apenas o item linkado
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+OnInit:
+	bindatcmd "ii2",strnpcinfo(3)+"::OnAtcommand";
+	bindatcmd "itemdesc",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand:
+	if (getgmlevel() >= 99 || getgroupid() >= 1) {
+		mes " ";
+		mes "[ ^3355FFItem Description Search^000000 ]";
+		
+		if (.@atcmd_parameters$ == "") {
+			mes "Usage: @ii2 <item ID>";
+			end;
+		}
+		
+		.@item = atoi(.@atcmd_parameters$[0]);
+		
+		// Verifica se o item existe
+		if (getitemname(.@item) == "null") {
+			mes "^FF0000Invalid item ID.^000000";
+			end;
+		}
+
+		// Exibe o nome do item com cor antes do link
+		mes "Item Name: ^FF00FF" + getitemname(.@item) + "^000000";
+		mes F_MesItemInfo(.@item);
+		mes "Click on the name of the item above.";
+	} else {
+		dispbottom "Become a VIP and enjoy exclusive benefits.";
+	}
+	end;
+}
+*/

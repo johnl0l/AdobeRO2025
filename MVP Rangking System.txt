@@ -1,0 +1,426 @@
+// MVP Rank by Rokimoki
+// Contact me: alexmanalopez@gmail.com
+// ------
+// Version 1.0 final and public release
+// ------
+prontera,143,171,5	script	MvP Rank	755,{
+set .gmlevelmenu, 90; // Set the GM Level to use the Reset GM option
+set .nombre$, "[MvP Ranker]";
+ 
+mes .nombre$;
+mes "I'm the MvP Ranker, what do you want to know?";
+next;
+switch (select("Top5:My Rank:GM Reset:Nothing")) {
+    case 1:
+        if (strcharinfo(0) == $nomb1$) {
+            mes .nombre$;
+            mes "Top5 MvP Killers.";
+            next;
+            callfunc "Top5";
+            next;
+            switch (select("Top 1 Menu:Exit")) {
+                case 1:
+                    mes .nombre$;
+                    mes "I know you are intelligent, select an option...";
+                    next;
+                    switch (select("Announce me:Announce rank:Nothing")) {
+                        case 1:
+                            mes .nombre$;
+                            mes "For only 100,000 z I can broadcast that you are Top 1 mvp killer.";
+                            next;
+                            switch (select("Announce me:Exit")) {
+                                case 1:
+                                    mes .nombre$;
+                                    mes "Here we go !";
+                                    next;
+                                    if (Zeny < 100000) {
+                                        mes .nombre$;
+                                        mes "You have not got enough zenys, it is 100,000 z";
+                                        close;
+                                    } else {
+                                        mes .nombre$;
+                                        mes "Here you are !";
+                                        announce "The MvP Killer is: " +$nomb1$ +" with: " +$top1 +" MvP victims.",bc_yellow;
+                                        set Zeny, Zeny - 100000;
+                                        close;
+                                    } // End if
+                                    
+                                case 2:
+                                    mes .nombre$;
+                                    mes "Ok, bye...";
+                                    close;
+                            } // End switch
+                        case 2:
+                            mes .nombre$;
+                            mes "For 40,000 zenys I can broadcast the whole MvP.";
+                            next;
+                            switch (select("Announce me:Exit")) {
+                                case 1:
+                                    mes .nombre$;
+                                    mes "Here we go !";
+                                    next;
+                                    if (Zeny < 40000) {
+                                        mes .nombre$;
+                                        mes "You have not got enough zenys, it is 40,000 z";
+                                        close;
+                                    } else {
+                                        mes .nombre$;
+                                        mes "Here you are !";
+                                        announce "MvP Rank -> Top 1: " +$nomb1$ +"Top 2: " +$nomb2$ +"Top 3: " +$nomb3$ +"Top 4: " +$nomb4$ +"Top 5: " +$nomb5$ +" .",bc_yellow;
+                                        set Zeny, Zeny - 40000;
+                                        close;
+                                    } // End if
+                                    
+                                case 2:
+                                    mes .nombre$;
+                                    mes "Ok, bye...";
+                                    close;
+                            } // End switch
+                        case 3:
+                            mes .nombre$;
+                            mes "Ok so you are not smart than I thought, come back if you still are top 1.";
+                            close;
+                    } // End switch
+                case 2:
+                    mes .nombre$;
+                    mes "Ok, come back if you still are top 1.";
+                    close;
+            } // End switch
+        } else {
+            mes .nombre$;
+            mes "Top5 MvP Killers.";
+            next;
+            callfunc "Top5";
+            close;
+        } // End if
+        
+    case 2:
+        mes .nombre$;
+        mes "Select an option of your personal mvp rank...";
+        next;
+        switch (select("Total MvPs:Wich MvPs I killed:Reset rank:Nothing")) {
+            case 1:
+                mes .nombre$;
+                mes "Is counting mini-boss too...";
+                mes "You have killed: " +MVPTotal +" MvPs.";
+                close;
+            
+            case 2:
+                mes .nombre$;
+                mes "I will show you the mvp list, I think is a little bit long...";
+                next;
+                mes "Amon Ra: " +LAmonRa +" kills.";
+                mes "Angeling: " +LAngeling +" kills.";
+                mes "Archangeling: " +LArchangeling +" kills.";
+                mes "Assassin Cross Eremes: " +LAssassinCrossEremes +" kills.";
+                mes "Eremes Especial: " +LB_EREMES +" kills.";
+                next;
+                mes "Atroce: " +LAtroce +" kills.";
+                mes "Bascojin: " +LBascojin +" kills.";
+                mes "Baphomet Evento: " +LEventBapho +" kills.";
+                mes "Baphomet: " +LBaphomet +" kills.";
+                mes "Beelzebub: " +LBeelzebub +" kills.";
+                next;
+                mes "Cat'O Nine Tail: " +LCatONine +" kills.";
+                mes "Dark Ilusion: " +LDarkIllusion +" kills.";
+                mes "Dark Lord: " +LDarkLord +" kills.";
+                mes "Detale: " +LDetale +" kills.";
+                mes "Deviling: " +LDeviling +" kills.";
+                next;
+                mes "Doppelganger: " +LDoppelganger +" kills.";
+                mes "Drácula: " +LDracula +" kills.";
+                mes "Dragon Fly: " +LDragonFly +" kills.";
+                mes "Drake: " +LDrake +" kills.";
+                mes "Eddga: " +LEdgga +" kills.";
+                next;
+                mes "Entweihen: " +LEntweihen +" kills.";
+                mes "Evil Snake Lord: " +LSnakeLord +" kills.";
+                mes "Fallen Bishop: " +LBishop +" kills.";
+                mes "Garm: " +LGarm +" kills.";
+                mes "Gemini-S58: " +LGemini +" kills.";
+                next;
+                mes "Ghostring: " +LGhostring +" kills.";
+                mes "Gloom Under Night: " +LGloom +" kills.";
+                mes "Eclipse: " +LEclipse +" kills.";
+                mes "Golden Bug: " +LGoldenBug +" kills.";
+                mes "Magaleta: " +LMagaleta +" kills.";
+                next;
+                mes "Hellion Revenant: " +LHellion +" kills.";
+                mes "High Priest Magaleta: " +LHPMagaleta +" kills.";
+                mes "High Wizard Katrinn: " +LHWKatrinn +" kills.";
+                mes "High Wizard Katryne: " +LHWKatryn +" kills.";
+                mes "Hydrolancer: " +LHydrolancer +" kills.";
+                next;
+                mes "Ifrit: " +LIfrit +" kills.";
+                mes "Incantation Samurai: " +LIncantationSamurai +" kills.";
+                mes "Kiel: " +LKiel +" kills.";
+                mes "Stormy Knight: " +LStormyKnight +" kills.";
+                mes "Ktullanux: " +LKtullanux +" kills.";
+                next;
+                mes "Lady Tanee: " +LLadyTanee +" kills.";
+                mes "Seyren Especial: " +LGSeyren +" kills.";
+                mes "Lord Knight Seyren: " +LKSeyren +" kills.";
+                mes "Lord Death: " +LLordDeath +" kills.";
+                mes "Mastering: " +LMastering +" kills.";
+                next;
+                mes "Maya: " +LMaya +" kills.";
+                mes "Maya Purple: " +LMayaPurple +" kills.";
+                mes "Mistress: " +LMistress +" kills.";
+                mes "Moonlight Flower: " +LMoonFlower +" kills.";
+                mes "Mutant Dragon: " +LMutantDragon +" kills.";
+                next;
+                mes "Nagh Seiger: " +LNagh +" kills.";
+                mes "Orc Hero: " +LOrcHero +" kills.";
+                mes "Orc Lord: " +LOrcLord +" kills.";
+                mes "Osiris: " +LOsiris +" kills.";
+                mes "Pharaoh: " +LPharaoh +" kills.";
+                next;
+                mes "Phreeoni: " +LPhreeoni +" kills.";
+                mes "Pori Pori: " +LPoriPori +" kills.";
+                mes "RSX: " +LRSX +" kills.";
+                mes "Sniper Shecil: " +LSniper1 +" kills.";
+                mes "Sniper Cecil: " +LSniper2 +" kills.";
+                next;
+                mes "Tao Gunka: " +LTaoGunka +" kills.";
+                mes "Thanatos: " +LThanatos +" kills.";
+                mes "Thanatos Despero: " +LThanatos2 +" kills.";
+                mes "Thanatos Dolor: " +LThanatos3 +" kills.";
+                mes "Thanatos Maero: " +LThanatos4 +" kills.";
+                next;
+                mes "Thanatos Odium: " +LThanatos5 +" kills.";
+                mes "Tirfing: " +LTirfing +" kills.";
+                mes "Toad: " +LToad +" kills.";
+                mes "Turtle General: " +LTurtleGeneral +" kills.";
+                mes "Vagabond Wolf: " +LVagabondWolf +" kills.";
+                next;
+                mes "Valkyrie: " +LValkyrie +" kills.";
+                mes "Valkyrie Rangdris: " +LValkyrieRan +" kills.";
+                mes "Vesper: " +LVesper +" kills.";
+                mes "Vocal: " +LVocal +" kills.";
+                mes "Whitesmith Harword: " +LWhites1 +" kills.";
+                next;
+                mes "Whitesmith Howard: " +LWhites2 +" kills.";
+                mes "Satan Morroc: " +LSMorroc +" kills.";
+                mes "Egnigem Cenia: " +LEgnigem +" kills.";
+                mes "Zmey Gorynych: " +LZmey +" kills.";
+                next;
+                mes "Paladin Randel: " +LRandel +" kills.";
+                mes "Creator Flamel: " +LFlamel +" kills.";
+                mes "Professor Celia: " +LCelia +" kills.";
+                mes "Champion Chen: " +LChen +" kills.";
+                next;
+                mes "Stalker Gertie: " + LGertie +" kills.";
+                mes "Clown Alphoccio: " + LAlphoccio +" kills.";
+                mes "Gypsy Trentini: " + LTrentini +" kills.";
+                mes "Leak: " + LLeak +" kills.";
+                next;
+                mes "Gold Queen Scaraba: " + LGQScaraba +" kills.";
+                mes "Boitata: " + LBoitata +" kills.";
+                mes "Kraken: " + LKraken +" kills.";
+                mes "White Lady: " + LWLady +" kills.";
+                next;
+                mes .nombre$;
+                mes "Well, I hope you like your personal rank !";
+                close;
+            
+            case 3:
+                mes .nombre$;
+                mes "¿Wich rank do you want to reset?";
+                next;
+                switch (select("Total Rank:List Rank:Any Rank")) {
+                    case 1:
+                        mes .nombre$;
+                        mes "Are you sure that you want to reset total mvp rank?";
+                        next;
+                        switch (select("Yes:No")) {
+                            case 1:
+                                mes .nombre$;
+                                mes "Ok, It's reseted.";
+                                set MVPTotal, 0;
+                                close;
+                                
+                            case 2:
+                                mes .nombre$;
+                                mes "Ok, come back when you're sure.";
+                                close;
+                        } // End switch
+                    
+                    case 2:
+                        mes .nombre$;
+                        mes "Are you sure that you want to reset your list rank?";
+                        next;
+                        switch (select("Tes:No")) {
+                            case 1:
+                                set LAmonRa, 0;
+                                set LAngeling, 0;
+                                set LArchangeling, 0;
+                                set LAssassinCrossEremes, 0;
+                                set LB_EREMES, 0;
+                                set LAtroce, 0;
+                                set LBascojin, 0;
+                                set LEventBapho, 0;
+                                set LBaphomet, 0;
+                                set LBeelzebub, 0;
+                                set LCatONine, 0;
+                                set LDarkIllusion, 0;
+                                set LDarkLord, 0;
+                                set LDetale, 0;
+                                set LDeviling, 0;
+                                set LDoppelganger, 0;
+                                set LDracula, 0;
+                                set LDragonFly, 0;
+                                set LDrake, 0;
+                                set LEddga, 0;
+                                set LEntweihen, 0;
+                                set LSnakeLord, 0;
+                                set LBishop, 0;
+                                set LGarm, 0;
+                                set LGemini, 0;
+                                set LGhostring, 0;
+                                set LGloom, 0;
+                                set LEclipse, 0;
+                                set LGoldenBug, 0;
+                                set LMagaleta, 0;
+                                set LHellion, 0;
+                                set LHPMagaleta, 0;
+                                set LHWKatrinn, 0;
+                                set LHWKatryn, 0;
+                                set LHydrolancer, 0;
+                                set LIfrit, 0;
+                                set LIncantationSamurai, 0;
+                                set LKiel, 0;
+                                set LStormyKnight, 0;
+                                set LKtullanux, 0;
+                                set LLadyTanee, 0;
+                                set LGSeyren, 0;
+                                set LKSeyren, 0;
+                                set LLordDeath, 0;
+                                set LMastering, 0;
+                                set LMaya, 0;
+                                set LMayaPurple, 0;
+                                set LMistress, 0;
+                                set LMoonFlower, 0;
+                                set LMutantDragon, 0;
+                                set LNagh, 0;
+                                set LOrcHero, 0;
+                                set LOrcLord, 0;
+                                set LOsiris, 0;
+                                set LPharaoh, 0;
+                                set LPhreeoni, 0;
+                                set LPoriPori, 0;
+                                set LRSX, 0;
+                                set LSniper1, 0;
+                                set LSniper2, 0;
+                                set LTaoGunka, 0;
+                                set LThanatos, 0;
+                                set LThanatos2, 0;
+                                set LThanatos3, 0;
+                                set LThanatos4, 0;
+                                set LThanatos5, 0;
+                                set LTirfing, 0;
+                                set LToad, 0;
+                                set LTurtleGeneral, 0;
+                                set LVagabondWolf, 0;
+                                set LValkyrie, 0;
+                                set LValkyrieRan, 0;
+                                set LVesper, 0;
+                                set LVocal, 0;
+                                set LWhites1, 0;
+                                set LWhites2, 0;
+                                set LSMorroc, 0;
+                                set LEgnigem, 0;
+                                set LZmey, 0;
+                                set LRandel, 0;
+                                set LFlamel, 0;
+                                set LCelia, 0;
+                                set LChen, 0;
+                                set LGertie, 0;
+                                set LAlphoccio, 0;
+                                set LTrentini, 0;
+                                set LLeak, 0;
+                                set LGQScaraba, 0;
+                                set LBoitata, 0;
+                                set LKraken, 0;
+                                set LWLady, 0;
+                                mes .nombre$;
+                                mes "Ok, List reseted.";
+                                close;
+                                
+                            case 2:
+                                mes .nombre$;
+                                mes "Ok, come back when you are sure.";
+                                close;
+                        }//End switch
+                        
+                    case 3:
+                        mes .nombre$;
+                        mes "Ok, come back when you are sure.";
+                        close;
+                } // End switch
+            case 4:
+                mes .nombre$;
+                mes "Ok, come back any time, I'll be here !";
+                close;
+        } // End switch
+        
+    case 3:
+        if (getgmlevel() >= .gmlevelmenu) {
+            mes .nombre$;
+            mes "Ok so you want to reset the MVP Rank...";
+            next;
+            switch (select("Yes:No")) {
+                case 1:
+                    mes .nombre$;
+                    mes "Well That's ok...";
+                    next;
+                    set $nomb1$, "";
+                    set $top1, 0;
+                    set $nomb2$, "";
+                    set $top2, 0;
+                    set $nomb3$, "";
+                    set $top3, 0;
+                    set $nomb4$, "";
+                    set $top4, 0;
+                    set $nomb5$, "";
+                    set $top5, 0;
+                    set $Actreset, $Actreset+1;
+                    mes .nombre$;
+                    mes "Rank reseted... but the top 5 and other have to relog to reset own rank and rest !";
+                    break;
+                    
+                case 2:
+                    mes .nombre$;
+                    mes "Ok! come back anytime";
+                    break;
+            } // End switch
+        } else {
+            mes .nombre$;
+            mes "This is only for gm level " +.gmlevelmenu +" or more.";
+        } // End if
+        close;
+        
+    case 4:
+        mes .nombre$;
+        mes "Ok, come back any time, I'll be here !";
+        close;
+} // End switch
+ 
+OnPCLoginEvent: // Refresh when Log in
+OnPCLogoutEvent: // Refresh when Log out
+OnPCLoadMapEvent: // Refresh when load any map
+if (Actreset != $Actreset) { //We check if the "personal" reset should be done or not
+        set MVPTotal, 0;
+        set Actreset, $Actreset;} // End if
+end;
+} // End script
+ 
+function	script	Top5	{  
+    mes "[- Top 5 MvP Killers -]";
+    mes "Top 1: " +$nomb1$ +" with " +$top1 +" kills.";
+    mes "Top 2: " +$nomb2$ +" with " +$top2 +" kills.";
+    mes "Top 3: " +$nomb3$ +" with " +$top3 +" kills.";
+    mes "Top 4: " +$nomb4$ +" with " +$top4 +" kills.";
+    mes "Top 5: " +$nomb5$ +" with " +$top5 +" kills.";
+    mes "Your personal rank is: " +MVPTotal +" kills.";
+    return;
+} // End function

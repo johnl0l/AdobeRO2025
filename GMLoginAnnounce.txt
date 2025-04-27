@@ -1,0 +1,74 @@
+/*
+-	script	gmloginannounce	-1,{
+ 
+OnPcLoginEvent:
+ 
+if(getgmlevel() >=99) {
+announce "Administrator "+strcharinfo(0)+" has signed in.",bc_all,0x00ff66;
+}
+if(getgmlevel() < 99 && getgmlevel() >= 60){
+announce "GM "+strcharinfo(0)+" has signed in.",bc_all,0x00FF66;
+}
+end;
+}
+*/
+/*
+//Created by Aeromas
+//Ver 1.0
+//Compatible with:
+//eAthena
+//GM Login && Admin login announcement, when new player joins, they're announced PLAYER has joined your RO, and then they get 2 level ups, you can modify it with getitem, or set Zeny, X;
+-	script	ann_login	-1,{
+
+OnPCLogoutEvent:
+	callsub L_ann, 0xff0000, "out";
+OnPCLoginEvent:
+	callsub L_ann, 0x00ff00, "in";
+L_ann:
+	if( getgmlevel() >= 99 )
+		announce "Administrator "+ strcharinfo(0) +" log "+ getarg(1) +".",bc_all, getarg(0);
+	else if( getgmlevel() < 99 && getgmlevel() >= 10 )
+		announce "GM "+ strcharinfo(0) +" log "+ getarg(1) +".",bc_all, getarg(0);
+
+	else if( #New_Player != 1 && BaseLevel == 1 && JobLevel == 1 ) {
+		announce "Please welcome "+ strcharinfo(0) +"  to our server!",bc_all,0x00ff66;
+		announce " And for joining our server, we're going to level you up 2 times!",bc_self,0x00ff66;
+		atcommand "!baselevel 2";
+		set #New_Player, 1;
+	}
+	end;
+}
+*/
+
+-	script	ann_login	-1,{
+
+OnPCLogoutEvent:
+	callsub L_ann, 0xFF0000, "out";
+OnPCLoginEvent:
+	if( getgmlevel() > 10 ) {
+		while ( .@i < .size_gm && getcharid(3) != .gm_acc[.@i] ) .@i++;
+		if( .@i == .size_gm ) {
+			.gm_acc[.@i] = getcharid(3);
+			.size_gm++;
+		}
+	}
+	callsub L_ann, 0x00FF00, "in";
+L_ann:
+	if( getgmlevel() >= 99 )
+		announce "Administrator "+ strcharinfo(0) +" log "+ getarg(1) +".",bc_all, getarg(0);
+	else if( getgmlevel() < 99 && getgmlevel() >= 10 )
+		announce "GM "+ strcharinfo(0) +" log "+ getarg(1) +".",bc_all, getarg(0);
+
+	else if(!#firstCharJLv && BaseLevel == 1 && JobLevel == 1){
+		announce "Please welcome "+ strcharinfo(0) +"  to our server!",bc_all,0x00FF66;
+		announce "And for joining our server, we're going to Job Level you up 10 times!",bc_self,0x00FF66;
+		JobLevel = 10;
+		#firstCharJLv = 1;
+	}
+	else {
+		for( .@i = 0; .@i < .size_gm; .@i++ )
+			if( isloggedin( .gm_acc[.@i] ) )
+				message rid2name( .gm_acc[.@i] ), "Player "+ strcharinfo(0) +" log "+ getarg(1) +".";
+	}
+	end;
+}

@@ -1,0 +1,36 @@
+// File: npc/custom/functions/gain_zeny_safe.txt
+
+function	script	gain_zeny_safe	{
+	// getarg(0) = amount of zeny to give
+	if ((Zeny + getarg(0)) > 2147483647) {
+		message strcharinfo(0), "You can't hold more Zeny.";
+		return 0;
+	}
+	set Zeny, Zeny + getarg(0);
+	return 1;
+}
+
+
+-	script	FAKE_GAIN_ZENY	-1,{
+
+OnZenyFromBag:
+	// Esses valores serão lidos diretamente no script do item
+	.@value = getvariableofnpc(.value, "FAKE_GAIN_ZENY");
+	.@item_id = getvariableofnpc(.item_id, "FAKE_GAIN_ZENY");
+
+	if ((Zeny + .@value) > 2147483647) {
+		message strcharinfo(0), "You can't carry that much Zeny.";
+		end;
+	}
+
+	Zeny += .@value;
+	delitem .@item_id, 1;
+	message strcharinfo(0), "You received "+callfunc("int__", .@value)+" Zeny.";
+	end;
+
+OnInit:
+	// apenas para evitar warnings na inicialização
+	.value = 0;
+	.item_id = 0;
+	end;
+}

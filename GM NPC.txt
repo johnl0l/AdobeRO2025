@@ -1,0 +1,561 @@
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//(       (c)2006         Banned Presents                     )
+//(    __________                                 .___        )
+//(    ______   _____    ____   ____   ____   __| _/        )
+//(     |    |  _/__    /     /    _/ __  / __ |         )
+//(     |    |    / __ |   |     |    ___// /_/ |         )
+//(     |______  /(____  /___|  /___|  /___  >____ |         )
+//(            /      /     /     /     /     /         )
+//(                                                           )
+//(             -- [S] [c] [r] [i] [p] [t] [s] --             )
+//(  _   _   _   _   _   _   _     _   _   _   _   _   _   _  )
+//( /  /  /  /  /  /  /    /  /  /  /  /  /  /  )
+//(( e | A | t | h | e | n | a ) ( S | c | r | i | p | t | s ))
+//( _/ _/ _/ _/ _/ _/ _/   _/ _/ _/ _/ _/ _/ _/ )
+//(                                                           )
+//(   Advanced NPCs (c) 2005-2006    The BannedRO Project     )
+//(=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=)
+//===== eAthena Script =======================================
+//= GM NPC
+//===== By ===================================================
+//= [Banned]
+//===== Version ==============================================
+//= 3.5
+//===== Compatible With ======================================
+//= eAthena SVN and Freya SVN
+//===== Description ==========================================
+//= Give Some NPC Options.
+//===== Comments =============================================
+// Totalmente refeito por Vangorime
+//============================================================
+lhz_in01.gat,277,260,4	script	Servo	69,{
+set @gm,getgmlevel();
+if(@gm>60) goto vale1;
+	mes "[Servo]";
+	mes "Apenas GM's Level 80 podem usar este NPC";
+	Close;
+
+vale1:
+mes "[Servo]";
+if(sex == 1) mes "Olá Senhor "+strcharinfo(0)+" em que posso ser útil?";
+if(sex == 0) mes "Olá Senhora "+strcharinfo(0)+" em que posso ser útil?";
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+next;
+menu "Comandos em Players",L_Player,"Comandos GM variados",L_CGMV,"Comandos GM para mim",L_CGMS;
+
+L_CGMS:
+next;
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+set @menu,select(
+"Forjar equip",	//3
+"Apagar itens",	//4
+"Todos stats Maximo/Minimo",	//5
+"Mudar 1 Stats",	//6
+"Todas as skill possiveis",	//7
+"Dar uma skill de Quest",	//8
+"Retirar uma skill de Quest",	//9
+"Mudar Level de base",	//10
+"Mudar Job Level",	//11
+"Mudar de Sexo",	//12
+"Mudar de Class",	//13
+"Zeny's",	//14
+"Mudar velocidade",	//15
+"Mudar aparencia",	//16
+"Aparencia normal",	//17
+"Voltar ao menu principal",	//18
+"Sair");	//19
+switch(@menu)
+{
+	case 1:
+		mes "[Servo]";
+		mes "inpute:";
+		mes "<nome do equip ou ID>";
+		input @forja1$;
+		set @forja1$,@forja1$ + " ";
+		next;
+		mes "<elemento> 0 = Nenhum || 1 = Gelo || 2 = Terra || 3 = Fogo || 4 = Vento";
+		input @forja2$;
+		set @forja2$,@forja2$ + " ";
+		next;
+		mes "<# de 'força'> 1 = Forte || 2 = Muito Forte || 3 = Fortíssima";
+		input @forja3$;
+		set @forja$,@forja1$ + @forja2$ + @forja1$;
+		atcommand strcharinfo(0)+":@produce "+@forja$;
+		goto L_CGMS;
+	case 2:
+		mes "[Servo]";
+		mes "Tem certeza que quer apagar todos os itens que estam com você?";
+		menu "Sim",-,"Não",vale1;
+		atcommand strcharinfo(0)+":@itemreset";
+		goto L_CGMS;
+	case 3:
+		mes "[Servo]";
+		mes "Quer seus Stats no Máximo ou no Mínimo?";
+		next;
+		menu "Máximo",L_statsmax,"Mínimo",L_statsmin;
+			L_statsmax:
+				atcommand strcharinfo(0)+":@allstats";
+				mes "[Servo]";
+				mes "Seus Stats estam todos no Máximo possível agora";
+				next;
+				goto L_CGMS;
+			L_statsmin:
+				atcommand strcharinfo(0)+":@allstats -999";
+				mes "[Servo]";
+				mes "Seus Stats estam todos no Mínimo possivel agora";
+				next;
+				goto L_CGMS;
+	case 4:
+	stat:
+		mes "[Servo]";
+		mes "Escolha qual Stats você quer";
+		next;
+		menu "Força",str,
+			 "Agilidade",agi,
+			 "Vitalidade",vit,
+			 "Inteligencia",int,
+			 "Destreza",dex,
+			 "Sorte",luk,
+			 "Voltar ao Menu",L_CGMS;
+
+			str:
+				mes "[Servo]";
+				mes "Me diga quato quer de Força?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@str "+@stat$;
+				goto stat;
+			agi:
+				mes "[Servo]";
+				mes "Me diga quato quer de Agilidade?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@agi "+@stat$;
+				goto stat;
+			vit:
+				mes "[Servo]";
+				mes "Me diga quato quer de Vitalidade?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@vit "+@stat$;
+				goto stat;
+			int:
+				mes "[Servo]";
+				mes "Me diga quato quer de Inteligência?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@int "+@stat$;
+				goto stat;
+			dex:
+				mes "[Servo]";
+				mes "Me diga quato quer de Destreza?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@dex "+@stat$;
+				goto stat;
+			luk:
+				mes "[Servo]";
+				mes "Me diga quato quer de Sorte?";
+				mes "caso quera tira ponha um sinal de menos [-] antes do número mas não ponha espaço.";
+				input @stat$;
+				atcommand strcharinfo(0)+":@luk "+@stat$;
+				goto stat;
+
+	case 5:
+		atcommand strcharinfo(0)+":@allskill";
+		mes "[Servo]";
+		mes "Agora você tem todas as skill possíveis";
+		goto L_CGMS;
+	case 6:
+		mes "[Servo]";
+		mes "Me diga a ID da skill de quest que você quer";
+		input @skquest;
+		atcommand strcharinfo(0)+":@questskill "+@skquest;
+		goto L_CGMS;
+	case 7:
+		mes "[Servo]";
+		mes "Me diga a ID da skill de quest que você quer que eu retire";
+		input @skquest;
+		atcommand strcharinfo(0)+":@lostskill "+@skquest;
+		goto L_CGMS;
+	case 8:
+		mes "[Servo]";
+		mes "Me diga para qual level você quer ir.";
+		mes "Caso queira diminuir seu level inpute antes do numero o sinal de menos [-]";
+		input @lvl;
+		atcommand strcharinfo(0)+":@lvup "+@lvl;
+		goto L_CGMS;
+	case 9:
+		mes "[Servo]";
+		mes "Me diga para qual Job Level você quer ir.";
+		mes "Caso queira diminuir seu Job Level inpute antes do numero o sinal de menos [-]";
+		input @lvl;
+		atcommand strcharinfo(0)+":@joblvup "+@lvl;
+		goto L_CGMS;
+	case 10:
+		charcommand strcharinfo(0)+":#setsex "+strcharinfo(0);
+		mes "[Servo]";
+		mes "Espere";
+		mes "Você será desconectado, quando voltar tera seu sexo mudado";
+		close;
+	case 11:
+		mes "[Servo]";
+		mes "Insira o nome exatamente correto ou a ID da classe desejada";
+		input @changejob$;
+		atcommand strcharinfo(0)+":@job "+@changejob$;
+		goto L_CGMS;
+	case 12:
+		mes "[Servo]";
+		mes "Insira o valor desejado";
+		input @zenys$;
+		atcommand strcharinfo(0)+":zeny "+@zenys$;
+		goto L_CGMS;
+	case 13:
+		mes "[Servo]";
+		mes "Insira o numero desejada para sua velocidade de 1 até 1000";
+		mes "Padrão é 150";
+		mes "Quanto menos o valor mais rápido você andara";
+		input @speed;
+		atcommand strcharinfo(0)+":@speed "+@speed;
+	case 14:
+	L_disguise:
+		mes "[Servo]";
+		mes "inpute a ID ou nome do monstro eu NPC que deseja se transformar";
+		input @disguise$;
+		atcommand strcharinfo(0)+":@disguise "+@disguise$;
+		mes "Esse mesmo ou quer outro?";
+		menu "Esse mesmo que quero",L_CGMS,"Não é esse que quero",L_disguise;
+	case 15:
+		atcommand strcharinfo(0)+":@undisguise";
+		close;
+	case 16:
+		goto vale1;
+	case 17:
+		close;
+		}
+L_CGMV:
+next;
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+set @menu,select(
+"Falar em Announce",	//1
+"Quem está on-line?",	//2
+"Noite",	//3
+"Dia",	//4
+"Reiniciar Itemdb",	//5
+"Reiniciar Mobdb",	//6
+"Reiniciar Skilldb",	//7
+"Reiniciar Todos os NPC's",	//8
+"Reiniciar Leveis de GM",	//9
+"Reiniciar Comando de GM",	//10
+"Reiniciar a pasta Battle",	//11
+"Reiniciar Status",	//12
+"Voltar ao menu principal",	//13
+"Sair");	//14
+switch(@menu)
+ {
+ 	case 1:
+ 		L_announce:
+ 		mes "[Servo]";
+ 		mes "Como prefere manda sua mensagem?";
+ 		menu "Amarelo com meu nome",L_b,
+ 			 "Amarelo sem meu nome",L_nb,
+ 			 "Azul com meu nome",L_bbcn,
+ 			 "Azul sem meu nome",L_bb,
+ 			 "Voltar ao menu",L_CGMV;
+ 			L_b:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@broadcast "+@msg$;
+ 				goto L_announce;
+			L_nb:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@kami "+@msg$;
+ 				goto L_announce;
+			L_bbcn:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@kamib "+strcharinfo(0)+" : "+@msg$;
+ 				goto L_announce;
+ 			L_bb:
+ 				mes "[Servo]";
+ 				mes "Insira a mensagem.";
+ 				input @msg$;
+ 				atcommand strcharinfo(0)+":@kamib "+@msg$;
+ 				goto L_announce;
+ 	case 2:
+ 		atcommand strcharinfo(0)+":@who";
+ 		close;
+ 	case 3:
+ 		atcommand strcharinfo(0)+":@night";
+ 		close;
+ 	case 4:
+ 		atcommand strcharinfo(0)+":@day";
+ 		close;
+ 	case 5:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar o Banco de Dados dos Itens?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloaditemdb";
+ 		close;
+ 	case 6:
+ 	 	if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 	 	mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar o Banco de Dados dos Monstros?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadmobdb";
+ 		close;
+ 	case 7:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar o Banco de Dados de Skill's?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadskilldb";
+ 		close;
+ 	case 8:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar todos os NPC's?";
+ 		mes "Isso pode fazer com que o server de uma caida";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadscript";
+ 		close;
+ 	case 9:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar todas as contas GM?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadgmdb";
+ 		close;
+ 	case 10:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar todas os comandos de GM?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadatcommand";
+ 		close;
+ 	case 11:
+ 		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+ 		mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar a pasta Battle?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadbattleconf";
+ 		close;
+	case 12:
+		if(@gm<@ADMlvl){
+ 		mes "[Servo]";
+ 		mes "Desculpe mas somente Administradores podem usar esse comando";
+ 		goto L_CGMV;}
+	 	mes "[Servo]";
+ 		mes "Tem certeza que quer Reiniciar os Status do server?";
+ 		menu "Sim",-,"Não",L_CGMV;
+ 		atcommand strcharinfo(0)+":@reloadstatusdb";
+ 		close;
+	case 13:
+		goto vale1;
+	case 14:
+		close;
+		}
+L_Player:
+next;
+mes "Legenda:";
+mes "< > Obrigatorio";
+mes "[ ] Opcional";
+set @menu,select(
+"Localizar um Player",	//1
+"Ir até um Player",	//2
+"Prender",	//3
+"Libertar",	//4
+"Banir temporariamente",	//5
+"UnBan",	//6
+"Bloquiar conta permanentemente",	//7
+"UnBlock",	//8
+"Warp",	//9
+"Mostrar Stats de um Player",	//10
+"Lista de itens",	//11
+"Mudar Save Point",	//12
+"Matar todos os Players",	//13
+"Reviver todos os Players",	//14
+"Mudar de Class",	//15
+"Mudar Level de base",	//16
+"Mudar Job Level",	//17
+"Deletar item",	//19
+"Zeny",	//20
+"Stats Point",	//21
+"Skill Point",	//22
+"Voltar ao menu principal",	//23
+"Sair");	//24
+switch(@menu)
+	{
+	case 1:
+		mes "[Servo]";
+	 	mes "Me fale o nome";
+	 	input @name$;
+	 	atcommand strcharinfo(0)+":@where "+@name$;
+	 close;
+	case 2:
+		mes "[Servo]";
+		mes "Me fale o nome para que eu o leve até ele";
+		input @name$;
+		atcommand strcharinfo(0)+":@goto "+@name$;
+		close;
+	case 3:
+		mes "[Servo]";
+		mes "Me diga o nome o infeliz que eu manderei nossas tropas até ele";
+		input @jailname$;
+		atcommand strcharinfo(0)+":@jail "+@jailname$;
+		goto L_Player;
+	case 4:
+		mes "[Servo]";
+		mes "Me diga o nome do sujeito para que eu mande liberarem";
+		input @jailname$;
+		atcommand strcharinfo(0)+":@unjail "+@jailname$;
+		goto L_Player;
+	case 5:
+		mes "[Servo]";
+		mes "Me diaga o nome do individuo";
+		input @banname$;
+		set @banname$,@banname$ + " ";
+		mes "agora me diga quanto tempo ele ficara banido.";
+		mes "use valor <+/-> e o elemento <[y/a],[m],[d/j],[h],[mn],[s]>";
+		mes "Ex.: +1m-2mn1s-6y";
+		input @bantimer$;
+		set @ban$,@banname$ + @bantimer$;
+		atcommand strcharinfo(0)+":@ban "+@ban$;
+		goto L_Player;
+	case 6:
+		mes "[Servo]";
+		mes "Desbanir conta de qual char?";
+		input @unbanname$;
+		atcommand strcharinfo(0)+":@unban "+@unbanname$;
+		goto L_Player;
+	case 7:
+		mes "[Servo]";
+		mes "Bloquiar conta de qual quem?";
+		input @blackname$;
+		atcommand strcharinfo(0)+":@block "+@blackname$;
+		goto L_Player;
+	case 8:
+		mes "[Servo]";
+		mes "Desbloquiar conta de quem?";
+		input @unblackname$;
+		atcommand strcharinfo(0)+":@block "+@unblackname$;
+		goto L_Player;
+	case 9:
+		mes "[Servo]";
+		mes "Me diga o <nome do char> que você deseja teletransportar";
+		input @name$;
+		mes "agora o <mapa> e as <coordenadas>";
+		mes "para mandar ele para um mapa com coordenadas aleatorias inpute 0 0 em coordenadas";
+		input @map$;
+		set @map$,@map$ + " ";
+		charcommand strcharinfo(0)+":#warp "+@map$+@name$;
+		goto L_Player;
+	case 10:
+		mes "[Servo]";
+		mes "Me diga o nome";
+		input @name$;
+		charcommand strcharinfo(0)+":#stats "+@name$;
+		close;
+	case 11:
+		mes "[Servo]";
+		mes "Me diga o nome";
+		input @name$;
+		charcommand strcharinfo(0)+":#stats "+@name$;
+		close;
+	case 12:
+		mes "[Servo]";
+		mes "Me diga o nome";
+		input @name$;
+		charcommand strcharinfo(0)+":#itemlist "+@name$;
+		close;
+	case 13:
+		mes "[Servo]";
+		mes "Tem certeza que quer matar todos os Players do server?";
+		menu "Sim",-,"Não",L_Player;
+		atcommand strcharinfo(0)+":@doom";
+		goto L_Player;
+	case 14:
+		mes "[Servo]";
+		mes "Tem certeza que quer reviver todos os Players do server?";
+		menu "Sim",-,"Não",L_Player;
+		atcommand strcharinfo(0)+":@raise";
+		goto L_Player;
+	case 15:
+		mes "[Servo]";
+		mes "Me diga o <nome do char>";
+		input @name$;
+		mes "agora me diga a <ID> da class que você quer para este";
+		input @changejob$;
+		charcommand strcharinfo(0)+":#job "+@changejob$+" "+@name$;
+		goto L_Player;
+	case 16:
+		mes "[Servo]";
+		mes "Me diga o <nome do char>";
+		input @name$;
+		mes "Me diga para qual level de base você quer";
+		input @levelb;
+		charcommand strcharinfo(0)+":#baselvl "+@levelb+" "+@name$;
+		goto L_Player;
+	case 17:
+		mes "[Servo]";
+		mes "Me diga o <nome do char>";
+		input @name$;
+		mes "Me diga para qual Job level você quer";
+		input @jlevel;
+		charcommand strcharinfo(0)+":#jlvl "+@jlevel+" "+@name$;
+		goto L_Player;
+	case 18:
+		mes "[Servo]";
+		mes "Me diga o <nome> do sujeito";
+		input @name$;
+		mes "<ID ou nome> do item a ser deletado";
+		input @item$;
+		charcommand strcharinfo(0)+":#delitem "+@item$+" "+@name$;
+		goto L_Player;
+	case 19:
+		mes "[Servo]";
+		mes "Me diga o <nome> do sujeito";
+		input @name$;
+		mes "<quantidade> a ser dada";
+		mes "inpute um sinal de meno [-] antes do numero caso seja para retirar";
+		input @zenys$;
+		charcommand strcharinfo(0)+":#zeny "+@zenys$+" "+@name$;
+		goto L_Player;
+	case 20:
+		goto vale1;
+	case 21:
+		close;
+		}
+}

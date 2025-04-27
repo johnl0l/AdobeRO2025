@@ -1,0 +1,50 @@
+-	script	JailSystem#proto	FAKE_NPC,{
+	OnBail:
+		.@charCount = getareaunits(BL_PC, "sec_pri", 14, 85, 59, 65, .@charNames$);
+		mes "[Guard]";
+		if(.@charCount == 0) {
+			mes "There is no one in jail.";
+			close;
+		}
+
+		mes "Who do you want to bail out?";
+		next;
+		select(implode(.@charNames$, ":"));
+
+		mes "[Guard]";
+		mes "The fee is " + callfunc("F_InsertComma", .bailOutPrice) + "z. Do you want to pay that?";
+		next;
+		if (select("Yes:No" ) == 1) {
+			mes "[Guard]";
+			if(Zeny < .bailOutPrice) {
+				mes "It seems you don't have enough money, come back when you have enough.";
+				close;
+			}
+
+			Zeny -= .bailOutPrice;
+
+			.@addressation$ = (strcharinfo(0) == .@charNames$[@menu - 1]) ? "you" : .@charNames$[@menu - 1];
+			mes "Alright, i'll let " + .@addressation$ + " go for now.";
+			
+			close2;
+			atcommand("@unjail " + .@charNames$[@menu - 1]);
+			end;
+		}
+		
+		mes "[Guard]";
+		mes "You can come back when you change your mind.";
+		close;
+		end;
+
+	OnInit:
+		.bailOutPrice = 10000;
+}
+
+-	script	BAIL_ATCOMMAND	FAKE_NPC,{
+	OnInit:
+		bindatcmd("bail", "Guard#proto::OnBail");
+}
+
+prontera, 159, 190, 4	duplicate(JailSystem#proto)	Prison Warden#sec_pri01	4_M_YOUNGKNIGHT
+sec_pri, 18, 63, 4	duplicate(JailSystem#proto)	Jail Guard#sec_pri02	4_M_EDEN_GUARDER
+sec_pri, 45, 63, 4	duplicate(JailSystem#proto)	Jail Guard#sec_pri03	4_M_LGTGUARD

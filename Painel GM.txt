@@ -1,0 +1,700 @@
+/*
+prt_in,286,137,3	script	Painel GM	89,{
+
+	if (getgmlevel() < 60) {
+		mes "Acesso negado.";
+		close;
+	}
+
+	while(1) {
+		mes "^0055FFPainel de Comandos GM^000000";
+		mes "Escolha um comando para aplicar:";
+		switch(select("@hide:@speed:@size:@monsterignore:@itemreset:@commands:@who/@who2:@disguise:@undisguise:Sair")) {
+			case 1:
+				atcommand "@hide";
+				mes "@hide aplicado.";
+				break;
+			case 2:
+				mes "Digite a velocidade desejada (padrão: 150):";
+				input .@spd;
+				atcommand "@speed "+.@spd;
+				mes "@speed aplicado com valor "+.@spd+".";
+				break;
+			case 3:
+				mes "Escolha o tamanho: 0 (Pequeno), 1 (Normal), 2 (Grande)";
+				input .@sz;
+				atcommand "@size "+.@sz;
+				mes "@size aplicado com valor "+.@sz+".";
+				break;
+			case 4:
+				atcommand "@monsterignore";
+				mes "@monsterignore aplicado.";
+				break;
+			case 5:
+				atcommand "@itemreset";
+				mes "@itemreset aplicado.";
+				break;
+			case 6:
+				atcommand "@commands";
+				mes "@commands listado.";
+				break;
+			case 7:
+				atcommand "@who";
+				atcommand "@who2";
+				mes "@who e @who2 executados.";
+				break;
+			case 8:
+				mes "Digite o ID do monstro para se disfarçar:";
+				input .@mid;
+				atcommand "@disguise "+.@mid;
+				mes "Disfarçado como "+.@mid+".";
+				break;
+			case 9:
+				atcommand "@undisguise";
+				mes "@undisguise executado.";
+				break;
+			default:
+				close;
+		}
+		next;
+	}
+
+OnPCLoginEvent:
+	if (getgmlevel() >= 60) {
+		atcommand "@hide";
+		atcommand "@monsterignore";
+		// Você pode aplicar @speed ou @size aqui também se quiser valores fixos
+	}
+	end;
+
+OnInit:
+	waitingroom "Painel GM",0;
+	end;
+}
+*/
+
+/*
+//prontera,164,155,3	script	Painel GM	89,{
+prt_in,286,137,3	script	Painel GM	89,{
+	function F_isGM { return getgroupid() >= 60; }
+	if (!F_isGM()) {
+		mes "Acesso negado.";
+		close;
+	}
+
+	while (1) {
+		mes "^FF0000Painel de Comandos GM^000000";
+		mes "Escolha um comando para executar:";
+		switch(select(
+			"@hide / @unhide",
+			"@speed (definir valor)",
+			"@size (definir valor)",
+			"@monsterignore",
+			"@itemreset",
+			"@commands",
+			"@who / @who2",
+			"@disguise / @undisguise",
+			"@option",
+			"@jumpto",
+			"@recall",
+			"@reloadnpc",
+			"@kick",
+			"@item",
+			"Sair")) {
+
+			case 1:
+				atcommand "@hide";
+				atcommand "@unhide";
+				break;
+			case 2:
+				mes "Digite a velocidade (0~1000):";
+				input .@spd;
+				atcommand "@speed "+.@spd;
+				break;
+			case 3:
+				mes "Digite o tamanho (0=normal, 1=pequeno, 2=grande):";
+				input .@sz;
+				atcommand "@size "+.@sz;
+				break;
+			case 4:
+				atcommand "@monsterignore";
+				break;
+			case 5:
+				atcommand "@itemreset";
+				break;
+			case 6:
+				atcommand "@commands";
+				break;
+			case 7:
+				atcommand "@who";
+				atcommand "@who2";
+				break;
+			case 8:
+				atcommand "@disguise 1001"; // Exemplo mob_id 1001
+				atcommand "@undisguise";
+				break;
+			case 9:
+				mes "Digite o flag do @option (ex: 1, 2, 3, 4):";
+				input .@flag;
+				atcommand "@option "+.@flag;
+				break;
+			case 10:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@jumpto "+.@target$;
+				break;
+			case 11:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@recall "+.@target$;
+				break;
+			case 12:
+				atcommand "@reloadnpc";
+				break;
+			case 13:
+				mes "Digite o nome do jogador para kickar:";
+				input .@target$;
+				atcommand "@kick "+.@target$;
+				break;
+			case 14:
+				mes "Digite o ID do item:";
+				input .@itemid;
+				mes "Digite a quantidade:";
+				input .@qty;
+				atcommand "@item "+.@itemid+" "+.@qty;
+				break;
+			default:
+				close;
+		}
+		next;
+	}
+
+OnPCLoginEvent:
+	if (getgroupid() >= 60) {
+		atcommand "@hide";
+		atcommand "@monsterignore";
+	}
+	end;
+}
+*/
+
+/*
+//prontera,164,155,3	script	Painel GM	89,{
+prt_in,286,137,3	script	Painel GM	89,{
+	function F_isGM { return getgroupid() >= 60; }
+	if (!F_isGM()) {
+		mes "Acesso negado.";
+		close;
+	}
+
+	while (1) {
+		mes "^FF0000Painel de Comandos GM^000000";
+		mes "Escolha um comando para executar:";
+		switch(select(
+			"@hide / @unhide",
+			"@speed (definir valor)",
+			"@size (definir valor)",
+			"@monsterignore",
+			"@itemreset",
+			"@commands",
+			"@who / @who2",
+			"@disguise / @undisguise",
+			"@option",
+			"@jumpto",
+			"@recall",
+			"@reloadnpc",
+			"@kick",
+			"@item",
+			"Sair")) {
+
+			case 1:
+				switch(select("Esconder (@hide):Reaparecer (@unhide):Cancelar")) {
+					case 1: atcommand "@hide"; break;
+					case 2: atcommand "@unhide"; break;
+				}
+				break;
+			case 2:
+				mes "Digite a velocidade (0~1000):";
+				input .@spd;
+				atcommand "@speed "+.@spd;
+				break;
+			case 3:
+				mes "Digite o tamanho (0=normal, 1=pequeno, 2=grande):";
+				input .@sz;
+				atcommand "@size "+.@sz;
+				close;
+			case 4:
+				atcommand "@monsterignore";
+				break;
+			case 5:
+				atcommand "@itemreset";
+				break;
+			case 6:
+				atcommand "@commands";
+				break;
+			case 7:
+				atcommand "@who";
+				atcommand "@who2";
+				break;
+			case 8:
+				switch(select("Disfarçar (@disguise):Remover disfarce (@undisguise):Cancelar")) {
+					case 1:
+						mes "Digite o mob_id:";
+						input .@mobid;
+						atcommand "@disguise "+.@mobid;
+						break;
+					case 2:
+						atcommand "@undisguise";
+						break;
+				}
+				break;
+			case 9:
+				mes "Digite o flag do @option (ex: 1, 2, 4, 8, 16...):";
+				input .@flag;
+				atcommand "@option "+.@flag;
+				break;
+			case 10:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@jumpto "+.@target$;
+				break;
+			case 11:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@recall "+.@target$;
+				break;
+			case 12:
+				atcommand "@reloadnpc";
+				break;
+			case 13:
+				mes "Digite o nome do jogador para kickar:";
+				input .@target$;
+				atcommand "@kick "+.@target$;
+				break;
+			case 14:
+				mes "Digite o ID do item:";
+				input .@itemid;
+				mes "Digite a quantidade:";
+				input .@qty;
+				atcommand "@item "+.@itemid+" "+.@qty;
+				break;
+			default:
+				close;
+		}
+		next;
+	}
+
+OnPCLoginEvent:
+	if (getgroupid() >= 60) {
+		atcommand "@monsterignore";
+	}
+	end;
+}
+*/
+
+/*
+//prontera,164,155,3	script	Painel GM	89,{
+prt_in,286,137,3	script	Painel GM	89,{
+	function F_isGM { return getgroupid() >= 60; }
+	if (!F_isGM()) {
+		mes "Acesso negado.";
+		close;
+	}
+
+	while (1) {
+		mes "^FF0000Painel de Comandos GM^000000";
+		mes "Escolha um comando para executar:";
+		switch(select(
+			"@hide / @unhide",
+			"@speed (definir valor)",
+			"@size (definir valor)",
+			"@monsterignore",
+			"@itemreset",
+			"@commands",
+			"@who / @who2",
+			"@disguise / @undisguise",
+			"@option",
+			"@jumpto",
+			"@recall",
+			"@reloadnpc",
+			"@kick",
+			"@item",
+			"@nuke",
+			"@killmonster",
+			"@warp",
+			"@mapmove",
+			"@broadcast",
+			"@reloadskilldb",
+			"@reloaditemdb",
+			"@reloadmobdb",
+			"@storage",
+			"@gstorage",
+			"Sair")) {
+
+			case 1:
+				atcommand "@hide";
+				break;
+			case 2:
+				mes "Digite a velocidade (0~1000):";
+				input .@spd;
+				atcommand "@speed "+.@spd;
+				break;
+			case 3:
+				mes "Digite o tamanho (0=normal, 1=pequeno, 2=grande):";
+				input .@sz;
+				atcommand "@size "+.@sz;
+				close;
+			case 4:
+				atcommand "@monsterignore";
+				break;
+			case 5:
+				atcommand "@itemreset";
+				break;
+			case 6:
+				atcommand "@commands";
+				break;
+			case 7:
+				atcommand "@who";
+				atcommand "@who2";
+				break;
+			case 8:
+				mes "Digite o ID do monstro para se disfarçar:";
+				input .@mobid;
+				atcommand "@disguise "+.@mobid;
+				break;
+			case 9:
+				mes "Digite o flag do @option (ex: 1, 2, 3, 4):";
+				input .@flag;
+				atcommand "@option "+.@flag;
+				break;
+			case 10:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@jumpto "+.@target$;
+				break;
+			case 11:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@recall "+.@target$;
+				break;
+			case 12:
+				atcommand "@reloadnpc";
+				break;
+			case 13:
+				mes "Digite o nome do jogador para kickar:";
+				input .@target$;
+				atcommand "@kick "+.@target$;
+				break;
+			case 14:
+				mes "Digite o ID do item:";
+				input .@itemid;
+				mes "Digite a quantidade:";
+				input .@qty;
+				atcommand "@item "+.@itemid+" "+.@qty;
+				break;
+			case 15:
+				mes "Nome do jogador para nuke:";
+				input .@target$;
+				atcommand "@nuke "+.@target$;
+				break;
+			case 16:
+				mes "Digite o nome do mapa:";
+				input .@map$;
+				atcommand "@killmonster "+.@map$;
+				break;
+			case 17:
+				mes "Digite o mapa:";
+				input .@map$;
+				mes "Digite a posição X:";
+				input .@x;
+				mes "Digite a posição Y:";
+				input .@y;
+				atcommand "@warp "+.@map$+" "+.@x+" "+.@y;
+				break;
+			case 18:
+				mes "Digite o mapa:";
+				input .@map$;
+				atcommand "@mapmove "+.@map$;
+				break;
+			case 19:
+				mes "Digite a mensagem para broadcast:";
+				input .@msg$;
+				atcommand "@broadcast "+.@msg$;
+				break;
+			case 20:
+				atcommand "@reloadskilldb";
+				break;
+			case 21:
+				atcommand "@reloaditemdb";
+				break;
+			case 22:
+				atcommand "@reloadmobdb";
+				break;
+			case 23:
+				atcommand "@storage";
+				break;
+			case 24:
+				atcommand "@gstorage";
+				break;
+			default:
+				close;
+		}
+		next;
+	}
+
+OnPCLoginEvent:
+	if (getgroupid() >= 60) {
+		atcommand "@hide";
+		atcommand "@monsterignore";
+	}
+	end;
+}
+*/
+
+
+//prontera,164,155,3	script	Painel GM	89,{
+prt_in,286,137,3	script	Painel GM	89,{
+	function F_isGM { return getgroupid() >= 60; }
+	if (!F_isGM()) {
+		mes "Acesso negado.";
+		close;
+	}
+
+	while (1) {
+		mes "^FF0000Painel de Comandos GM^000000";
+		mes "Escolha um comando para executar:";
+		switch(select(
+			"@hide",	//@hide	Torna o GM invisível para outros jogadores e monstros. Ideal para observação.
+			"@speed <valor>",	//@speed <valor>	Altera a velocidade de movimento. Ex: @speed 200. Valor normal: 150.
+			"@size <valor>",
+			"@monsterignore",	//@monsterignore	Faz monstros ignorarem o GM (sem agressão).
+			"@itemreset",	//@itemreset	Remove todos os itens equipados e no inventário do jogador (cuidado!).
+			"@commands",	//@commands	Lista todos os comandos disponíveis para seu nível de GM.
+			"@who / @who2",	//@who ou @who2	Lista jogadores online, com mais detalhes no @who2.
+			"@disguise <mob_id> / @undisguise",	//@disguise <mob_id>	Transforma o GM em um monstro. Ex: @disguise 1002 (Poring). //@undisguise	Volta ao visual normal após usar @disguise.
+			"@option",	//@option <flag> (com input manual)
+			"@jumpto",	//@jumpto <char name>	Teleporta você até um jogador.
+			"@recall",	//@recall <char name>	Puxa um jogador até você.
+			"@reloadnpc",	//@npcreload ou @reloadnpc	Recarrega todos os NPCs do servidor.
+			"@kick <char name>",	//@kick <char name> – Expulsa um jogador do jogo.
+			"@item <ID> <quantidade>",	//@item <ID> <quantidade> – Gera itens rapidamente.
+			"@nuke <char>",	//@nuke <char>	Mata instantaneamente o jogador alvo.
+			"@killmonster <map>",	//@killmonster <map>	Remove todos os monstros do mapa.
+			"@warp <map> x y",	//@warp <map> x y	Teleporta você para qualquer mapa/posição.
+			"@mapmove",	//@mapmove <map>	Teleporta para o mapa na posição 0 0.
+			"@broadcast <msg>",	//@broadcast <msg>	Envia uma mensagem global para todos.
+			"@reloadskilldb",	//@reloadskilldb	Recarrega a database de skills.
+			"@reloaditemdb",	//@reloaditemdb	Recarrega a database de itens.
+			"@reloadmobdb",	//@reloadmobdb	Recarrega a database de monstros.
+			"@storage",	//@storage	Abre o armazém.
+			"@gstorage",	//@gstorage	Abre o armazém de guilda.
+			"@jobchange <id>",	//@jobchange <id>	Muda de classe imediatamente.
+			"@reloadatcommand",	//@reloadatcommand	Recarrega a lista de comandos @.
+			"@reloadbattleconf",	//@reloadbattleconf	Recarrega configurações de batalha.
+			"@loadnpc <file>",	//@loadnpc <file>	Carrega um NPC específico.
+			"@mute <char>",	//@mute <char>	Silencia um jogador.
+			"@kickall",	//@kickall	Expulsa todos os jogadores do servidor.
+			"@unmute <char>",	//@unmute <char>	Remove o silêncio de um jogador.
+			"@zeny <valor>",	//@zeny <valor>	Dá Zeny para o personagem.
+			"@go <cidade>",	//@go <cidade>	Teleporta para uma cidade.
+			"@dispel",	//@dispel	Remove todos os buffs.
+			"@ban <char>",	//@ban <char>	Bane o jogador.
+			"@unban <char>",	//@unban <char>	Desbane o jogador.
+			"@jail <char>",	//@jail <char>	Prende o jogador.
+			"@unjail <char>",	//@unjail <char>	Solta o jogador da prisão.
+			"@kill",	//Mata diretamente um jogador.
+			"@adjgroup <char> <grupo>",	//@adjgroup <char> <grupo>	Ajusta o nível de GM/Permissão de um jogador.
+			"Sair")) {
+
+			case 1:
+				atcommand "@hide";
+				break;
+			case 2:
+				mes "Digite a velocidade (0~1000):";
+				input .@spd;
+				atcommand "@speed "+.@spd;
+				break;
+			case 3:
+				mes "Digite o tamanho (0=normal, 1=pequeno, 2=grande):";
+				input .@sz;
+				atcommand "@size "+.@sz;
+				close;
+			case 4:
+				atcommand "@monsterignore";
+				break;
+			case 5:
+				atcommand "@itemreset";
+				break;
+			case 6:
+				atcommand "@commands";
+				break;
+			case 7:
+				atcommand "@who";
+				atcommand "@who2";
+				break;
+			case 8:
+				mes "Digite o ID do monstro para disfarçar:";
+				input .@mobid;
+				atcommand "@disguise "+.@mobid;
+				break;
+			case 9:
+				mes "Digite o flag do @option (ex: 1, 2, 3, 4):";
+				input .@flag;
+				atcommand "@option "+.@flag;
+				break;
+			case 10:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@jumpto "+.@target$;
+				break;
+			case 11:
+				mes "Digite o nome do jogador:";
+				input .@target$;
+				atcommand "@recall "+.@target$;
+				break;
+			case 12:
+				atcommand "@reloadnpc";
+				break;
+			case 13:
+				mes "Digite o nome do jogador para kickar:";
+				input .@target$;
+				atcommand "@kick "+.@target$;
+				break;
+			case 14:
+				mes "Digite o ID do item:";
+				input .@itemid;
+				mes "Digite a quantidade:";
+				input .@qty;
+				atcommand "@item "+.@itemid+" "+.@qty;
+				break;
+			case 15:
+				mes "Digite o nome do jogador para nukar:";
+				input .@target$;
+				atcommand "@nuke "+.@target$;
+				break;
+			case 16:
+				mes "Digite o nome do mapa:";
+				input .@map$;
+				atcommand "@killmonster "+.@map$;
+				break;
+			case 17:
+				mes "Digite o mapa:";
+				input .@map$;
+				mes "Digite X:";
+				input .@x;
+				mes "Digite Y:";
+				input .@y;
+				atcommand "@warp "+.@map$+" "+.@x+" "+.@y;
+				break;
+			case 18:
+				mes "Digite o mapa:";
+				input .@map$;
+				atcommand "@mapmove "+.@map$;
+				break;
+			case 19:
+				mes "Digite a mensagem para broadcast:";
+				input .@msg$;
+				atcommand "@broadcast "+.@msg$;
+				break;
+			case 20:
+				atcommand "@reloadskilldb";
+				break;
+			case 21:
+				atcommand "@reloaditemdb";
+				break;
+			case 22:
+				atcommand "@reloadmobdb";
+				break;
+			case 23:
+				atcommand "@storage";
+				close;
+			case 24:
+				atcommand "@gstorage";
+				close;
+			case 25:
+				mes "Digite o ID da classe:";
+				input .@jobid;
+				atcommand "@jobchange "+.@jobid;
+				break;
+			case 26:
+				atcommand "@reloadatcommand";
+				break;
+			case 27:
+				atcommand "@reloadbattleconf";
+				break;
+			case 28:
+				mes "Digite o nome do arquivo do NPC:";
+				input .@npc$;
+				atcommand "@loadnpc "+.@npc$;
+				break;
+			case 29:
+				mes "Digite o nome do jogador para mutar:";
+				input .@target$;
+				atcommand "@mute "+.@target$;
+				break;
+			case 30:
+				atcommand "@kickall";
+				break;
+			case 31:
+				mes "Digite o nome do jogador para desmutar:";
+				input .@target$;
+				atcommand "@unmute "+.@target$;
+				break;
+			case 32:
+				mes "Digite a quantidade de Zeny:";
+				input .@zeny;
+				atcommand "@zeny "+.@zeny;
+				break;
+			case 33:
+				mes "Digite o nome da cidade:";
+				input .@city$;
+				atcommand "@go "+.@city$;
+				break;
+			case 34:
+				atcommand "@dispel";
+				break;
+			case 35:
+				mes "Digite o nome do jogador para banir:";
+				input .@target$;
+				atcommand "@ban "+.@target$;
+				break;
+			case 36:
+				mes "Digite o nome do jogador para desbanir:";
+				input .@target$;
+				atcommand "@unban "+.@target$;
+				break;
+			case 37:
+				mes "Digite o nome do jogador para prender:";
+				input .@target$;
+				atcommand "@jail "+.@target$;
+				break;
+			case 38:
+				mes "Digite o nome do jogador para soltar da prisão:";
+				input .@target$;
+				atcommand "@unjail "+.@target$;
+				break;
+			case 39:
+				mes "Digite o nome do jogador para matar:";
+				input .@target$;
+				atcommand "@kill "+.@target$;
+				break;
+			case 40:
+				mes "Digite o nome do jogador e o grupo:";
+				input .@target$;
+				mes "Digite o grupo (0=normal, 1=player, 60+=GM):";
+				input .@group;
+				atcommand "@adjgroup "+.@target$+" "+.@group;
+				break;
+			default:
+				close;
+		}
+		next;
+	}
+
+OnPCLoginEvent:
+	if (getgroupid() >= 60) {
+		atcommand "@hide";
+		atcommand "@monsterignore";
+	}
+	end;
+}

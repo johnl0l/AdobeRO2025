@@ -1,0 +1,126 @@
+//Simple HG Hiding by crazyarashi
+/*
+-	script	HG Hiding	-1,{
+OnAtCommand:
+	.@npc$ = "["+ strnpcinfo(1) +"]";
+	mes .@npc$;
+	mes "Hello, "+strcharinfo(0);
+	mes "Which headgear do you want to hide?";	
+	next;
+	setarray .@hgmenu$, "Top Headgear", "Middle Headgear", "Lower Headgear";
+	.@menu$ = implode(.@hgmenu$, ":");
+		.@i = select( .@menu$ ) - 1;
+				.@equip = getequipid(.location$[.@i]);
+				if( .@equip != getequipid(.location$[.@i])) {
+				mes .@npc$;
+				mes "You're not wearing any headgear";
+				close;
+		} else {
+				atcommand "@"+ .looks$[.@i];
+				dispbottom .@hgmenu$[.@i] +" is now hidden";
+				end;
+				}
+OnInit:
+	setarray .location$, "EQI_HEAD_TOP", "EQI_HEAD_MID", "EQI_HEAD_LOW";
+	setarray .looks$, "changelook 1 0", "changelook 2 0", "changelook 3 0";
+	bindatcmd "hidehg",strnpcinfo(0)+"::OnAtCommand";
+
+}
+*/
+/*
+-	script	HG Hiding	-1,{
+    OnInit:
+        setarray .location$, "EQI_HEAD_TOP", "EQI_HEAD_MID", "EQI_HEAD_LOW";
+        setarray .looks$, "changelook 1 0", "changelook 2 0", "changelook 3 0";
+        bindatcmd "hidehg", strnpcinfo(0) + "::OnHideHeadgearCommand";  // Ajustado para o nome correto do evento
+        end;
+
+    OnHideHeadgearCommand:
+        .@npc$ = "[" + strnpcinfo(1) + "]";
+        mes .@npc$;
+        mes "Hello, " + strcharinfo(0);
+        mes "Which headgear do you want to hide?";
+        next;
+        setarray .@hgmenu$, "Top Headgear", "Middle Headgear", "Lower Headgear";
+        .@menu$ = implode(.@hgmenu$, ":");
+        .@i = select(.@menu$) - 1;
+        .@equip = getequipid(.location$[.@i]);
+
+        if (.@equip == 0) {  // Se não estiver usando nenhum headgear
+            mes .@npc$;
+            mes "You're not wearing any headgear";
+            close;
+        } else {
+            atcommand "@"+ .looks$[.@i];
+            dispbottom .@hgmenu$[.@i] + " is now hidden";
+            end;
+        }
+}
+*/
+/*
+-	script	HG Hiding	-1,{
+    OnInit:
+        setarray .location$, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW;  // Constantes diretamente
+        setarray .looks$, "changelook 1 0", "changelook 2 0", "changelook 3 0";
+        bindatcmd "hidehg", strnpcinfo(0) + "::OnHideHeadgearCommand";
+        end;
+
+    OnHideHeadgearCommand:
+        .@npc$ = "[" + strnpcinfo(1) + "]";
+        mes .@npc$;
+        mes "Hello, " + strcharinfo(0);
+        mes "Which headgear do you want to hide?";
+        next;
+        setarray .@hgmenu$, "Top Headgear", "Middle Headgear", "Lower Headgear";
+        .@menu$ = implode(.@hgmenu$, ":");
+        .@i = select(.@menu$) - 1;
+        
+        // Passa a constante diretamente para getequipid()
+        .@equip = getequipid(.location$[.@i]);
+
+        if (.@equip == 0) {  // Verifica se o jogador não está usando nenhum headgear
+            mes .@npc$;
+            mes "You're not wearing any headgear";
+            close;
+        } else {
+            atcommand "@"+ .looks$[.@i];
+            dispbottom .@hgmenu$[.@i] + " is now hidden";
+            end;
+        }
+}
+*/
+
+-	script	HG Hiding	-1,{
+    OnInit:
+        // Definindo os slots de cabeça com constantes numéricas
+        setarray .location$, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW; // Estas constantes já são números
+        setarray .looks$, "changelook 1 0", "changelook 2 0", "changelook 3 0";
+        bindatcmd "hidehg", strnpcinfo(0) + "::OnHideHeadgearCommand"; // Associando o comando
+        end;
+
+    OnHideHeadgearCommand:
+        .@npc$ = "[" + strnpcinfo(1) + "]"; // Nome do NPC
+        mes .@npc$;
+        mes "Hello, " + strcharinfo(0);
+        mes "Which headgear do you want to hide?";
+        next;
+        
+        // Menu de opções de headgear
+        setarray .@hgmenu$, "Top Headgear", "Middle Headgear", "Lower Headgear";
+        .@menu$ = implode(.@hgmenu$, ":");
+        .@i = select(.@menu$) - 1;
+
+        // Checando se o jogador está usando algum headgear no slot selecionado
+        .@equip = getequipid(.location$[.@i]);
+
+        if (.@equip == 0) {  // Se não estiver usando nenhum headgear
+            mes .@npc$;
+            mes "You're not wearing any headgear in this slot.";
+            close;
+        } else {
+            // Aplica o comando de esconder o headgear escolhido
+            atcommand "@"+ .looks$[.@i];
+            dispbottom .@hgmenu$[.@i] + " is now hidden.";
+            end;
+        }
+}

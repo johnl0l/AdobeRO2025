@@ -1,0 +1,9 @@
+
+prontera,84,109,4	script	Healer#Askydun	950,{
+     percentheal 100,100;
+     if (countitem(7139) > 0) { //7139 - Glistening Coat
+          skilleffect 479,0; sc_start SC_FULLPROTECTION,600000,5;
+          delitem 7139,1; //Delete 1 Glistening Coat
+     }
+     end;
+}

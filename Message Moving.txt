@@ -1,0 +1,17 @@
+prontera,155,181,5	script	Message Moving	757,{
+end;
+	
+OnInit:
+setarray .Name$,"A","D","O","B","E","R","O";
+while( 1 ){
+	set .Display$,"";
+	for( set .i,0; .i < getarraysize( .Name$ ); set .i,.i + 1 ){
+		set .Display$,.Display$ + .Name$[.i];
+		delwaitingroom;
+		waitingroom .Display$,0;
+		sleep ( rand( 300 ) );
+	}
+	sleep 1000;
+}
+end;
+}

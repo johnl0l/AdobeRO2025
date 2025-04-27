@@ -1,0 +1,268 @@
+/*
+DROP TABLE IF EXISTS `presente`;
+CREATE TABLE `presente` (
+  `account_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `item` int(11) unsigned NOT NULL DEFAULT '0',
+  `quantidade` int(11) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY  (`account_id`)
+) ENGINE=MyISAM;
+*/
+
+//===== Cronus Script =================================================
+//= Garota Negociante
+//===== Por: ==========================================================
+//= Rafael (baseado na do Mehah, oficial do cronus)
+//===== Versão Atual: =================================================
+//= 1.1
+//===== Descrição: ====================================================
+//= Dá gratuitamente falcões, pecopecos e carrinhos
+//===== Changelog: ====================================================
+//= 1.1 Otimizado [Mooka]
+//=====================================================================
+prontera,153,184,5	script	Asgard	965,{
+
+function MUresetStatus;
+function CheckZeny;
+function CheckVIP;
+function exit;
+
+mes "[Asgard]";
+mes "Olá! Em que posso ajudá-lo hoje?";
+next;
+menu "Entrega de Darkmoons",entredarkmoon,"Salvar Posição",position,"Resetar Status/Skills",reset,"Alugar Peco Peco, Falcon ou Carrinho",negocio,"Vending Area",gosete;
+
+entredarkmoon:
+set @nome$,"[Asgard]";
+
+if(getgmlevel() > 95){
+mes @nome$;
+mes "Bem vindo Mestre,";
+mes "o que deseja fazer?";
+next;
+if(select( "Enviar item a jogador","Sair")==2){
+        mes @nome$;
+        mes "Volte sempre Mestre!";
+        close;
+        }
+
+        mes @nome$;
+        mes "Digite o login do jogador";
+        input .@jogador$;
+                query_SQL "SELECT account_id FROM login WHERE userid = '"+.@jogador$+"'",.@id;
+        mes "Agora digita o id do item";
+        input .@item;
+        mes "por fim, a quantidade.";
+        input .@quant;
+        next;
+        mes "Login: "+.@jogador$+"";
+        mes "Item: "+getitemname(.@item);
+        mes "Quantidade: "+.@quant+"";
+        next;
+        if(select( "Confirmar","Sair")==2){
+                mes @nome$;
+                mes "Volte sempre mestre!";
+                close;
+                }
+
+                if (.@id <= 0){
+                        mes @nome$;
+                        mes "Conta nao existe.";
+                        close;
+                        }
+                mes @nome$;
+                query_SQL "INSERT INTO presente VALUES ('"+.@id+"' , '"+.@item+"' , '"+.@quant+"')";
+                mes "Item enviado com sucesso";
+                close;
+        }else{
+query_SQL "SELECT item FROM presente WHERE `account_id` = '"+ getcharid(3) +"'",.@presente;
+query_SQL "SELECT quantidade FROM presente WHERE `account_id` = '"+ getcharid(3) +"'",.@quantidade;
+mes @nome$;
+mes "Olá "+strcharinfo(0)+",";
+mes "deseja verificar se suas Dark Moons";
+mes "chegaram?";
+next;
+menu "Sim",yep,"Agora não",nop;
+yep:
+next;
+                                mes @nome$;
+                if(getitemname(.@presente) == "null"){
+                    mes "Você possui ^FF00000^000000 Dark Moon's.";
+                    next;
+                    mes "Saiba como adquirir Dark Moon's no site:";
+                    mes "^FF0000www.AdobeRO.com.br^000000";
+                    mes "E ajude nosso servidor a se manter online.";
+                    mes " ";
+                    mes "[Staff Asgard]";
+                    close;
+                }
+                                    mes "Você possui ^68228B"+.@quantidade+" "+getitemname(.@presente)+"^000000(s) gostaria de retirá-las agora?";
+next;
+if(select("Sim","Não")==2){
+        mes @nome$;
+        mes "Volte outra hora então para pegar suas Dark Moon's.";
+        mes "^FF0000ATENÇÃO:^000000";
+        mes "^FF0000Retire suas Dark Moon's antes de efetuar outra doação, pois a mesma será descartada caso fique aqui mais que 2(dois) dias.^000000";
+        mes "^00CED1Staff Asgard^000000    .";
+        close;
+        }
+        query_SQL "SELECT account_id FROM presente WHERE `account_id` = '"+ getcharid(3) +"'",.@controle;
+        if (.@controle <= 0){
+                mes @nome$;
+                mes "Suas Dark Moon's ainda não chegaram.";
+                close;
+                }
+        mes @nome$;
+        mes "Obrigado por ajudar a manter nosso servidor Online.";
+        mes "Gratos ^00CED1Staff Asgard^000000    .";
+        getitem .@presente,.@quantidade;
+        query_SQL "DELETE FROM presente WHERE `account_id` = '"+ getcharid(3) +"'";
+        close;
+        }
+nop:
+mes @nome$;
+mes "Volte quando necessitar de algum dos meus serviços!";
+close;
+
+
+position:
+
+M_Save:
+    savepoint "prontera",155,185;
+    callfunc "F_KafEnd",0,1,"na cidade de Prontera";
+
+reset:
+
+    set @Pskill,500000; //Preço para reseta skill
+    set @Pstatus,500000; //Preço para reseta status
+    set @Pambos,@Pskill+@Pstatus-700000; //Preço para reseta ambos
+//==========================================
+    CheckVIP();
+    mes "[Asgard]";
+    mes "Olá, posso resetar seus pontos.";
+    if(@MUreset) mes "Resetar Char: "+@Mupreco+"z";
+    mes "Resetar Habilidades: "+@Pskill+"z";
+    mes "Resetar Atributos: "+@Pstatus+"z";
+    mes "Resetar Ambos: "+@Pambos+"z";
+    next;
+    if(@MUreset)
+        select("^FF3355Resetar Habilidades","^FF3355Resetar Atributos","^FF3355Resetar Ambos","^FF3355Resetar Char(MU)^000000","Nenhum, obrigado.");
+    else
+        select("^FF3355Resetar Habilidades","Resetar Atributos","Resetar Ambos^000000","Nenhum, obrigado.");
+
+    switch(@menu){
+        mes "[Asgard]";
+        case 1:
+            CheckZeny(@Pskill);
+            mes "Tudo bem, vou resetar agora.. Lembrando, ajeite seus pontos e fale comigo mais vezes se precisar!";
+            ResetSkill;
+            close;
+            
+        case 2:
+            CheckZeny(@Pstatus);
+            break;
+            
+        case 3:
+            CheckZeny(@Pambos);
+            ResetSkill;
+            break;
+            
+        case 4:
+            if(@MUreset && BaseLevel >= @MUlvl && (resetchar < @MUlimite || !@MUlimite)){
+                mes "Tudo bem, vou resetar agora.. Lembrando, você voltará ao lvl 1 com uma certa quantia de pontos!";
+                if(@MUinfo && @MUlimite){
+                    mes " ";
+                    mes "Informações:";
+                    if(resetchar == 1) mes "Você possui "+resetchar+" resete."; else
+                    if(resetchar) mes "Você possui "+resetchar+" resets.";
+                    for(set @i,1; @i <= @MUlimite; set @i,@i+1)
+                        mes @i+"º reset "+@MUpnt*@i+" pontos";
+                }
+                next;
+                mes "[Asgard]";
+                mes "Você tem certeza?";
+                next;
+                if(select("Sim","Não") == 1){
+                    mes "[Asgard]";
+                    CheckZeny(@Mupreco);
+                    set resetchar, resetchar + 1;
+                    resetlvl(3);
+                    MUresetStatus(1);
+                    mes "Resetado com Sucesso";
+                }
+            }else if(@MUreset)
+                if(BaseLevel < @MUlvl)
+                    mes "Desculpe, você não tem level necessário";
+                else
+                    mes "Desculpe, você ja chego no limite de resete";
+                    
+        case 5: close;
+    }
+    mes "Tudo bem, vou resetar agora.. Lembrando, ajeite seus pontos e fale comigo mais vezes se precisar!";
+    MUresetStatus(0);
+    close;
+    
+    function    MUresetStatus    {
+        resetstatus;
+        if(!getarg(0)){
+            if(resetchar) set statuspoint, statuspoint + @MUpnt*resetchar-48;
+        }else{
+                set statuspoint,statuspoint - statuspoint;
+                set statuspoint, statuspoint + @MUpnt*resetchar;
+        }
+    }
+
+    function    CheckZeny    {
+        if (Zeny < getarg(0)){
+            mes "^FF3355Desculpe, você não tem todo o Zeny necessário.";
+            close;
+        }else set Zeny,zeny-getarg(0);
+    }
+
+    function    CheckVIP    {
+        if(getgmlevel() >= @MUlimiteVIP[2]){
+            if(!@MUlimiteVIP[1])
+                set @MUlimite,0;
+            else
+                set @MUlimite,@MUlimiteVIP[1];
+        }
+    }
+
+//=======================================================================
+
+gosete:
+
+warp "1@def01.gat", 49,77;    end;
+
+negocio:
+
+function exit;
+setarray .classes[0],    5, 10, 18, 23, 4006, 4011, 4019, 4028, 4033, 4041, 4045, -1,
+            11, 4012, 4034, -1,
+            7,13, 14,21, 4008,4014, 4015,4022, 4030,4036, 4037,4044;
+
+mes "[Garota Negociante]";
+mes "Olá, aqui você pode pegar carrinhos, falcões ou pecopecos depedendo da sua vocação.";
+next;
+mes "[Garota Negociante]";
+if (checkcart()) exit ("Você já possui carrinho."); else
+if (checkfalcon()) exit ("Você já possui falcão."); else
+if (checkriding()) exit ("Você já possui peco.");
+set .@skill, .classes;
+for (set .@i, 0; .@i < GetArraySize (.classes); set .@i, .@i +1) {
+    if (.classes[.@i] < 0)
+        set .@delimiter, .@delimiter +1;
+    if (Class != .classes[.@i]) continue;
+        if (! getskilllv (39) && ! getskilllv (127) && ! getskilllv (63))
+            exit ("Você não possui a habilidade requerida.");
+        if (!.@delimiter) setcart; else
+        if (!(.@delimiter-1)) setfalcon; else
+        if (!(.@delimiter-2)) setriding;
+        exit ("Volte quando necessitar novamente dos meus serviços.");
+}
+exit ("Desculpe mas não posso ajudá-lo.");
+
+function    exit    {
+    mes getarg (0);
+    close;
+}
+}

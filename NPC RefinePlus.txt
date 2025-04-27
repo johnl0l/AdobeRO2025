@@ -1,0 +1,159 @@
+prontera,156,179,6	script	Suhnbi#custom	85,{
+	disable_items;
+	mes "[Suhnbi]";
+	mes "I am the Armsmith.";
+	mes "I can refine all kinds of weapons,";
+	mes "armor and equipment, so let me";
+	mes "know what you want to refine.";
+	next;
+
+	setarray(.@indices[0], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW);
+	for(.@i = 0; .@i < 10; .@i++) {
+		if (getequipisequiped(.@indices[.@i])) {
+			.@menu$[.@i] = F_getpositionname(.@indices[.@i]) + "-[" + getequipname(.@indices[.@i]) + "]";
+			.@equipped = 1;
+		}
+	}
+
+	if (.@equipped == 0) {
+		mes "[Suhnbi]";
+		mes "I don't think I can refine any items you have...";
+		close;
+	}
+	
+    .@equip = .@indices[select(implode(.@menu$, ":")) - 1];
+
+	if (!getequipisequiped(.@equip)) 
+		end;
+
+	if (!getequipisenableref(.@equip)) {
+		mes "[Suhnbi]";
+		mes "Go find another Blacksmith. You can't refine this thing.";
+		close;
+	}
+
+	if (getequiprefinerycnt(.@equip) >= 20) {
+		mes "[Suhnbi]";
+		mes "Hmm... someone perfected this already. I don't think I can work on it further.";
+		close;
+	}
+
+	.@refineitemid = getequipid(.@equip); 
+	.@refinerycnt = getequiprefinerycnt(.@equip); 
+	.@price = getequiprefinecost(.@equip, REFINE_COST_NORMAL, REFINE_ZENY_COST);
+	.@itemtype = getiteminfo(.@refineitemid, ITEMINFO_TYPE);
+	.@equipLvl = (.@itemtype == IT_WEAPON) ? getequipweaponlv(.@equip) : getequiparmorlv(.@equip);
+
+	mes "[Suhnbi]";
+	if (.@itemtype == IT_WEAPON)
+        mes "You want to refine a level " + .@equipLvl + " weapon?";
+    mes "To refine that, you'll need to have two ^ff9999" + ((.@refinerycnt > 0) ? "+" + .@refinerycnt + " " : "") + getitemname(.@refineitemid) +  "^000000 and " + callfunc("F_InsertComma", .@price) + " zeny.";
+	mes "Would you like to continue?";
+	next;
+	
+    if(select("Yes:No") == 2) {
+        mes "[Suhnbi]";
+        mes "I can't help it even if you're not happy about it...";
+        close;
+    }
+
+    if (getequippercentrefinery(.@equip) < 100) {
+        if (.@itemtype == IT_WEAPON) {
+            mes "[Suhnbi]";
+            mes "Wow!!";
+            mes "This weapon probably";
+            mes "looks like it's been refined...";
+            mes "many times...";
+            mes "It may break if";
+            mes "you refine it again.";
+            next;
+            mes "And if it breaks,";
+            mes "you can't use it anymore!";
+            mes "All the cards in it and the properties ^ff0000will be lost^000000!";
+            mes "^ff0000Besides, the equipment will break!^000000";
+            mes "Are you sure you still want to continue?";
+            next;
+            if(select("Yes:No") == 2) {
+                mes "[Suhnbi]";
+                mes "Good.";
+                mes "Because if the weapon breaks from unreasonable refining, then I get a bad mood, too.";
+                close;
+            }
+        } else {
+            mes "[Suhnbi]";
+            mes "Giggle. Giggle. Oh, you have guts, daring to refine this.";
+            mes "You know it's pretty risky, don't you?";
+            next;
+            mes "If your defensive equipment is broken, you'll never be able to use it again.";
+            mes "Even your cards and your modifications will ^ff0000completely disappear^000000.";
+            mes "Do you really wish to continue?";
+            next;
+            if(select("Yes:No") == 2) {
+                mes "[Suhnbi]";
+                mes "What nonsense. You waste my precious time.";
+                mes "Get lost, punk.";
+                close;
+            }
+        }
+    }
+
+    .@idx = 0;
+    getinventorylist(getcharid(0));
+    for(.@i = 0; .@i < @inventorylist_count; .@i++) {
+        if(@inventorylist_id[.@i] == .@refineitemid && @inventorylist_refine[.@i] == .@refinerycnt && @inventorylist_equip[.@i] == 0) {
+            .@itemReqIdxs[.@idx] = @inventorylist_idx[.@i];
+            .@idx++;
+        }
+
+        if(.@idx == .itemCostAmount) break;
+    }
+
+    if (getarraysize(.@itemReqIdxs) < .itemCostAmount || Zeny < .@price) {
+        mes "[Suhnbi]";
+        mes "Are these all you have?";
+        mes "I'm very sorry, but I can't do anything without all the materials. Besides, I deserve some payments for my work, don't I?";
+        close;
+    }
+
+    Zeny -= .@price;
+    for(.@i = 0; .@i < getarraysize(.@itemReqIdxs); .@i++)
+        delitemidx(.@itemReqIdxs[.@i], 1);
+
+    if (callfunc("F_IsEquipIDHack", .@equip, .@refineitemid) ||
+        callfunc("F_IsEquipRefineHack", .@equip, .@refinerycnt) || callfunc("F_IsEquipCardHack", .@equip,  getequipcardid(.@equip, 0),  getequipcardid(.@equip, 1),  getequipcardid(.@equip, 2),  getequipcardid(.@equip, 3))) {
+        mes "[Suhnbi]";
+        emotion(ET_FRET);
+        mes "Wait a second...";
+        mes "Do you think I'm stupid?!";
+        mes "You switched the item while I wasn't looking! Get out of here!";
+        close;
+    }
+
+	mes "[Suhnbi]";
+	mes "Clang! Clang! Clang!";
+	if (getequippercentrefinery(.@equip) > rand(100)) {
+		successrefitem(.@equip);
+		next;
+		emotion(ET_BEST);
+		mes "[Suhnbi]";
+		mes "There you go! It's done.";
+		mes "It's been a while since I've made such a fine " + ((.@itemtype == IT_WEAPON) ? "weapon" : "armor") + ". You must be happy because it has become stronger!";
+		close;
+	}
+
+	failedrefitem(.@equip);
+	next;
+	emotion (!rand(5)) ? ET_MONEY : ET_HUK;
+	mes "[Suhnbi]";
+	mes "Uuuuuuuuuummmmmph!!!";
+	next;
+	mes "[Suhnbi]";
+	mes "...";
+	mes ".....";
+	mes ".......Huhuhuhuhu~";
+	mes "........It was your choice and my ability, no regret.";
+	close;
+
+    OnInit:
+        .itemCostAmount = 2;
+}

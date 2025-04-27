@@ -1,0 +1,56 @@
+//npc:ijnoo 
+-	script	ijnoo	-1,{
+OnWhisperGlobal:
+	deletearray .aid, .size_aid;
+	deletearray .cid, .size_aid;
+	deletearray .name$, .size_aid;
+	.size_aid = 0;
+	.@myaid = playerattached();
+	addrid(1);// attach all player on your map to the script
+	if ( .size_aid < 128 && playerattached() != .@myaid ) {
+		.aid[ .size_aid ] = playerattached();
+		.cid[ .size_aid ] = getcharid(0);
+		.name$[ .size_aid ] = strcharinfo(0);
+		.size_aid++;
+	}
+	if ( playerattached() != .@myaid ) end;
+	while( .@i < .size_aid ) {
+		.@menu$ = .@menu$ + .name$[.@i] +":";
+		.@i++;
+	}
+	mes "Select a player you want to give a reward.";
+	next;
+	.@s = select( .@menu$ ) -1;
+	callsub L_check, .@s;
+	mes "Item id";
+	input .@atoi_id;
+	if ( getiteminfo( .@atoi_id,0 ) == -1 ) {
+		mes "This item doesn't exist";
+		close;
+	}
+	mes "amount?";
+	input .@amount;
+	if ( .@amount < 1 ) {
+		mes "You can't send "+ .@amount +" item.";
+		close;
+	}
+	next;
+	mes "Give a ^ff0000"+ getitemname( .@atoi_id ) +" ("+ .@atoi_id +")^000000 x"+ .@amount +" to "+ .name$[.@s] +" ?";
+	next;
+	if ( select( "Yes", "No" ) == 2 ) close;
+	callsub L_check, .@s;
+	getitem .@atoi_id, .@amount, .aid[.@s];
+	mes "The player get the reward.";
+	close;
+L_check:
+	.@s = getarg(0);
+	if ( !isloggedin( .aid[.@s], .cid[.@s] ) ) {
+		mes "this player is not online.";
+		close;
+	}
+	else if ( !getmapxy( .@map$, .@x, .@y, 0, .name$[.@s] ) && .@map$ != strcharinfo(3) ) {
+		mes "this player is no more on the same map of you.";
+		close;
+	}
+	return;
+}

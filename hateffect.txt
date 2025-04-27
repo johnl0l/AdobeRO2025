@@ -1,0 +1,11 @@
+-	script	hateffect	-1,{
+OnPcLoginEvent:
+if(getgroupid() == 5){
+	hateffect <your Hat effect ID>,true;
+}
+}
+/*
+remove ','
+
+hateffect ID,true;
+*/

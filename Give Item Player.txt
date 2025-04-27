@@ -1,0 +1,57 @@
+-	script	RewardNPC	-1,{
+	
+	OnInit:
+		bindatcmd "reward",strnpcinfo(3) + "::OnAtcommand", 99, 99;
+		end;
+		
+	OnAtcommand:
+		if (getgroupid() >= 99) {
+			if (.@atcmd_parameters$[0] == "all" )
+				.map$ = "all";
+			else if (.@atcmd_parameters$[0] == "map" )
+				.map$ = strcharinfo(3);
+			else if (getmapusers(.@atcmd_parameters$[0]) >= 0)
+				.map$ = .@atcmd_parameters$[0];
+			else
+				dispbottom "Error, pick 'map' or 'all' ";
+				
+			.itemid = atoi(.@atcmd_parameters$[1]);
+			.amount = atoi(.@atcmd_parameters$[2]);
+			
+			if (getitemname(.itemid) == "null" || .amount < 1)
+				dispbottom "Invalid item id #"+.itemid+" and amount ("+.amount+").";
+			else donpcevent strnpcinfo(3)+"::OnReward";
+		}
+		end;
+		
+	OnWhisperGlobal:
+		if (getgroupid() >= 99) {
+			if (@whispervar0$ == "all" )
+				.map$ = "all";
+			else if (@whispervar0$ == "map" )
+				.map$ = strcharinfo(3);
+			else if (getmapusers(@whispervar0$) >= 0)
+				.map$ = @whispervar0$;
+			else
+				dispbottom "Error, pick 'map' or 'all' ";
+				
+			.itemid = atoi(@whispervar1$);
+			.amount = atoi(@whispervar2$);
+			
+			if (getitemname(.itemid) == "null" || .amount < 1)
+				dispbottom "Invalid item id #"+.itemid+" and amount ("+.amount+").";
+			else donpcevent strnpcinfo(3)+"::OnReward";
+		}
+		end;
+		
+	OnReward:
+		if (.map$ == "all")
+			addrid(0);
+		else if (.map$ != "")
+			addrid(5, 0, .map$);
+		
+		getitem .itemid, .amount;
+		end;
+}
+//[npc:RewardNPC] <map_mapname|map|all>#512#100
+//@reward <map_name|map|all> 512 100

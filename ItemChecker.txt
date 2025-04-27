@@ -1,0 +1,237 @@
+/*
+function	F_MesItemInfo01	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+
+	if (.@itemname$ != "null" && .@itemname$ != "") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot > 0)
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+	} else {
+		.@itemname$ = "Unknown Item";
+	}
+
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+prontera,155,185,5	script	Item Checker	1_F_MARIA,{
+	input .@itemid;
+
+	// Verifica se o item é válido
+	if (getitemname(.@itemid) == "null" || getitemname(.@itemid) == "") {
+		mes "Invalid item.";
+		close;
+	}
+
+	// Previne SQL Injection usando variáveis no SQL em vez de concatenação direta
+	set .@sum, 0;
+	query_sql "SELECT " +
+		        "COALESCE((SELECT SUM(amount) FROM inventory WHERE nameid = ?), 0) + " +
+		        "COALESCE((SELECT SUM(amount) FROM cart_inventory WHERE nameid = ?), 0) + " +
+		        "COALESCE((SELECT SUM(amount) FROM storage WHERE nameid = ?), 0) + " +
+		        "COALESCE((SELECT SUM(amount) FROM guild_storage WHERE nameid = ?), 0) + " +
+		        "COALESCE((SELECT SUM(amount) FROM mail_attachments WHERE nameid = ?), 0)",
+		        .@itemid, .@itemid, .@itemid, .@itemid, .@itemid, .@sum;
+
+	mes F_MesItemInfo01(.@itemid) + " has a total amount of " + .@sum + " in the entire server.";
+	close;
+}
+*/
+
+/*
+function	script	F_MesItemInfo01	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+
+	if (.@itemname$ != "null" && .@itemname$ != "") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot > 0)
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+	} else {
+		.@itemname$ = "Unknown Item";
+	}
+
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+//prontera,155,185,5	script	Item Checker	1_F_MARIA,{
+sec_in02,166,153,3	script	Item Checker	1_F_MARIA,{
+	input .@itemid;
+
+	// Verifica se o item é válido
+	if (getitemname(.@itemid) == "null" || getitemname(.@itemid) == "") {
+		mes "Invalid item.";
+		close;
+	}
+
+	// Previne SQL Injection usando variáveis no SQL em vez de concatenação direta
+	set .@sum, 0;
+query_sql "SELECT " +
+		"COALESCE((SELECT SUM(amount) FROM inventory WHERE nameid = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM cart_inventory WHERE nameid = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM guild_storage WHERE nameid = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM storage WHERE nameid = "+ .@itemid +"), 0)",
+		.@sum;
+
+	mes " ";
+	mes "The search was performed in:";
+	mes "Inventory, Cart Inventory, Guild Storage and Storage.^FF00FF";
+	mes F_MesItemInfo01(.@itemid) + " ^000000has a total amount of ^0000FF" + .@sum + "^000000 in the entire server.";
+	close;
+}
+*/
+
+/*
+prontera,155,185,5	script	Item Checker	1_F_MARIA,{
+	input .@itemid;
+
+	// Verifica se o item é válido
+	if (getitemname(.@itemid) == "null" || getitemname(.@itemid) == "") {
+		mes "Invalid item.";
+		close;
+	}
+
+	// Contar total de itens no servidor
+	set .@sum, 0;
+	query_sql "SELECT " +
+		"COALESCE((SELECT SUM(amount) FROM inventory WHERE nameid = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM cart_inventory WHERE nameid = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM storage WHERE nameid = "+ .@itemid +"), 0)",
+		.@sum;
+
+	// Mostrar total de itens no servidor
+	mes F_MesItemInfo(.@itemid) + " has a total amount of " + .@sum + " in the entire server.";
+
+	// Criar uma lista de jogadores que possuem o item
+	mes "Players who have this item:";
+	
+	// Verificar em INVENTORY
+	query_sql "SELECT DISTINCT char.name FROM inventory " +
+	          "INNER JOIN char ON inventory.char_id = char.char_id " +
+	          "WHERE inventory.nameid = "+ .@itemid, .@char_name$;
+	
+	if (getarraysize(.@char_name$) > 0) {
+		for (.@i = 0; .@i < getarraysize(.@char_name$); .@i++)
+			mes "^00FF00- "+ .@char_name$[.@i] +"^000000";
+	} else {
+		mes "No player has this item in their inventory.";
+	}
+
+	// Verificar em CART_INVENTORY
+	query_sql "SELECT DISTINCT char.name FROM cart_inventory " +
+	          "INNER JOIN char ON cart_inventory.char_id = char.char_id " +
+	          "WHERE cart_inventory.nameid = "+ .@itemid, .@char_name$;
+
+	if (getarraysize(.@char_name$) > 0) {
+		for (.@i = 0; .@i < getarraysize(.@char_name$); .@i++)
+			mes "^FFA500- "+ .@char_name$[.@i] +" (Cart)^000000";
+	}
+
+	// Fechar o diálogo
+	close;
+}
+*/
+
+//funciona de boa
+/*
+function	script	F_MesItemInfo01	{
+	.@item = getarg(0);	// Obtém o ID do item passado como argumento
+	.@itemname$ = getitemname(.@item);	// Obtém o nome do item
+
+	if (.@itemname$ != "null" && .@itemname$ != "") {
+		.@itemslot = getitemslots(.@item);	// Obtém a quantidade de slots do item
+		if (.@itemslot > 0)
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);	// Adiciona os slots no nome
+	} else {
+		.@itemname$ = "Unknown Item";	// Se o item não existir, define um nome padrão
+	}
+
+	// Retorna o nome do item formatado
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+sec_in02,166,153,3	script	Item Checker	1_F_MARIA,{
+	input .@itemid;	// O jogador insere o ID do item
+
+	// Verifica se o item é válido
+	if (getitemname(.@itemid) == "null" || getitemname(.@itemid) == "") {
+		mes "Invalid item.";
+		close;
+	}
+
+	// Previne SQL Injection e faz uma busca completa nos bancos de dados
+	set .@sum, 0;
+	query_sql "SELECT " +
+		"COALESCE((SELECT SUM(amount) FROM `inventory` WHERE `nameid` = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM `cart_inventory` WHERE `nameid` = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM `storage` WHERE `nameid` = "+ .@itemid +"), 0) + " +
+		"COALESCE((SELECT SUM(amount) FROM `guild_storage` WHERE `nameid` = "+ .@itemid +"), 0)", .@sum;
+
+	mes " ";
+	mes "The search was performed in:";
+	mes "All players' Inventory, Cart Inventory, Guild Storage, and Storage.^FF00FF";
+	mes F_MesItemInfo01(.@itemid) + " ^000000has a total amount of ^0000FF" + .@sum + "^000000 in the entire server.";
+	close;
+}
+*/
+
+
+function	script	F_MesItemInfo01	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+
+	if (.@itemname$ != "null" && .@itemname$ != "") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot > 0)
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+	} else {
+		.@itemname$ = "Unknown Item";
+	}
+
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+
+sec_in02,166,153,3	script	Item Checker	1_F_MARIA,{
+
+	mes " ";
+	mes "[ ^00FF00Item Checker^000000 ]";
+	mes "Enter the item ID you want to search:";
+	input .@itemid;
+
+	// ✅ Validação de ID do item
+	if (.@itemid <= 0 || getitemname(.@itemid) == "null" || getitemname(.@itemid) == "") {
+		mes "Invalid item. Please enter a valid ID.";
+		close;
+	}
+
+	set .@sum, 0;
+	set .@inventory, 0;
+	set .@cart, 0;
+	set .@storage, 0;
+	set .@guild_storage, 0;
+
+	// ✅ Consulta SQL segura com escape
+	query_sql "SELECT SUM(amount) FROM `inventory` WHERE `nameid` = "+ escape_sql(.@itemid) +"", .@inventory;
+	query_sql "SELECT SUM(amount) FROM `cart_inventory` WHERE `nameid` = "+ escape_sql(.@itemid) +"", .@cart;
+	query_sql "SELECT SUM(amount) FROM `storage` WHERE `nameid` = "+ escape_sql(.@itemid) +"", .@storage;
+	query_sql "SELECT SUM(amount) FROM `guild_storage` WHERE `nameid` = "+ escape_sql(.@itemid) +"", .@guild_storage;
+
+	// ✅ Soma total do item
+	set .@sum, .@inventory + .@cart + .@storage + .@guild_storage;
+
+	mes "Item Search Results:^FF00FF";
+	mes F_MesItemInfo01(.@itemid);
+	mes "^000000-----------------------------------";
+	mes "^008080Total in Server: ^FF0000" + .@sum + "^000000";
+	mes "^008080Inventory: ^0000FF" + .@inventory + "^000000";
+	mes "^008080Cart: ^0000FF" + .@cart + "^000000";
+	mes "^008080Storage: ^0000FF" + .@storage + "^000000";
+	mes "^008080Guild Storage: ^0000FF" + .@guild_storage + "^000000";
+	mes "-----------------------------------";
+
+	if (.@sum == 0) {
+		mes "^FF0000This item does not exist in the server.^000000";
+	}
+
+	close;
+}

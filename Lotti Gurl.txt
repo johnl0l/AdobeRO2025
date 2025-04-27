@@ -1,0 +1,129 @@
+// ------------------------------------
+// Lotti Gurl
+// [ Modified Version ] NubDes
+// SSRO TEAM
+// ------------------------------------
+
+prontera,147,175,5	script	Bebang's Lotti	408,{
+
+set .@urnpcs$,"[ ^FFC0CBAling Bebang^000000 ]";
+
+if(Weight >= MaxWeight/2) goto Low;
+menu "^1E90FFDeal me in^000000!",L_Deal,"^0000FFExplanation^000000",L_Explan,"^FF0000Nothing^000000.",L_Cancel;
+
+L_NoZeny:
+	mes .@urnpcs$;
+	mes "Are you kidding me?";
+	close;
+
+L_Deal:
+	if(Weight >= MaxWeight/2) goto Low;
+	if (Zeny < 20000) goto L_NoZeny;
+	//mes " ";
+	set Zeny,Zeny-20000;
+	//delitem 7227,1;
+	set .@Total,27;		//Total de setarray
+	//<%>,<ItemID>,<Amount>
+	setarray .@P1[0],1,18760,1; 		// Improved Mage Hat [1] - 1%
+	setarray .@P2[0],1,18766,1; 	// Enhanced Helm of Angel [1] - 1%
+	setarray .@P3[0],1,5374,1; 		// Gigantic Baphomet Horn - 1%
+	setarray .@P4[0],1,5518,1; 		// Large Baphomet Horn - 1%
+	setarray .@P5[0],1,5013,1; 		// Lord Kaho's Horn - 1%
+	setarray .@P6[0],1,18767,1; 	// Enhanced Hat of the Sun God [1] 1%
+	setarray .@P7[0],1,18771,1; 	// Improved Opera Phantom Mask 1%
+	setarray .@P8[0],1,18773,1; 	// Advanced Fin Helm 1%
+	setarray .@P9[0],5,7619,rand(1,5); 		// Enriched Elu 5%
+	setarray .@P10[0],5,7620,rand(1,5); 		// Enriched Ori 5%
+	setarray .@P11[0],5,12210,1; 	// Bubble Gum 5%
+	setarray .@P12[0],5,14545,1; 	// 300% Manual 5%
+	setarray .@P13[0],40,7227,rand(2,5); 	// TCG Card 40%
+	setarray .@P14[0],60,12043,3; 	// Str + 3 60%
+	setarray .@P15[0],60,12048,3; 	// Int + 3 60%
+	setarray .@P16[0],60,12053,3; 	// Vit + 3 60%
+	setarray .@P17[0],60,12058,3; 	// Agi + 3 60%
+	setarray .@P18[0],60,12063,3; 	// Dex + 3 60%
+	setarray .@P19[0],60,12068,3; 	// Luk + 3 60%
+	setarray .@P20[0],80,678,10; 	// Poison Bottle 90%
+	setarray .@P21[0],90,664,1; 	// Red Gift Box 90%
+	setarray .@P22[0],90,665,1; 	// Yellow Gift Box 90%
+	setarray .@P23[0],90,667,1; 	// Green Gift Box 90%
+	setarray .@P24[0],90,rand(656,657),5; 	// Awakening Potion/Berserk Potion 90%
+	setarray .@P25[0],95,617,rand(1,5); 	// Old Purple Box 95%
+	setarray .@P26[0],95,11548,rand(20,80); 	// Siege White Potion 95%
+	setarray .@P27[0],95,11549,rand(20,80); 	// Siege Blue Potion 95%
+	setarray .@Default[0],644,1;	// if no Reward given (Bebang's Ticket will be the default) at 100%
+	set .@i, rand(1,.@Total);
+	if (rand(1,100) > getd(".@P"+.@i+"[0]"))
+	{
+		for(set .@j,0; .@j<getarraysize(.@Default); set .@j,.@j+2)
+		{
+			getitem .@Default[.@j], .@Default[.@j+1];
+			if(!.@k[0])
+				setarray .@k[0], .@Default[.@j], .@Default[.@j+1];
+		}
+	}
+	else{
+		for(set .@j,1; .@j<getarraysize(getd(".@P"+.@i)); set .@j,.@j+2)
+		{
+			getitem getd(".@P"+.@i+"["+.@j+"]"), getd(".@P"+.@i+"["+(.@j+1)+"]");
+			if (!.@k[0])
+			{
+				set .@gz,.@i;
+				setarray .@k[0], getd(".@P"+.@i+"["+.@j+"]"), getd(".@P"+.@i+"["+(.@j+1)+"]");
+				break;
+			}
+		}
+	}
+	if(1<=.@gz&&.@gz<=4)
+		announce "Congratulations! "+strcharinfo(0)+" just received "+getitemname(.@k[0])+" x "+.@k[1]+" from Lotti Girl (prontera 147 175)!",0;
+		specialeffect2 18;
+	end;
+
+//L_Whatodo:
+//switch(select("Continue:Stop")) {
+//	case 1:
+//		goto L_Deal;
+//	case 2:
+//		mes .@urnpcs$;
+//		mes "Are you that kind of poor?!";
+//		mes "Ok, Goodbye..";
+//		close;
+//	}
+
+L_Explan:
+	mes .@urnpcs$;
+	mes "Hello ^7B68EE"+strcharinfo(0)+"^000000! Are you out";
+	mes "shopping in the city?!";
+	next;
+	mes .@urnpcs$;
+	mes "I'm Lotti! I'll exchange cool";
+	mes "random prizes for every";
+	mes "^ff000020^000000,^ff0000000^000000.";
+	next;
+	mes .@urnpcs$;
+	mes "Our Grand prize is:";
+	mes "^DAA520Enhanced Hat of the Sun God ^000000[^ff00001^000000]";
+	mes "Special prizes are:";
+	mes "^8B4513Gigantic Baphomet Horns^000000";
+	mes "^A0522DLarge Baphomet Horns^000000";
+	mes "and ^FFD700Lord Kaho's Horn^000000";
+	next;
+	mes .@urnpcs$;
+	mes "You can still get random item";
+	mes "if you failed to get the grand";
+	mes "prize and special prizes.";
+	close;
+	
+L_Cancel:
+	mes .@urnpcs$;
+	mes "Ok, come back when you got enough ^ff0000money^000000..";
+	close;
+
+Low:
+	mes .@urnpcs$;
+	mes "You are ^ff0000Overweight^000000!";
+	close;
+OnInit:
+	waitingroom "Lotti 20k",0;
+	end;
+}

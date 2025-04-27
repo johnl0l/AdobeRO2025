@@ -1,0 +1,9 @@
+prontera,150,180,0	script	OnlinePlayers	123,{
+	end;
+OnInit:
+	while (1) {
+		waitingroom "Players Online : "+ getmapusers(1), 0;
+		sleep 5000; // updates every 5 sec
+		delwaitingroom;
+	}
+}

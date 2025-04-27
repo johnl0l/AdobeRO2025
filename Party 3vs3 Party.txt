@@ -1,0 +1,154 @@
+/*
+partida de party contra party
+digamos 3 contra 3
+se um membro morrer, ele permanecerá morto
+e depois de (n) segundos, ele será ressuscitado automaticamente cheio de hp/sp
+
+para ganhar:
+a equipe adversária deve matar
+toda a party antes de serem ressuscitados novamente
+
+todo o grupo da equipe vencedora receberá
+prêmios aleatórios
+*/
+
+prontera,152,239,5	script	Party vs. Party	56,{
+function isreq;
+
+	callsub L_check;
+	if( select( "Register?", "Informations" ) == 2 ) {
+		mes "Party vs. Party Match:";
+		mes "Say 3 Against 3";
+		mes "If a Member Dies he Will Remain Dead";
+		mes "And After 20 Seconds he Will be Resurrected Automatically Full of HP/SP";
+		next;
+		mes "To Win:";
+		mes "The Opposing Team Must Kill";
+		mes "The Whole Party Before they are Resurrected Again";
+		mes "The Entire Group of the Winning Team will Receive";
+		mes "Random Prizes";
+		next;
+		mes "NOTE: 5 Min Then End of Event";
+		close;
+	}
+
+	if( !getcharid(1) ) {
+		mes "You're Not in a Party";
+		close;
+	}
+	else if( .party1 == getcharid(1) || .party2 == getcharid(1) ) {
+		mes "You're Already on My List";
+		close;
+	}
+	getpartymember getcharid(1);
+	if( $@partymembercount != .count_req || !instance_check_party( getcharid(1),.count_req ) ) {
+		mes "You Need "+ .count_req +" Players Online in Your Party";
+		close;
+	}
+	callsub L_check;
+	if( !.party2 )
+		.party2 = getcharid(1);
+	else
+		.party1 = getcharid(1);
+	dispbottom "Your Party is Now on My List";
+	if( !.party1 || !.party2 ) end;
+
+	.start = 1;
+	warpparty .map_event$, 6,50, .party1;
+	warpparty .map_event$, 93,49, .party2;
+	initnpctimer;
+	end;
+
+OnPCKillEvent:
+	.@self = getcharid(3);
+	.@killed = killedrid;
+	.@is_reg = isreq();
+	attachrid( .@killed );
+	if( !isreq() ) end;
+	getpartymember getcharid(1),1;
+	getpartymember getcharid(1),2;
+	for( .@i = 0; .@i < $@partymembercount; .@i++ ) {
+		if( isloggedin( $@partymemberaid[.@i], $@partymembercid[.@i] ) ) {
+			attachrid( $@partymemberaid[.@i] );
+			sleep2 1;
+			if( strcharinfo(3) == .map_event$ ) {
+				.@is_online += 1;
+				if( Hp < 1 )
+					.@count += 1;
+			}
+		}
+	}
+	if( .@is_online != .@count ) {
+		attachrid( .@killed );
+		sleep2( .wait * 1000 );
+		atcommand "@alive";
+		end;
+	}
+	else if( !.@is_reg ) end;
+
+	attachrid( .@self );
+	sleep2 2;
+	announce "Team "+ getpartyname( getcharid(1) ) +" Win The Event !", 0;
+	getpartymember getcharid(1);
+	getpartymember getcharid(1),1;
+	getpartymember getcharid(1),2;
+	for( .@i = 0; .@i < $@partymembercount; .@i++ )
+		if( isloggedin( $@partymemberaid[.@i], $@partymembercid[.@i] ) ) {
+			getmapxy .@map$, .@x, .@y, 0, $@partymembername$[.@i];
+			if( .@map$ == .map_event$ ) {
+				for( .@j = 0; .@j < .size_reward; .@j++ )
+					getitem .item_id[.@j], .item_count[.@j], $@partymemberaid[.@i];
+			}
+		}
+	stopnpctimer;
+	sleep 3000;
+
+OnTimer300000:	// 5 min then end of event
+	.start = .party1 = .party2 = 0;
+	mapwarp .map_event$,"prontera",0,0;
+	end;
+
+L_check:
+	if( .start ) end;
+	else if( getpartyname( .party1 ) == "null" )
+		.party1 = 0;
+	else if( getpartyname( .party2 ) == "null" )
+		.party2 = 0;
+	else if( getpartyname( .party1 ) != "null" ) {
+		getpartymember .party1;
+		if( $@partymembercount != .count_req || !instance_check_party( .party1,.count_req ) )
+			.party1 = 0;
+	}
+	else if( getpartyname( .party2 ) != "null" ) {
+		getpartymember .party2;
+		if( $@partymembercount != .count_req || !instance_check_party( .party2,.count_req ) )
+			.party2 = 0;
+	}
+	return;
+
+function isreq {
+	if( strcharinfo(3) == .map_event$ && .start && ( getcharid(1) == .party1 || getcharid(1) == .party2 ) ) return 1;
+	return 0;
+}
+OnInit:
+waitingroom "3 vs.3 Party!",0;
+end;
+	.map_event$ = "guild_vs2";	// seu mapa de eventos
+	.count_req = 3;	// contagem necessária na party para iniciar o evento
+	.wait = 20;		// tempo em segundos para ser ressuscitar
+	setarray .item_id, 11503,11504;		// item id array gained
+	setarray .item_count, 40,20;	// item count array gained - must be same size of .item_id array
+
+// Don't touch this part
+// ---------------------
+	.size_reward = getarraysize( .item_id );
+	setmapflag .map_event$,mf_noteleport;
+	setmapflag .map_event$,mf_nowarp;
+	setmapflag .map_event$,mf_nowarpto;
+	setmapflag .map_event$,mf_nomemo;
+	setmapflagnosave .map_event$,"prontera",0,0;
+	setmapflag .map_event$,mf_partylock;
+	setmapflag .map_event$,mf_pvp;
+	end;
+	
+}

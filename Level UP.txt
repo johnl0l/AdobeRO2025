@@ -1,0 +1,13 @@
+// By. ADM DuDu
+// Cronus Emulator
+// Versão: 1.0
+//ChangeLog: 1.0 = Iniciado NPC.
+
+sec_in02,128,148,0	script	....	111,{
+
+atcommand "@lvup 1";
+atcommand "@joblvup 1";
+
+end;
+
+}

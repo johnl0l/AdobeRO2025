@@ -1,0 +1,67 @@
+/*
+update item_db_re set equip_script = 'doevent "item_soullink::OnSoulLink";', unequip_script = 'sc_end SC_SOULLINK;' where id = 1201;
+update item_db_re set equip_script = 'addtimer 1, "Item_soullink::Onsoullink";', unequip_script = 'sc_end sc_spirit;' where id = 1201;
+19208,Rainbow Sash,Rainbow Sash,5,,,10,0,5,,1,0xFFFFFFFF,7,2,512,,0,1,1008,{ addtimer 1, "Item_soullink::Onsoullink"; },{},{ sc_end sc_spirit; }
+*/
+
+-	script	item_soullink	-1,{
+OnSoulLink:
+	if ( .@spirit = .spirit[BaseJob] );
+	else if ( Upper & 1 && BaseLevel < 70 )
+		.@spirit = 494;
+	else
+		end;
+	sc_start4 SC_SOULLINK, -1, 1, .@spirit,0,0;
+	skilleffect .@spirit, 1;
+	end;
+OnInit:
+	.spirit[Job_Alchemist] = 445;
+	.spirit[Job_Monk] = 447;
+	.spirit[Job_Star_Gladiator] = 448;
+	.spirit[Job_Sage] = 449;
+	.spirit[Job_Crusader] = 450;
+	.spirit[Job_SuperNovice] = 451;
+	.spirit[Job_Knight] = 452;
+	.spirit[Job_Wizard] = 453;
+	.spirit[Job_Priest] = 454;
+	.spirit[Job_Bard] = .spirit[Job_Dancer] = 455;
+	.spirit[Job_Rogue] = 456;
+	.spirit[Job_Assassin] = 457;
+	.spirit[Job_Blacksmith] = 458;
+	.spirit[Job_Hunter] = 460;
+	.spirit[Job_Soul_Linker] = 461;
+	end;
+}
+
+/*
+-	script	Item_soullink	-1,{
+Onsoullink:
+    if ( .@spirit = getd( ".spirit_id_"+ basejob ) );
+    else if ( upper & 1 && baselevel < 70 )
+        .@spirit = 494;
+    if ( .@spirit )
+        sc_start4 sc_spirit, 2000000000, 5, .@spirit,0,0;
+    skilleffect .@spirit, 5;
+    end;
+OnInit:
+    setd ".spirit_id_"+ Job_Alchemist, 445;
+    setd ".spirit_id_"+ Job_Monk, 447;
+    setd ".spirit_id_"+ Job_Star_Gladiator, 448;
+    setd ".spirit_id_"+ Job_Sage, 449;
+    setd ".spirit_id_"+ Job_Crusader, 450;
+    setd ".spirit_id_"+ Job_SuperNovice, 451;
+    setd ".spirit_id_"+ Job_Knight, 452;
+    setd ".spirit_id_"+ Job_Wizard, 453;
+    setd ".spirit_id_"+ Job_Priest, 454;
+    setd ".spirit_id_"+ Job_Bard, 455;
+    setd ".spirit_id_"+ Job_Dancer, 455;
+    setd ".spirit_id_"+ Job_Rogue, 456;
+    setd ".spirit_id_"+ Job_Assassin, 457;
+    setd ".spirit_id_"+ Job_Blacksmith, 458;
+    setd ".spirit_id_"+ Job_Hunter, 460;
+    setd ".spirit_id_"+ Job_Soul_Linker, 461;
+    end;
+}
+*/
+/*update item_db_re set script = 'doevent "item_soullink::OnSoulLink";' where id = 501;*/
+//-	script	item_soullink	-1,{OnSoulLink:	if ( .@spirit = .spirit[BaseJob] );	else if ( Upper & 1 && BaseLevel < 70 )		.@spirit = 494;	else		end;	sc_start4 SC_SOULLINK, -1, 1, .@spirit,0,0;	skilleffect .@spirit, 1;	end;OnInit:	.spirit[Job_Alchemist] = 445;	.spirit[Job_Monk] = 447;	.spirit[Job_Star_Gladiator] = 448;	.spirit[Job_Sage] = 449;	.spirit[Job_Crusader] = 450;	.spirit[Job_SuperNovice] = 451;	.spirit[Job_Knight] = 452;	.spirit[Job_Wizard] = 453;	.spirit[Job_Priest] = 454;	.spirit[Job_Bard] = .spirit[Job_Dancer] = 455;	.spirit[Job_Rogue] = 456;	.spirit[Job_Assassin] = 457;	.spirit[Job_Blacksmith] = 458;	.spirit[Job_Hunter] = 460;	.spirit[Job_Soul_Linker] = 461;	end;}

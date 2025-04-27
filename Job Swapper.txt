@@ -1,0 +1,386 @@
+//*********************************************************************************************************************************************************************************
+//***--Topic Link :		***\( ^ ~ ^ )/***
+//***
+//***
+//*********************************************************************************************************************************************************************************
+//***-- Script by :		***\( ^ ~ ^ )/***
+//***-- Emistry
+//***
+//*********************************************************************************************************************************************************************************
+//***-- Contact Info :	***\( ^ ~ ^ )/***
+//***-- My Email : Equinox1991@Gmail.com
+//***
+//*********************************************************************************************************************************************************************************
+//***-- Messages :		***\( ^ ~ ^ )/***
+//***-- Drop me a private message or email if you are looking for my helps ^^.
+//***-- Beside that, I am looking for a Server to work with ^^ .  
+//***-- I will do my best to help you ^^.
+//***-- More Details ? PM Me ^^.
+//***
+//*********************************************************************************************************************************************************************************
+//***Although these scripts might not suit or follow with what you have requested completely. But i still wish you can give it a try before reject the works.
+//***
+//*********************************************************************************************************************************************************************************
+//***-- Versions Update:	***\( ^ ~ ^ )/***
+//*** [ Version 1.4 ] - All Credits go to Emistry , just edited it for myieee on rathena.org . [ By Rikimaru ]
+//*** [ Version 1.3 ] - Added Message informing after Class Swapped . [ By Emistry ]
+//*** [ Version 1.2 ] - Added Conditions Check . [ By Emistry ]
+//*** [ Version 1.1 ] - Separate Classes into Categories. [ By Emistry ]
+//*** [ Version 1.0 ] - Simple Class Swap Script . [ By Emistry ]
+//***
+//*********************************************************************************************************************************************************************************
+//====================== Settings ============================0
+prontera,155,169,5	script	Class Swapper	100,{
+set .TCGID,7227;
+set @TCGamount,1;
+mes "[  Class Swapper  ]";
+if(BaseLevel < 99 || JobLevel < 70 ){
+mes"Only Base Level 99 and Job Level 70 Player can use my services.";
+close;
+}
+mes "Hi, i can change your current job class to other job class.";
+mes "Please choose you desired job class to change into.";
+next;
+switch (select ("Normal Job Class:Advanced Job Class:Expanded Job Class:Nothing")) {
+	Case 1:
+		mes "[  Class Swapper  ]";
+		mes "Choose more detail for your desired job class.";
+		switch (select ("Knight:Crusader:Assassin:Rogue:Wizard:Sage:Priest:Monk:Blacksmith:Alchemist:Hunter:Bard / Dancer")) {
+			Case 1:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Knight  now.";
+				jobchange 7;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 2:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Crusader now.";
+				jobchange 14;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 3:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a  Assassin now.";
+				jobchange 12;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 4:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Rogue  now.";
+				jobchange 17;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 5:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Wizard now.";
+				jobchange 9;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 6:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Sage now.";
+				jobchange 16;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 7:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Priest now.";
+				jobchange 8;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 8:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Monk now.";
+				jobchange 15;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 9:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Blacksmith now.";
+				jobchange 10;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 10:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Alchemist now.";
+				jobchange 18;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 11:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Hunter now.";
+				jobchange 11;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 12:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				if(Sex == 1 ){
+				mes "Okay.. i will transform you into a Bard now.";
+				jobchange 19;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				}
+				if(Sex == 0 ){
+				mes "Okay.. i will transform you into a Dancer now.";
+				jobchange 20;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				}
+				close2;
+				emotion e_heh;
+				end;
+				}
+
+	Case 2:
+		mes "[  Class Swapper  ]";
+		mes "Choose more detail for your desired job class.";
+		switch (select ("Lord Knight:Paladin:Assassin Cross:Stalker:High Wizard:Professor:High Priest:Champion:Whitesmith:Biochemist:Sniper:Clown / Gypsy")) {
+			Case 1:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Lord Knight  now.";
+				jobchange 4008;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 2:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Paladin now.";
+				jobchange 4015;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 3:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a  Assassin Cross now.";
+				jobchange 4013;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 4:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Stalker  now.";
+				jobchange 4018;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 5:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a High Wizard now.";
+				jobchange 4010;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 6:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Professor now.";
+				jobchange 4017;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 7:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a High Priest now.";
+				jobchange 4009;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 8:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Champion now.";
+				jobchange 4016;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 9:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Whitesmith now.";
+				jobchange 4011;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 10:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Biochemist now.";
+				jobchange 4019;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 11:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Sniper now.";
+				jobchange 4012;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 12:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				if(Sex == 1 ){
+				mes "Okay.. i will transform you into a Clown now.";
+				jobchange 4020;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				}
+				if(Sex == 0 ){
+				mes "Okay.. i will transform you into a Gypsy now.";
+				jobchange 4021;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				}
+				close2;
+				emotion e_heh;
+				end;
+				}
+
+	Case 3:
+		mes "[  Class Swapper  ]";
+		mes "Choose more detail for your desired job class.";
+		switch (select ("Super Novice:Gunslinger:Ninja:Taekwon:Star Gladiator:Soul Linker")) {
+			Case 1:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Super Novice now.";
+				jobchange 23;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 2:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Gunslinger now.";
+				jobchange 24;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 3:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Ninja now.";
+				jobchange 25;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 4:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Taekwon now.";
+				jobchange 4046;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 5:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Star Gladiator now.";
+				jobchange 4047;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+			Case 6:
+				mes "[  Class Swapper  ]";
+				if(countitem(.TCGID) < @TCGamount) goto l_noitem;
+				delitem .TCGID,@TCGamount;
+				mes "Okay.. i will transform you into a Soul Linker now.";
+				jobchange 4049;
+				dispbottom "Please search for Reset Girl to reset your status to gain back original stats that you should have on this character class.";
+				close2;
+				emotion e_heh;
+				end;
+				}
+	Case 4:
+				mes "[  Class Swapper  ]";
+				mes "Okay...Goodbye!";
+				close;
+		}
+close;
+l_noitem:
+mes "[  Class Swapper  ]";
+mes "Sorry you have to get the Items.";
+close;
+}

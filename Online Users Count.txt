@@ -1,0 +1,7 @@
+prontera,154,198,5	script	Online Users	757,{
+OnPCLoginEvent:
+OnPCLogoutEvent:
+delwaitingroom;
+waitingroom "Online : "+getusers(1),0;
+end;
+}

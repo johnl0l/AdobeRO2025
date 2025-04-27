@@ -1,0 +1,49 @@
+//Created Date: 04/07/2022
+-	script	AEOUS_MVP_DROP	FAKE_NPC,{
+	end;
+OnNPCKillEvent:
+	.@rnd = rand(1,100);
+	if( getmonsterinfo( killedrid,MOB_MVPEXP ) ) {
+	for( .@i = 0; .@i < getarraysize(.item_arrays); .@i += 3 ) {
+		if( .@rnd < .item_arrays[.@i+2] ) {
+			getitem .item_arrays[.@i], .item_arrays[.@i+1];
+			announce "Congratulations! Player "+ strcharinfo(0) +" has obtained "+ getitemname( .item_arrays[.@i] ) +" ["+ .item_arrays[.@i+1] +"] from "+ getmonsterinfo(killedrid, 0) +" (chance: "+.item_arrays[.@i+2]+"%) MVP Drop(s).",bc_all,0x00FF00;
+		}
+	}
+	end;
+}
+
+OnInit:
+//	(<structure,<item_id>,<chances>)
+	setarray .item_arrays[0],
+		7179,	1,	5,
+		7227,	1,	25,
+		7539,	1,	50;
+	end;
+}
+
+/*
+
+-	script	AEOUS_MVP_DROP	-1,{
+	end;
+	OnNPCKillEvent:
+		if ( getmonsterinfo( killedrid, 22 ) ) {
+			for ( .@i = 0; .@i < getarraysize( .items ); .@i += 3 ) {
+				if ( rand( 100 ) < .items[ .@i +  2 ] ) {
+					getitem .items[ .@i ], .items[ .@i + 1 ];
+					announce "Wow! " +strcharinfo( 0 )+ " has obtained " +getitemname( .items[ .@i ] )+ " [" +.items[ .@i + 1 ]+ "] from " +getmonsterinfo(killedrid, 0)+ ".",0;
+				}
+			}
+		}
+	end;
+	
+	OnInit:
+		// <item id>,<amount>,<chance>
+		setarray .items[0],14232, 2, 5,
+				   7615, 1, 3,
+				   7227, 1, 2,
+				   7179, 1, 1;
+		end;
+}
+
+*/

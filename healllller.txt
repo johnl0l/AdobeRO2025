@@ -1,0 +1,14 @@
+-	script	heallller	-1,{
+if ((@PC_LAST_HEAL_TIME +2) > gettimetick(2) && Zeny) {
+	set Zeny, Zeny -1;
+	set $healer_bank, $healer_bank +1; // enabled 2010-12-07
+}
+set @PC_LAST_HEAL_TIME, gettimetick(2);
+sc_start SC_BLESSING,300000,10;
+sc_start SC_INCREASEAGI,300000,10;
+sc_start SC_MAGNIFICAT,90000,5;
+sc_start SC_ANGELUS,300000,10;
+sc_start SC_ASSUMPTIO,100000,5;
+percentheal 100,100;
+}
+prontera,158,192,4	duplicate(heallller)	heallller#7	435,7,7

@@ -1,0 +1,75 @@
+prontera,148,166,3	script	Market	2_M_SAGE_OLD,{
+
+OnInit:
+   set .@npcname$,"Market"
+end;
+
+OnPCOpenShop:
+   mes "[Market]";
+   next;
+   mes "Bem-vindo! O que você gostaria de vender?";
+   next;
+   if(!.@shopopen){
+      setarray .@itemlist[],0;
+      setarray .@itemvalue[],0;
+      .@shopopen = 1;
+   }
+   for(.@i = 0; .@i < getarraysize(.@itemlist); .@i++){
+      if(.@itemlist[.@i]){
+         mes "[Market]";
+         next;
+         mes "Item: "+getitemname(.@itemlist[.@i])+" | Preço: "+.@itemvalue[.@i]+" zeny";
+         next;
+      }
+   }
+   mes "[Market]";
+   next;
+   mes "O que você gostaria de fazer?";
+   next;
+   switch(select("Adicionar item:Remover item:Editar preço:Fechar loja")){
+      case 1:
+         mes "[Market]";
+         next;
+         .@item = selectitem(0);
+         .@itemindex = getarraysize(.@itemlist);
+         .@itemlist[.@itemindex] = .@item;
+         mes "Qual o preço que você gostaria de vender "+getitemname(.@item)+"?";
+         input .@price, 0, 0;
+         .@itemvalue[.@itemindex] = .@price;
+         close2;
+      case 2:
+         mes "[Market]";
+         next;
+         for(.@i = 0; .@i < getarraysize(.@itemlist); .@i++){
+            if(.@itemlist[.@i]){
+               mes .@i+": "+getitemname(.@itemlist[.@i]);
+            }
+         }
+         mes "Qual item você gostaria de remover?";
+         input .@index, 0, getarraysize(.@itemlist) - 1;
+         .@itemlist[.@index] = 0;
+         .@itemvalue[.@index] = 0;
+         close2;
+      case 3:
+         mes "[Market]";
+         next;
+         for(.@i = 0; .@i < getarraysize(.@itemlist); .@i++){
+            if(.@itemlist[.@i]){
+               mes .@i+": "+getitemname(.@itemlist[.@i])+" | Preço atual: "+.@itemvalue[.@i]+" zeny";
+            }
+         }
+         mes "Qual item você gostaria de editar o preço?";
+         input .@index, 0, getarraysize(.@itemlist) - 1;
+         mes "Qual seria o novo preço para "+getitemname(.@itemlist[.@index])+"?";
+         input .@price, 0, 0;
+         .@itemvalue[.@index] = .@price;
+         close2;
+      case 4:
+         mes "[Market]";
+         next;
+         mes "Até logo!";
+         .@shopopen = 0;
+         close;
+   }
+end;
+}

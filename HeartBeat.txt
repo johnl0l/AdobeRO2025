@@ -1,0 +1,16 @@
+-	script	HeartBeat#Sys	-,{
+
+end;
+
+OnPCLoginEvent:
+addtimer 3000,"OnCheckHealth";
+
+OnCheckHealth:
+while( Hp <= MaxHp/50 )
+{
+	emotion e_swt;
+	soundeffect "heartbeat.wav",0;
+	sleep 5000;
+}
+
+}

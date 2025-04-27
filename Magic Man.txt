@@ -1,0 +1,61 @@
+prontera.gat,156,169,3	script	Magic Man	100,{
+npctalk "Just try and get me!";
+setcell "prontera",148,175,163,164,cell_walkable,0; // Sets cells unwalkable
+//setcell "prontera",148,175,163,175,0,0; Does the same thing but using a number for type.
+emotion e_gg,0;
+sleep 1000*10;
+emotion e_swt,0;
+npctalk "My magicks all gone!!!";
+setcell "prontera",148,175,163,164,cell_walkable,1; // Sets cells walkable again 
+}
+/*
+Creates nontraversable cells in the given area.
+
+	   (y1)	     N
+	[ ][ ][ ][ ][ ][ ][ ][ ][ ]
+    (x1)[ ][1][u][u][u][u][u][u][ ]
+	[ ][u][u][u][u][u][u][u][ ]
+	[ ][u][u][u][u][u][u][u][ ]
+      W	[ ][u][u][u][x][u][u][u][ ]E
+	[ ][u][u][u][u][u][u][u][ ]
+	[ ][u][u][u][u][u][u][2][ ](x2)
+	[ ][ ][ ][ ][ ][ ][ ][ ][ ]
+	[ ][ ][ ][ ][ ][ ][ ][ ][ ]
+	             S       (y2)
+Key:
+	[x]=NPC
+	[u]=unwalkable cells
+	[ ]=walkable cells
+	[1]=The point where x1 & y1 meet.
+	[2]=The point where x2 & y2 meet.
+	
+	
+Description explained:
+*setcell "<map name>",<x1>,<y1>,<x2>,<y2>,<type>,<flag>;
+
+	"<map name>" = String: of the map you want the wall to be on.
+	<x1> = Int: for the x1 cord. ( can be found using /where )
+	<y1> = Int: for the y1 cord. ( can be found using /where )
+	<x2> = Int: for the x2 cord. ( can be found using /where )
+	<y2> = Int: for the y2 cord. ( can be found using /where )
+	<type> = Int: This is a parameter for what kind of cell you want to set. (Check the list below.)
+	<flag> = Int: Can be 0 or 1. (0:off) (1:on)
+	
+<type> list:
+cell_walkable	0
+cell_shootable	1
+cell_water	2
+cell_npc	3
+cell_basilica	4
+cell_landprotector	5
+cell_novending	6
+cell_nochat	7
+
+This list can also be found in db/const.txt
+
+If you're still having problems with x1,y1 -> x2,y2 I like to think of it like clicking and dragging on your desktop.
+Where point x1,y1 is where you started and x2,y2 is where you stop.
+
+Also setcell doesn't work as well for creating walls as setwall.
+
+*/

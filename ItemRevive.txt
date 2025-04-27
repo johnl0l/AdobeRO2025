@@ -1,0 +1,16 @@
+-	script	ItemRevive	FAKE_NPC,{
+OnPCDieEvent:
+	if (countitem(.revitem) < .revitemamt) end;
+	sleep2 1000;
+	atcommand "@alive "+strcharinfo(0);
+	dispbottom ""+.revitemamt+" "+getitemname(.revitem)+" it was consumed to bring you life!";
+	delitem .revitem,.revitemamt;
+	end;
+	
+OnInit:
+	// Set .revitem to any misc item you want, needed for you to revive
+	// Set .revitemamt to the amount needed on your misc item
+	.revitem = 610;
+	.revitemamt = 2;
+	end;
+}
