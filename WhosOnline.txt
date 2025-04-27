@@ -1,0 +1,12 @@
+-	script	Lucky_Pick	-1,{
+OnMinute00:
+	sleep 1000 * rand(60);
+	if(addrid(0)){
+		if(checkidle() < 600) setarray .AccountIds[getarraysize(.AccountIds)],getcharid(3);
+		detachrid;
+	} else { end; }
+	while(!attachrid(.AccountIds[rand(getarraysize(.AccountIds))]));
+	getitem 7539,5;
+	announce "[ Lucky Prize ]" + strcharinfo(0) + " recived a prize from whos online event",0;
+end;
+}

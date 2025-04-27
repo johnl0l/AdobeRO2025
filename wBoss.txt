@@ -1,0 +1,27 @@
+-	script	WorldBoss::alwbman	-1,{
+	end;
+	
+OnNPCKillEvent:
+	.wbKilledMob++;
+	if(.wbKilledMob >= .killPopBoss)
+	{
+		.@map$ = .townMap$[rand(getarraysize(.townMap$) - 1)];
+		areamonster .@map$, 0, 0, 250, 250, "--ja--", .wBossId, 1, strnpcinfo(3) + "::OnWBossDied";
+		announce "[World Boss] A World Boss appeared in " + .@map$ + " to avenge all those dead monsters adventurers killed!", bc_all, 0xFF0000;
+	}
+	end;
+	
+OnWBossDied:
+	announce "[World Boss] " + strcharinfo(0) + " killed the World Boss! Congratulations!", bc_all, 0xFF0000;
+	getitem .rewardId, .rewardCount;
+	.wbKilledMob = 0;
+	end;
+	
+OnInit:
+	.killPopBoss = 10000;		//Numero de monstro ah mataR
+	setarray .townMap$[0],"prontera","geffen","morocc","payon","izlude","alberta","aldebaran","brasilis","dewata"; //to fill
+	.wBossId = 1630;			//Id do MVP
+	.rewardId = 512;			//ID do Item
+	.rewardCount = 50;			//quantidade do Item
+	end;
+}

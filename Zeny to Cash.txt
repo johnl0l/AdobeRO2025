@@ -1,0 +1,62 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+//Zeny to Cash Exchanger NPC by Johnlol
+sec_in02,149,170,2	script	Zeny To Cash	10025,{
+
+	mes "[ ^0000FFZeny^000000 to ^00FF00Cash^000000 Exchanger ]";
+	mes "Exchange Rate:";
+ 	mes "^0000FF100000^000000 zeny = ^00FF001^000000 Cash point";
+	mes "Exchange ^00FF0010^000000 Cash points get free ^FF45001^000000 Kafra point";
+	mes "Please select the service you want:";
+	next;
+	menu "^FF0000Exchange^000000",Le0,"^00FF00Check Cash Point^000000",Edis2,"^696969Quit^000000",LeEnd;
+	
+	Le0:
+		set @bEavail,(Zeny/100000);
+		mes "[ ^0000FFZeny^000000 to ^00FF00Cash^000000 Exchanger ]";
+		mes "^7B68EE" + strcharinfo(0) + "^000000";
+		mes "Available Cash Points to Exchange: ^00FF00" + @bEavail + "^000000";
+		mes "How Many Cash Points you want to Exchange?";
+		input @ExchangeEC;
+		set @ttalEC,(@ExchangeEC*100000);
+		if (Zeny < @ttalEC) goto ENeedZenys;
+		mes "That will be ^0000FF" + @ttalEC + "^000000z!";
+		next;
+		mes "Do you still wanna Exchange Cash Points?";
+		menu "^FF0000Exchange^000000",LEyes,"^696969Ive change my mind^000000",LEno;
+		LEyes:
+		set #CASHPOINTS,#CASHPOINTS+@ExchangeEC;
+		set #KAFRAPOINTS,#KAFRAPOINTS+(#CASHPOINTS/10);
+		set Zeny,zeny-@ttalEC;
+		Set @CEx,#CASHPOINTS;
+		Set @KEx,#KAFRAPOINTS;
+		set #totalExchange,#totalExchange+@ExchangeEC;
+		goto Edis2;
+		close;
+		LEno:
+		mes "Thanks you ^7B68EE" + strcharinfo(0) + "^000000!";
+		mes "Come Again!";
+		close;
+	Edis2:
+		mes "Your Available Cash Point ^00FF00" + #CASHPOINTS + "^000000! ";
+		mes "Your Available Kafra Point ^FF4500" + #KAFRAPOINTS + "^000000! ";
+		close;
+		ENeedZenys:
+			mes "Sorry, you don't have enough Zeny.";
+			close;
+	LeEnd:
+		close;	
+
+
+	OnInit:
+	waitingroom "Zeny To Cash point Exchange",0;
+	end;
+
+}

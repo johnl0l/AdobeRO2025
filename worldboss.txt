@@ -1,0 +1,23 @@
+prontera,0,0,4	script	World Boss	123,{
+	
+OnNPCKillEvent:
+	.wbKilledMob++;
+	if(.wbKilledMob >= .killPopBoss)
+	{
+		.@map$ = .townMap$[rand(getarraysize(.townMap$) - 1)];
+		areamonster .@map$, 0, 0, 250, 250, "--ja--", .wbBossId, 1, strnpcinfo(3) + "::OnWBossDied";
+		announce "[World Boss]Titan: You humans have pushed your luck too hard prepare people in " + .@map$ + " i have come to avenge all my dead warriors that you humans haved killed!", bc_all, 0xFF0000;
+	}
+	end;
+	
+OnWBossDied:
+	announce "[World Boss]Titan: You,you're strong " + strcharinfo(0) + " , but this is not the end i will come back stronger to avenge my dead warriors, HA!!HA!!HA!!HA!!", bc_all, 0xFF0000;
+	.wbKilledMob = 0;
+	end;
+	
+OnInit:
+	.killPopBoss = 10;
+	setarray .townMap$[0],"prontera","morocc","geffen","payon","alberta","aldebaran","xmas","comodo","yuno","amatsu","gonryun","umbala","louyang","ayothaya","eibroch","hugel","rachel","veins","moscovia"; //to fill
+	.wbBossId = 1623;
+	end;
+}

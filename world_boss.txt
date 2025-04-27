@@ -1,0 +1,623 @@
+/*
+? Evento de World Boss baseado no número de monstros mortos.
+? Spawna um boss em uma cidade aleatória quando o limite de mortes é atingido.
+? Anúncio global sobre a aparição do boss.
+? O jogador que derrotar o boss recebe recompensas e Cash Points.
+? Atualização em tempo real do número de monstros restantes via waiting room.
+
+Esse script é ótimo para incentivar o grinding no servidor e criar eventos dinâmicos para os jogadores!
+*/
+
+/*
+prontera,183,213,4	script	World Boss	621,{
+.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+mes .npc$;
+mes "Status : " +($world_boss_active == 1?"^00FF00Active^000000":"^FF0000Inactive^000000");	//Status do World Boss (Active ou Inactive).
+mes "Kill Remaining - [ ^0000FF"+.@kill_count+"^000000 ]";	// Quantos monstros ainda precisam ser mortos para ativá-lo.
+
+	// Exibir onde o Boss está, caso já tenha sido invocado
+	if ($world_boss_active == 1) {
+		mes "^808080=============================^000000";
+		mes "World Boss is currently at: ^FF0000" + .townMap$ + "^000000!";
+	} else {
+		mes "^808080=============================^000000";
+		mes "No World Bosses are currently active.";
+	}
+	
+mes "^808080=============================^000000";
+mes "^FFD700R^0000FFe^008000w^6959CDa^FF4500r^1E90FFd^000000:";
+mes "^1E90FF"+getitemname(.reward1Id[0])+"^000000 (^0000FF"+.reward1Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "^FF4500"+getitemname(.reward2Id[0])+"^000000 (^0000FF"+.reward2Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "^6959CD"+getitemname(.reward3Id[0])+"^000000 (^0000FF"+.reward3Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "^008000"+getitemname(.reward4Id[0])+"^000000 (^0000FF"+.reward4Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "+^0000FF"+.cash+"^000000 ^FFD700Cash Points^000000";	// As recompensas oferecidas.
+mes "^808080=============================^000000";
+end;
+
+OnNPCKillEvent:
+	if($world_boss_active == 1) end;
+		$world_boss_counter += 1;
+		if($world_boss_counter == .monster_kill_requirement){ 
+			.@map$ = .townMap$[rand(getarraysize(.townMap$) - 1)];
+			donpcevent "World Boss::OnSummon";
+			}
+		end;
+
+OnSummon:
+	$world_boss_active = 1;	// Define 1 para marcar o boss como ativo.
+	.@map$ = .townMap$[rand(getarraysize(.townMap$) - 1)];	// Escolhe aleatoriamente uma cidade da lista townMap$ para o spawn.
+	//monster "prontera",156,119,"World Boss",1002,1,"World Boss::OnBossKill";
+	areamonster .@map$, 0, 0, 250, 250, "World Boss", .wBossId, 1, strnpcinfo(3) + "::OnBossKill";
+	announce "[World Boss] A World Boss appeared in " + .@map$ + " to avenge all those dead monsters adventurers killed!", bc_all, 0xFF0000;	//// Cria um monstro chamado "World Boss" na cidade escolhida.
+	end;
+	
+OnBossKill:
+	announce "[World Boss] " + strcharinfo(0) + " killed the World Boss! Congratulations!", bc_all, 0xFF0000;	// Anuncia globalmente o jogador que derrotou o boss.
+	$world_boss_active = 0;	// Reseta o contador de monstros
+	$world_boss_counter = 0;	// Define 0 para permitir um novo evento no futuro.
+	getitem .reward1Id, .reward1Count;	// Dá os itens de recompensa ao jogador.
+	getitem .reward2Id, .reward2Count;	// Dá os itens de recompensa ao jogador.
+	getitem .reward3Id, .reward3Count;	// Dá os itens de recompensa ao jogador.
+	getitem .reward4Id, .reward4Count;	// Dá os itens de recompensa ao jogador.
+	#CASHPOINTS = #CASHPOINTS + .cash;	// Adiciona Cash Points à conta do jogador.
+	dispbottom "Gained : "+ .cash +" Cash Points.";
+	end;
+		
+OnInit:
+//============================================================
+//=================== Configuration ==========================
+//============================================================
+	.npc$ = "[^FF7F00 World Boss ^000000]";	// Name of NPC;
+	.monster_kill_requirement = 200;	// Quantidade de monstros necessários para ativar o boss
+	setarray .townMap$[0],"prontera", "morocc", "geffen", "payon",
+		"alberta", "aldebaran", "xmas", "comodo",
+		"yuno", "amatsu", "gonryun", "umbala",
+		"louyang", "ayothaya", "einbroch", "hugel",
+		"rachel", "veins", "moscovia", "izlude";	// Lista de cidades onde o boss pode aparecer
+	.wBossId = 2253;	// ID do World Boss
+	.reward1Id = 7528;	// Itens de recompensa 1
+	.reward2Id = 7859;	// Itens de recompensa 2
+	.reward3Id = 12199;	// Itens de recompensa 3
+	.reward4Id = 7227;	// Itens de recompensa 4
+	.reward1Count = 1;	// Quantidade da recompensa 1
+	.reward2Count = 1;	// Quantidade da recompensa 2
+	.reward3Count = 100;	// Quantidade da recompensa 3
+	.reward4Count = 100;	// Quantidade da recompensa 4
+	.cash = 100;	// Cash Points recebidos pelo jogador vencedor
+//============================================================
+//Esse trecho do código cria uma waiting room que exibe quantos monstros ainda precisam ser mortos para o boss aparecer.
+//Ele atualiza a contagem a cada 1 segundo.
+//============================================================
+	freeloop(1);
+	while(1){
+		.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+		waitingroom "Kill Left : ["+.@kill_count+"]",0;
+		//showscript "Kill Left : ["+.@kill_count+"]";
+		sleep 1000; //= 1 Second Refresh
+		delwaitingroom;
+	}
+	freeloop(0);
+	end;
+}
+*/
+
+
+
+
+prontera,183,213,4	script	World Boss	621,{
+.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+mes .npc$;
+mes "Status : " +($world_boss_active == 1?"^00FF00Active^000000":"^FF0000Inactive^000000");	//Status do World Boss (Active ou Inactive).
+mes "Kill Remaining - [ ^0000FF"+.@kill_count+"^000000 ]";	// Quantos monstros ainda precisam ser mortos para ativá-lo.
+
+	// Exibir onde o Boss está, caso já tenha sido invocado
+	if ($world_boss_active == 1) {
+		mes "^808080=============================^000000";
+		mes "World Boss is currently at: ^FF0000" + $world_boss_map$ + "^000000!";
+	} else {
+		mes "^808080=============================^000000";
+		mes "No World Bosses are currently active.";
+	}
+	
+mes "^808080=============================^000000";
+mes "Reward:";
+mes "^1E90FF"+getitemname(.reward1Id[0])+"^000000 (^0000FF"+.reward1Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "^FF4500"+getitemname(.reward2Id[0])+"^000000 (^0000FF"+.reward2Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "^6959CD"+getitemname(.reward3Id[0])+"^000000 (^0000FF"+.reward3Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "^008000"+getitemname(.reward4Id[0])+"^000000 (^0000FF"+.reward4Count[0]+"^000000)";	// As recompensas oferecidas.
+mes "+^0000FF"+.cash+"^000000 ^FFD700Cash Points^000000";	// As recompensas oferecidas.
+mes "^808080=============================^000000";
+end;
+
+OnNPCKillEvent:
+	if($world_boss_active == 1) end;
+		$world_boss_counter += 1;
+		if($world_boss_counter == .monster_kill_requirement){ 
+			$world_boss_map$ = .townMap$[rand(getarraysize(.townMap$) - 1)];
+			donpcevent "World Boss::OnSummon";
+		}
+	end;
+
+OnSummon:
+	$world_boss_active = 1;	// Define 1 para marcar o boss como ativo.
+	$world_boss_map$ = .townMap$[rand(getarraysize(.townMap$) - 1)];	// Escolhe aleatoriamente uma cidade da lista townMap$ para o spawn.
+	areamonster $world_boss_map$, 0, 0, 250, 250, "World Boss", .wBossId, 1, strnpcinfo(3) + "::OnBossKill";
+	announce "[World Boss] A World Boss appeared in " + $world_boss_map$ + " to avenge all those dead monsters adventurers killed!", bc_all, 0xFF0000;
+	end;
+	
+OnBossKill:
+	announce "[World Boss] " + strcharinfo(0) + " killed the World Boss! Congratulations!", bc_all, 0xFF0000;
+	$world_boss_active = 0;	// Reseta o contador de monstros
+	$world_boss_counter = 0;	// Define 0 para permitir um novo evento no futuro.
+	getitem .reward1Id, .reward1Count;	// Dá os itens de recompensa ao jogador.
+	getitem .reward2Id, .reward2Count;	// Dá os itens de recompensa ao jogador.
+	getitem .reward3Id, .reward3Count;	// Dá os itens de recompensa ao jogador.
+	getitem .reward4Id, .reward4Count;	// Dá os itens de recompensa ao jogador.
+	#CASHPOINTS = #CASHPOINTS + .cash;	// Adiciona Cash Points à conta do jogador.
+	dispbottom "Gained : "+ .cash +" Cash Points.";
+	end;
+		
+OnInit:
+//============================================================
+//=================== Configuration ==========================
+//============================================================
+	.npc$ = "[^FF7F00 World Boss ^000000]";	// Name of NPC;
+	.monster_kill_requirement = 20000;	// Quantidade de monstros necessários para ativar o boss
+	setarray .townMap$[0],"prontera", "morocc", "geffen", "payon",
+		"alberta", "aldebaran", "xmas", "comodo",
+		"yuno", "amatsu", "gonryun", "umbala",
+		"louyang", "ayothaya", "einbroch", "hugel",
+		"rachel", "veins", "moscovia", "izlude";	// Lista de cidades onde o boss pode aparecer
+	.wBossId = 2253;	// ID do World Boss
+	.reward1Id = 7528;	// Itens de recompensa 1
+	.reward2Id = 7859;	// Itens de recompensa 2
+	.reward3Id = 12199;	// Itens de recompensa 3
+	.reward4Id = 7227;	// Itens de recompensa 4
+	.reward1Count = 1;	// Quantidade da recompensa 1
+	.reward2Count = 1;	// Quantidade da recompensa 2
+	.reward3Count = 100;	// Quantidade da recompensa 3
+	.reward4Count = 100;	// Quantidade da recompensa 4
+	.cash = 100;	// Cash Points recebidos pelo jogador vencedor
+//============================================================
+//Esse trecho do código cria uma waiting room que exibe quantos monstros ainda precisam ser mortos para o boss aparecer.
+//Ele atualiza a contagem a cada 1 segundo.
+//============================================================
+	freeloop(1);
+	while(1){
+		.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+		waitingroom "Kill Left : ["+.@kill_count+"]",0;
+		//showscript "Kill Left : ["+.@kill_count+"]";
+		sleep 1000; //= 1 Second Refresh
+		delwaitingroom;
+	}
+	freeloop(0);
+	end;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+prontera,183,213,4	script	World Boss	621,{
+.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+mes .npc$;
+mes "Status : " +($world_boss_active == 1?"^00FF00Active^000000":"^FF0000Inactive^000000");
+mes "Kill Remaining - [ ^0000FF"+.@kill_count+"^000000 ]";
+
+if ($world_boss_active == 1) {
+	mes "^808080=============================^000000";
+	mes "O World Boss está atualmente em: ^FF0000" + $world_boss_location + "^000000!";
+}
+
+mes "^808080=============================^000000";
+mes "Reward:";
+mes "^1E90FF"+getitemname(.reward1Id)+"^000000 (^0000FF"+.reward1Count+"^000000)";
+mes "^FF4500"+getitemname(.reward2Id)+"^000000 (^0000FF"+.reward2Count+"^000000)";
+mes "^6959CD"+getitemname(.reward3Id)+"^000000 (^0000FF"+.reward3Count+"^000000)";
+mes "^008000"+getitemname(.reward4Id)+"^000000 (^0000FF"+.reward4Count+"^000000)";
+mes "+^0000FF"+.cash+"^000000 ^FFD700Cash Points^000000";
+mes "^808080=============================^000000";
+end;
+
+OnNPCKillEvent:
+	if($world_boss_active == 1) end;
+		$world_boss_counter += 1;
+		if($world_boss_counter == .monster_kill_requirement){ 
+			donpcevent "World Boss::OnSummon";
+		}
+	end;
+
+OnSummon:
+	$world_boss_active = 1;
+	$world_boss_location = .townMap$[rand(getarraysize(.townMap$) - 1)]; // Define a cidade onde o boss será spawnado
+	areamonster $world_boss_location, 0, 0, 250, 250, "World Boss", .wBossId, 1, strnpcinfo(3) + "::OnBossKill";
+	announce "[World Boss] O World Boss apareceu em " + $world_boss_location + "! Preparem-se para o desafio!", bc_all, 0xFF0000;
+	end;
+	
+OnBossKill:
+	announce "[World Boss] " + strcharinfo(0) + " derrotou o World Boss! Parabéns!", bc_all, 0xFF0000;
+	$world_boss_active = 0;
+	$world_boss_counter = 0;
+	getitem .reward1Id, .reward1Count;
+	getitem .reward2Id, .reward2Count;
+	getitem .reward3Id, .reward3Count;
+	getitem .reward4Id, .reward4Count;
+	#CASHPOINTS = #CASHPOINTS + .cash;
+	dispbottom "Ganhou: "+ .cash +" Cash Points.";
+	end;
+		
+OnInit:
+	.npc$ = "[^FF7F00 World Boss ^000000]";
+	.monster_kill_requirement = 20000;
+	setarray .townMap$[0], "prontera", "morocc", "geffen", "payon",
+		"alberta", "aldebaran", "xmas", "comodo",
+		"yuno", "amatsu", "gonryun", "umbala",
+		"louyang", "ayothaya", "einbroch", "hugel",
+		"rachel", "veins", "moscovia", "izlude";
+	.wBossId = 2253;
+	.reward1Id = 7528;
+	.reward2Id = 7859;
+	.reward3Id = 12199;
+	.reward4Id = 7227;
+	.reward1Count = 1;
+	.reward2Count = 1;
+	.reward3Count = 100;
+	.reward4Count = 100;
+	.cash = 100;
+
+	freeloop(1);
+	while(1){
+		.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+		waitingroom "Kill Left : ["+.@kill_count+"]",0;
+		sleep 1000;
+		delwaitingroom;
+	}
+	freeloop(0);
+	end;
+}
+*/
+
+/*
+prontera,183,213,4	script	World Boss	621,{
+	mes .npc$;
+	.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+	mes "Status: " + ($world_boss_active == 1 ? "^00FF00Active^000000" : "^FF0000Inactive^000000");
+	mes "Kill Remaining - [ ^0000FF" + .@kill_count + "^000000 ]";
+
+	if ($world_boss_active == 1) {
+		mes "^808080=============================^000000";
+		mes "O World Boss está atualmente em: ^FF0000" + $world_boss_location + "^000000!";
+	}
+
+	mes "^808080=============================^000000";
+	mes "Reward:";
+	mes "^1E90FF" + getitemname(.reward1Id) + "^000000 (^0000FF" + .reward1Count + "^000000)";
+	mes "^FF4500" + getitemname(.reward2Id) + "^000000 (^0000FF" + .reward2Count + "^000000)";
+	mes "^6959CD" + getitemname(.reward3Id) + "^000000 (^0000FF" + .reward3Count + "^000000)";
+	mes "^008000" + getitemname(.reward4Id) + "^000000 (^0000FF" + .reward4Count + "^000000)";
+	mes "+^0000FF" + .cash + "^000000 ^FFD700Cash Points^000000";
+	mes "^808080=============================^000000";
+
+	// Exibe opções apenas para GMs nível 99
+	if (getgmlevel() == 99) {
+		mes "[ ^FF4500GM Menu^000000 ]";
+		mes "1. Resetar o evento";
+		mes "2. Sair";
+		switch(select("Resetar evento:Fechar")) {
+			case 1:
+				donpcevent strnpcinfo(3) + "::ResetEvent";
+			case 2:
+				close;
+		}
+	}
+	end;
+
+OnNPCKillEvent:
+	if ($world_boss_active == 1) end;
+	$world_boss_counter += 1;
+	if ($world_boss_counter == .monster_kill_requirement) { 
+		donpcevent "WorldBoss::OnSummon";
+	}
+	end;
+
+OnSummon:
+	$world_boss_active = 1;
+	$world_boss_location = .townMap$[rand(getarraysize(.townMap$) - 1)];
+	areamonster $world_boss_location, 0, 0, 250, 250, "World Boss", .wBossId, 1, strnpcinfo(3) + "::OnBossKill";
+	announce "[World Boss] O World Boss apareceu em " + $world_boss_location + "! Preparem-se para o desafio!", bc_all, 0xFF0000;
+	end;
+	
+OnBossKill:
+	announce "[World Boss] " + strcharinfo(0) + " derrotou o World Boss! Parabéns!", bc_all, 0xFF0000;
+	$world_boss_active = 0;
+	$world_boss_counter = 0;
+	$world_boss_location = "";
+	getitem .reward1Id, .reward1Count;
+	getitem .reward2Id, .reward2Count;
+	getitem .reward3Id, .reward3Count;
+	getitem .reward4Id, .reward4Count;
+	#CASHPOINTS = #CASHPOINTS + .cash;
+	dispbottom "Ganhou: "+ .cash +" Cash Points.";
+	end;
+
+// Reset manual do evento (apenas para GMs)
+ResetEvent:
+	if (getgmlevel() != 99) {
+		dispbottom "Apenas GMs podem resetar o evento.";
+		end;
+	}
+	$world_boss_active = 0;
+	$world_boss_counter = 0;
+	$world_boss_location = "";
+	announce "[World Boss] O evento foi resetado por um GM!", bc_all, 0xFF4500;
+	dispbottom "Evento resetado com sucesso!";
+	end;
+		
+OnInit:
+	.npc$ = "[^FF7F00 World Boss ^000000]";
+	.monster_kill_requirement = 20000;
+	setarray .townMap$[0], "prontera", "morocc", "geffen", "payon",
+		"alberta", "aldebaran", "xmas", "comodo",
+		"yuno", "amatsu", "gonryun", "umbala",
+		"louyang", "ayothaya", "einbroch", "hugel",
+		"rachel", "veins", "moscovia", "izlude";
+	.wBossId = 2253;
+	.reward1Id = 7528;
+	.reward2Id = 7859;
+	.reward3Id = 12199;
+	.reward4Id = 7227;
+	.reward1Count = 1;
+	.reward2Count = 1;
+	.reward3Count = 100;
+	.reward4Count = 100;
+	.cash = 100;
+
+	freeloop(1);
+	while(1){
+		.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+		waitingroom "Kill Left : ["+.@kill_count+"]",0;
+		sleep 1000;
+		delwaitingroom;
+	}
+	freeloop(0);
+	end;
+}
+*/
+
+/*
+prontera,183,213,4	script	WorldBoss	621,{
+	mes .npc$;
+	.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+	mes "Status: " + ($world_boss_active == 1 ? "^00FF00Active^000000" : "^FF0000Inactive^000000");
+	mes "Kill Remaining - [ ^0000FF" + .@kill_count + "^000000 ]";
+
+	if ($world_boss_active == 1) {
+		mes "^808080=============================^000000";
+		mes "O World Boss está atualmente em: ^FF0000" + $world_boss_location + "^000000!";
+	}
+
+	mes "^808080=============================^000000";
+	mes "Reward:";
+	mes "^1E90FF" + getitemname(.reward1Id) + "^000000 (^0000FF" + .reward1Count + "^000000)";
+	mes "^FF4500" + getitemname(.reward2Id) + "^000000 (^0000FF" + .reward2Count + "^000000)";
+	mes "^6959CD" + getitemname(.reward3Id) + "^000000 (^0000FF" + .reward3Count + "^000000)";
+	mes "^008000" + getitemname(.reward4Id) + "^000000 (^0000FF" + .reward4Count + "^000000)";
+	mes "+^0000FF" + .cash + "^000000 ^FFD700Cash Points^000000";
+	mes "^808080=============================^000000";
+
+	// Exibe opções apenas para GMs nível 99
+	if (getgmlevel() == 99) {
+		mes "^FF4500[GM Menu]^000000";
+		switch(select("Resetar evento:Fechar")) {
+			case 1:
+				close;
+				donpcevent "WorldBoss::ResetEvent";
+			case 2:
+				close;
+		}
+	}
+	end;
+
+OnNPCKillEvent:
+	if ($world_boss_active == 1) end;
+	$world_boss_counter += 1;
+	if ($world_boss_counter == .monster_kill_requirement) { 
+		donpcevent "WorldBoss::OnSummon";
+	}
+	end;
+
+OnSummon:
+	$world_boss_active = 1;
+	$world_boss_location = .townMap$[rand(getarraysize(.townMap$) - 1)];
+	areamonster $world_boss_location, 0, 0, 250, 250, "World Boss", .wBossId, 1, "WorldBoss::OnBossKill";
+	announce "[World Boss] O World Boss apareceu em " + $world_boss_location + "! Preparem-se para o desafio!", bc_all, 0xFF0000;
+	end;
+	
+OnBossKill:
+	announce "[World Boss] " + strcharinfo(0) + " derrotou o World Boss! Parabéns!", bc_all, 0xFF0000;
+	$world_boss_active = 0;
+	$world_boss_counter = 0;
+	$world_boss_location = "";
+	getitem .reward1Id, .reward1Count;
+	getitem .reward2Id, .reward2Count;
+	getitem .reward3Id, .reward3Count;
+	getitem .reward4Id, .reward4Count;
+	#CASHPOINTS = #CASHPOINTS + .cash;
+	dispbottom "Ganhou: "+ .cash +" Cash Points.";
+	end;
+
+// Reset manual do evento (apenas para GMs)
+ResetEvent:
+	if (getgmlevel() != 99) {
+		dispbottom "Apenas GMs podem resetar o evento.";
+		end;
+	}
+	$world_boss_active = 0;
+	$world_boss_counter = 0;
+	$world_boss_location = "";
+	announce "[World Boss] O evento foi resetado por um GM!", bc_all, 0xFF4500;
+	dispbottom "Evento resetado com sucesso!";
+	end;
+		
+OnInit:
+	.npc$ = "[^FF7F00 World Boss ^000000]";
+	.monster_kill_requirement = 20000;
+	setarray .townMap$[0], "prontera", "morocc", "geffen", "payon",
+		"alberta", "aldebaran", "xmas", "comodo",
+		"yuno", "amatsu", "gonryun", "umbala",
+		"louyang", "ayothaya", "einbroch", "hugel",
+		"rachel", "veins", "moscovia", "izlude";
+	.wBossId = 2253;
+	.reward1Id = 7528;
+	.reward2Id = 7859;
+	.reward3Id = 12199;
+	.reward4Id = 7227;
+	.reward1Count = 1;
+	.reward2Count = 1;
+	.reward3Count = 100;
+	.reward4Count = 100;
+	.cash = 100;
+
+	freeloop(1);
+	while(1){
+		.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+		waitingroom "Kill Left : ["+.@kill_count+"]",0;
+		sleep 1000;
+		delwaitingroom;
+	}
+	freeloop(0);
+	end;
+}
+*/
+
+/*
+prontera,183,213,4	script	WorldBoss	621,{
+	mes .npc$;
+	.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+	mes "Status: " + ($world_boss_active == 1 ? "^00FF00Active^000000" : "^FF0000Inactive^000000");
+	mes "Kill Remaining - [ ^0000FF" + .@kill_count + "^000000 ]";
+
+	if ($world_boss_active == 1) {
+		mes "^808080=============================^000000";
+		mes "O World Boss está atualmente em: ^FF0000" + $world_boss_location + "^000000!";
+	}
+
+	mes "^808080=============================^000000";
+	mes "Reward:";
+	mes "^1E90FF" + getitemname(.reward1Id) + "^000000 (^0000FF" + .reward1Count + "^000000)";
+	mes "^FF4500" + getitemname(.reward2Id) + "^000000 (^0000FF" + .reward2Count + "^000000)";
+	mes "^6959CD" + getitemname(.reward3Id) + "^000000 (^0000FF" + .reward3Count + "^000000)";
+	mes "^008000" + getitemname(.reward4Id) + "^000000 (^0000FF" + .reward4Count + "^000000)";
+	mes "+^0000FF" + .cash + "^000000 ^FFD700Cash Points^000000";
+	mes "^808080=============================^000000";
+
+	// Exibe opções apenas para GMs nível 99
+	if (getgmlevel() == 99) {
+		mes "^FF4500[GM Menu]^000000";
+		switch(select("Resetar evento:Fechar")) {
+			case 1:
+				close;
+				donpcevent "WorldBoss::OnResetEvent";
+			case 2:
+				close;
+		}
+	}
+	end;
+
+OnNPCKillEvent:
+	if ($world_boss_active == 1) end;
+	$world_boss_counter += 1;
+	if ($world_boss_counter >= .monster_kill_requirement) { 
+		donpcevent "WorldBoss::OnSummon";
+	}
+	end;
+
+OnSummon:
+	$world_boss_active = 1;
+	$world_boss_location = .townMap$[rand(getarraysize(.townMap$))]; // Agora armazena corretamente a localização
+	areamonster $world_boss_location, 0, 0, 250, 250, "World Boss", .wBossId, 1, "WorldBoss::OnBossKill";
+	announce "[World Boss] O World Boss apareceu em " + $world_boss_location + "! Preparem-se para o desafio!", bc_all, 0xFF0000;
+	end;
+	
+OnBossKill:
+	announce "[World Boss] " + strcharinfo(0) + " derrotou o World Boss! Parabéns!", bc_all, 0xFF0000;
+	$world_boss_active = 0;
+	$world_boss_counter = 1;
+	$world_boss_location = ""; // Resetando localização
+	getitem .reward1Id, .reward1Count;
+	getitem .reward2Id, .reward2Count;
+	getitem .reward3Id, .reward3Count;
+	getitem .reward4Id, .reward4Count;
+	#CASHPOINTS = #CASHPOINTS + .cash;
+	dispbottom "Ganhou: "+ .cash +" Cash Points.";
+	end;
+
+// Reset manual do evento (apenas para GMs)
+OnResetEvent:
+	if (getgmlevel() != 99) {
+		dispbottom "Apenas GMs podem resetar o evento.";
+		end;
+	}
+	$world_boss_active = 0;
+	$world_boss_counter = 0;
+	$world_boss_location = "";
+	announce "[World Boss] O evento foi resetado por um GM!", bc_all, 0xFF4500;
+	dispbottom "Evento resetado com sucesso!";
+	end;
+		
+OnInit:
+	.npc$ = "[^FF7F00 World Boss ^000000]";
+	.monster_kill_requirement = 20000;
+	setarray .townMap$[0], "prontera", "morocc", "geffen", "payon",
+		"alberta", "aldebaran", "xmas", "comodo",
+		"yuno", "amatsu", "gonryun", "umbala",
+		"louyang", "ayothaya", "einbroch", "hugel",
+		"rachel", "veins", "moscovia", "izlude";
+	.wBossId = 2253;
+	.reward1Id = 7528;
+	.reward2Id = 7859;
+	.reward3Id = 12199;
+	.reward4Id = 7227;
+	.reward1Count = 1;
+	.reward2Count = 1;
+	.reward3Count = 100;
+	.reward4Count = 100;
+	.cash = 100;
+
+	freeloop(1);
+	while(1){
+		.@kill_count = (.monster_kill_requirement - $world_boss_counter);
+		waitingroom "Kill Left : ["+.@kill_count+"]",0;
+		sleep 1000;
+		delwaitingroom;
+	}
+	freeloop(0);
+	end;
+}
+*/

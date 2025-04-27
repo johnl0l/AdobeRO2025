@@ -1,0 +1,15 @@
+-	script	WorldBoss	-1,{
+	OnKill:
+		.mob_count++;
+		if (.mob_count && .mob_count % 100 == 0) {
+			.mob_count = 0;
+			getmapxy(.@map$, .@x, .@y, BL_PC);
+			if (mobcount(.@map$, strnpcinfo(3)+"::OnMobKill") < 5) {
+				monster .@map$, .@x + rand(-3,3), .@y + rand(-3,3), "--ja--",-1-MOBG_Bloody_Dead_Branch,1,""; strnpcinfo(3)+"::OnMobKill";
+			}
+		}
+		end;
+	
+	OnMobKill: 
+		end;
+}

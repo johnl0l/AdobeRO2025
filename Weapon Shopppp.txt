@@ -1,0 +1,111 @@
+//====================================================================
+
+-	shop	1hs_Shop2	-1,1102:100,1105:1500,1108:2900,1111:10000,1114:17000,1120:51000,1124:20000,1125:24000,1127:49000,1128:50000,1130:20000,1131:20000,1132:20000,1133:20000,1134:20000,1135:20000,1136:20000,1137:20000,1138:20000,1139:20000,1140:20000,1141:20000,1142:20000,1143:20000,1144:20000,1145:450000,1147:42000,1148:20000,1149:60000,1191:150000
+-	shop	2hs_Shop2	-1,1152:150000,1155:150000,1158:150000,1162:150000,1164:150000,1165:150000,1166:150000,1167:150000,1168:150000,1170:150000,1171:150000,1172:150000,1175:150000,1176:150000,1177:150000,1178:150000,1179:150000,1180:150000,1181:150000,1182:150000,1183:150000,1184:150000,1185:150000,1189:150000,1192:150000,1193:150000,1196:150000,1197:150000
+-	shop	1ha_Shop2	-1,1302:15000,1305:15000,1309:150000,1306:150000,1307:150000
+-	shop	2ha_Shop2	-1,1352:15000,1363:15000,1380:15000,1358:34000,1383:15000,1371:15000,1364:15000,1369:15000,1355:150000,1366:150000,1365:150000,1367:150000,1368:150000,1361:150000,1384:150000
+
+prt_in,276,125,5	script	Weapon Shop	470,{
+
+    cutin "3rd_rune_knight",2;
+    mes "[ ^00B2EEWeapon Shop^000000 ]";
+    mes "^8b8b8b____________________________^000000";
+    mes "Please select what type of"; 
+    mes "Weapon you're going to see.";
+    next;
+    // Menu Selection
+    switch(select("Swords:Axes")){
+        
+        Case 1: // Swords
+            mes "[ ^00B2EEWeapon Shop^000000 ]";
+            mes "^8b8b8b____________________________^000000";
+            mes "Please select if ^FF00001-Handed^000000 or ^0000FF2-Handed^000000."; 
+            next;
+            switch(select("^FF00001-Handed Sword^000000:^0000FF2-Handed Sword^000000")){
+                Case 1:
+                    mes "[ ^00B2EEWeapon Shop^000000 ]";
+                    mes "^8b8b8b____________________________^000000";
+                    mes "Please select what type of"; 
+                    mes "Weapon you're going to see.";
+                    next;
+                    callfunc "1hs_Shop1",0;
+                    end;
+                
+                Case 2:
+                    mes "[ ^00B2EEWeapon Shop^000000 ]";
+                    mes "^8b8b8b____________________________^000000";
+                    mes "Please select what type of"; 
+                    mes "Weapon you're going to see.";
+                    next;
+                    callfunc "2hs_Shop1",0;
+                    end;
+        }                
+        Case 2: // Axes
+            mes "[ ^00B2EEWeapon Shop^000000 ]";
+            mes "^8b8b8b____________________________^000000";
+            mes "Please select if ^FF00001-Handed^000000 or ^0000FF2-Handed^000000."; 
+            next;
+            switch(select("^FF00001-Handed Axe^000000:^0000FF2-Handed Axe^000000")){
+                Case 1:
+                    mes "[ ^00B2EEWeapon Shop^000000 ]";
+                    mes "^8b8b8b____________________________^000000";
+                    mes "Please select what type of"; 
+                    mes "Weapon you're going to see.";
+                    next;
+                    callfunc "1ha_Shop1",0;
+                    end;
+                
+                Case 2:
+                    mes "[ ^00B2EEWeapon Shop^000000 ]";
+                    mes "^8b8b8b____________________________^000000";
+                    mes "Please select what type of"; 
+                    mes "Weapon you're going to see.";
+                    next;
+                    callfunc "2ha_Shop1",0;
+                    end;                
+            }
+
+        }
+    }
+
+//Call function scripts ============================================================
+function	script	1hs_Shop1	{
+        mes "[ ^FF0000Account Information^000000 ]";
+        mes "^8b8b8b____________________________^000000";    
+        mes "Name: ^0000FF"+strcharinfo(0)+"^000000";
+        mes "Zeny Balance : ^FFD700"+F_InsertComma(Zeny)+"^000000 ^FF0000z^000000";
+		mes "Cash Points Balance : ^008000"+#CASHPOINTS+"^000000";
+		mes "Kafra Points Balance : ^9932CC"+#KAFRAPOINTS+"^000000";
+        callshop "1hs_Shop2",1;
+        end;
+}
+function	script	2hs_Shop1	{
+        mes "[ ^FF0000Account Information^000000 ]";
+        mes "^8b8b8b____________________________^000000";    
+        mes "Name: ^0000FF"+strcharinfo(0)+"^000000";
+        mes "Zeny Balance : ^FFD700"+F_InsertComma(Zeny)+"^000000 ^FF0000z^000000";
+		mes "Cash Points Balance : ^008000"+#CASHPOINTS+"^000000";
+		mes "Kafra Points Balance : ^9932CC"+#KAFRAPOINTS+"^000000";
+        callshop "2hs_Shop2",1;
+        end;
+}
+function	script	1ha_Shop1	{
+        mes "[ ^FF0000Account Information^000000 ]";
+        mes "^8b8b8b____________________________^000000";    
+        mes "Name: ^0000FF"+strcharinfo(0)+"^000000";
+        mes "Zeny Balance : ^FFD700"+F_InsertComma(Zeny)+"^000000 ^FF0000z^000000";
+		mes "Cash Points Balance : ^008000"+#CASHPOINTS+"^000000";
+		mes "Kafra Points Balance : ^9932CC"+#KAFRAPOINTS+"^000000";
+        callshop "1ha_Shop2",1;
+        end;
+}
+function	script	2ha_Shop1	{
+        mes "[ ^FF0000Account Information^000000 ]";
+        mes "^8b8b8b____________________________^000000";    
+        mes "Name: ^0000FF"+strcharinfo(0)+"^000000";
+        mes "Zeny Balance : ^FFD700"+F_InsertComma(Zeny)+"^000000 ^FF0000z^000000";
+		mes "Cash Points Balance : ^008000"+#CASHPOINTS+"^000000";
+		mes "Kafra Points Balance : ^9932CC"+#KAFRAPOINTS+"^000000";
+        callshop "2ha_Shop2",1;
+        end;
+}
