@@ -1,0 +1,171 @@
+// BOT POLICE 2.1
+// By: Lucas M.
+// 1. Edit names and location as needed.
+// 2. Edit second marks as needed.
+// 3. Edit @adjgmlvl command as needed(for servers with GM LvL 1 players).
+// 4. @jailfor works differently for different servers. Adjust appropriately.
+// 5. When testing on your lvl 99 GM, note that @adjgmlvl has been set to 0. Relog to refresh your commands.
+
+prt_in,279,139,3	script	Police	884,{
+	if (getgmlevel() >= 60) goto L_AdminPolice;
+	mes "[Police]";
+	mes "Good day.";
+	close;
+
+L_AdminPolice:
+	mes "[Police]";
+	mes "Please input the name of a";
+	mes "player you would like to";
+	mes "superimpose a check on.";
+	next;
+	input @NAME$;
+	if(isloggedin(getcharid(3,@NAME$))==0) goto L_Notlogged;
+	mes "[Police]";
+	mes "The player is online. An";
+	mes "interrogation is underway.";
+	close2;
+	attachrid(getcharid(3,@NAME$));
+
+// Targetted Player Pop-Up Message
+	attachnpctimer strcharinfo(0);
+	initnpctimer;
+	atcommand "@adjgmlvl -1 "+strcharinfo(0)+""; // Leave this alone.
+	mes "[Staff]";
+	mes "Manditory bot check in progress.";
+	set @botcode,rand (1111,9999);
+	mes "You have ^B4040460 seconds^000000 seconds to";
+	mes "input the following code:";
+	mes "[          ^5FB404"+@botcode+"^000000          ]";
+	input @exitnum;
+	if (@exitnum == @botcode) goto L_Correct;
+	if (@exitnum != @botcode) goto L_Wrong;
+	close;
+
+OnTimer10000: //10 second mark.
+	dispbottom "50 seconds to comply or risk being jailed.";
+	end;
+
+OnTimer20000: //20 second mark.
+	dispbottom "40 seconds to comply or risk being jailed.";
+	end;
+
+OnTimer30000: //30 second mark.
+	dispbottom "30 seconds to comply or risk being jailed.";
+	end;
+
+OnTimer40000: //40 second mark.
+	dispbottom "20 seconds to comply or risk being jailed.";
+	end;
+
+OnTimer50000: //50 second mark.
+	dispbottom "10 seconds to comply or risk being jailed.";
+	end;
+
+OnTimer55000: //55 second mark.
+	dispbottom "5 seconds to comply.";
+	end;
+
+
+OnTimer56000: //56 second mark.
+	dispbottom "4 seconds to comply.";
+	end;
+
+OnTimer57000: //57 second mark.
+	dispbottom "3 seconds to comply.";
+	end;
+
+OnTimer58000: //58 second mark.
+	dispbottom "2 seconds to comply.";
+	end;
+
+OnTimer59000: //59 second mark.
+	dispbottom "1 second to comply.";
+	end;
+
+OnTimer60000: //60 second mark.
+	stopnpctimer;
+	atcommand "@adjgmlvl 0 "+strcharinfo(0)+""; // Sets to GM LvL 0.
+
+//-------------------------------------------------------------------//
+// 3 hours jail time for not responding in 60 seconds.
+// (mh = month, dy = day, hr = hour, mn = minute)
+
+	atcommand "@jailfor 0mh0dy3hr0mn "+strcharinfo(0)+"";
+	end;
+//-------------------------------------------------------------------//
+
+L_Notlogged:
+	mes "[Police]";
+	mes "That person is not logged in.";
+	close;
+
+L_Wrong:
+	next;
+	mes "[Staff]";
+	mes "This is your second attempt.";
+	set @botcode,rand (1111,9999);
+	mes "You have ^B40404less than a minute^000000";
+	mes "to input the following code:";
+	mes "[          ^DF7401"+@botcode+"^000000          ]";
+	input @exitnum;
+	if (@exitnum == @botcode) goto L_Correct;
+	if (@exitnum != @botcode) goto L_WrongLastTry;
+	close;
+
+L_WrongLastTry:
+	next;
+	mes "[Staff]";
+	mes "This is your last chance.";
+	set @botcode,rand (1111,9999);
+	mes "You have ^B40404less than a minute^000000";
+	mes "to input the following code:";
+	mes "[          ^DF0101"+@botcode+"^000000          ]";
+	input @exitnum;
+	if (@exitnum == @botcode) goto L_Correct;
+	close2;
+	mes "[Staff]";
+	mes "You have failed the test.";
+	stopnpctimer;
+	sleep2 1000;
+	atcommand "@adjgmlvl 0 "+strcharinfo(0)+""; // Sets to GM LvL 0.
+	sleep2 1000;
+
+//-------------------------------------------------------------------//
+// 3 hours jail time for inputting the incorrect code three times.
+// (mh = month, dy = day, hr = hour, mn = minute)
+
+	atcommand "@jailfor 0mh0dy3hr0mn "+strcharinfo(0)+"";
+	end;
+//-------------------------------------------------------------------//
+
+
+L_Correct:
+	next;
+	stopnpctimer;
+	atcommand "@adjgmlvl 0 "+strcharinfo(0)+""; // Sets to GM LvL 0.
+	percentheal 100,100;
+	sc_start SC_BLESSING,300000,10;
+	sc_start SC_INCREASEAGI,300000,10;
+	specialeffect2 EF_BLESSING;
+	specialeffect2 EF_INCAGILITY;
+	mes "[Police]";
+	mes "You passed. Thank you for your time.";
+	close;
+}
+
+
+// Jail Cell 1.
+
+sec_pri,57,83,4	script	Jail Time#1::Jail Time	738,{
+	mes "[Jail Time]";
+	mes "You have been caught botting.";
+	mes "Please wait for your sentence";
+	mes "to play out or contact a GM.";
+	atcommand "@jailtime "+strcharinfo(0)+"";
+	close;
+}
+
+
+//Jail Cell 2.
+
+sec_pri,32,83,4	duplicate(Jail Time)	Jail Time#2	738

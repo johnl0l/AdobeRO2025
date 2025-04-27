@@ -1,0 +1,253 @@
+//
+//
+//	Author		Goddameit
+//	Version		2014/11/23
+//	Web		http://goo.gl/0vY9GV
+//
+//
+prontera,155,180,4	script	Bet	100,{
+	function	_GetPatryMemberAmount	;
+	if( .game_status > 0 )
+	{
+		if( strcharinfo(0) == .game_team2$ )
+		{
+			goto OnTeam2AskInfo;
+			end;
+		}
+		mes "Sorry, Game is running.";
+		close;
+	}
+	@type_bool = select("Person", "Party");
+	if( !getcharid(1) )
+	{
+		mes "You need a party.";
+		close;
+	}
+	if( @type_bool == 2 && ( getpartyleader(getcharid(1),2) != getcharid(0) ||
+		_GetPatryMemberAmount(getcharid(1)) != .sys_member) )
+	{
+		mes "You don't own party","or your team member amount is not "+.sys_member+".";
+		close;
+	}
+	mes "How much you want to bet?";
+	input @bet_zeny;
+	if( @bet_zeny > Zeny )
+	{
+		mes "You don't have enough zeny.";
+		@type_bool = 0;
+		@bet_zeny = 0;
+		close;
+	}
+	next;
+	mes "You bet ["+@bet_zeny+"]z";
+	if( select("No", "Yes") == 1 )
+	{
+		@type_bool = 0;
+		@bet_zeny = 0;
+		close;
+	}
+	next;
+	mes "Input your enemy's name";
+	input @enemy_name$;
+	if( getcharid(0,@enemy_name$) == 0 )
+	{
+		@type_bool = 0;
+		@bet_zeny = 0;
+		@enemy_name$ = "";
+		mes "He is offline";
+		close;
+	}
+	if( .game_status > 0 )
+	{
+		mes "Sorry, Game is running.";
+		close;
+	}
+	.game_team1$ = strcharinfo(0);
+	.game_team2$ = @enemy_name$;
+	.game_status = 1;
+	.game_bet = @bet_zeny;
+	.game_type = @type_bool;
+	@type_bool = 0;
+	Zeny -= @bet_zeny;
+	@bet_zeny = 0;
+	@enemy_name$ = "";
+	close2;
+	detachrid;
+	message .game_team1$, "Complete";
+	sleep2 1000;
+	message .game_team2$, "Someone invite you for betting, @betarea for more info.";
+	.game_sys_wait = gettimetick(2)+60;
+	bindatcmd "betarea",strnpcinfo(3)+"::OnTeam2AskInfo";
+	freeloop(1);
+	while( .game_sys_wait > gettimetick(2) && .game_status == 1 )
+		sleep2 500;
+	freeloop(0);
+	unbindatcmd "betarea";
+	if( .game_status == 1 )
+	{
+		sleep2 1;
+		message .game_team1$, "Game End";
+		sleep2 1;
+		message .game_team2$, "Game End";
+		callsub OnEndd;
+		end;
+	}
+	message .game_team1$, "Game will start at 10s";
+	message .game_team2$, "Game will start at 10s";
+	setwall "guild_vs1",12,48,4,0,0,"GGBET_WALL1";
+	setwall "guild_vs1",87,48,4,0,0,"GGBET_WALL2";
+	gvgoff "guild_vs1";
+	mapwarp "guild_vs1","prontera",150,180;
+	sleep2 10000;
+	if( .game_type == 2 && (_GetPatryMemberAmount(getcharid(1, .game_team1$)) != .sys_member ||
+		_GetPatryMemberAmount(getcharid(1, .game_team2$)) != .sys_member) )
+	{
+		message .game_team1$, "One of team have not right member amount";
+		message .game_team2$, "One of team have not right member amount";
+		callsub OnEndd;
+		end;
+	}
+	if( .game_type == 2 )
+	{
+		warpparty "guild_vs1",7,50, getcharid(1, .game_team1$);
+		warpparty "guild_vs1",91,50, getcharid(1, .game_team2$);
+	}else
+	{
+		warpchar "guild_vs1",7,50, getcharid(0, .game_team1$);
+		warpchar "guild_vs1",91,50, getcharid(0, .game_team2$);
+	}
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 9s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 8s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 7s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 6s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 5s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 4s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 3s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 2s",0;
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: 1s",0;
+	gvgon "guild_vs1";
+	sleep2 1000;
+	mapannounce "guild_vs1","[Game]: Go!!",0;
+	delwall "GGBET_WALL1";
+	delwall "GGBET_WALL2";
+	.game_sys_wait = gettimetick(2)+120;
+	freeloop(1);
+	while( .game_sys_wait > gettimetick(2) &&
+		((.@p1 = _GetPatryMemberAmount(getcharid(1, .game_team1$),1)) > 0 &&
+		(.@p2 = _GetPatryMemberAmount(getcharid(1, .game_team2$),1)) > 0) )
+		sleep2 500;
+	freeloop(0);
+	if( .@p1 > .@p2 )
+	{
+		mapannounce "guild_vs1","[Game]: Team 1 Win!!",0;
+		.@aid =	getcharid(3, .game_team1$);
+	}else if( .@p1 < .@p2 )
+	{
+		mapannounce "guild_vs1","[Game]: Team 2 Win!!",0;
+		.@aid =	getcharid(3, .game_team2$);
+	}else
+		.@aid = 0;
+	if( attachrid(.@aid) )
+	{
+		Zeny = Zeny+(.game_bet*2);
+		detachrid;
+	}
+	sleep2 3000;
+	mapwarp "guild_vs1","prontera",150,180;
+	callsub OnEndd;
+	end;
+OnPCDieEvent:
+	if( .game_status == 2 && strcharinfo(3) == "guild_vs1" && killerrid != getcharid(3) && isloggedin(killerrid) )
+	{
+		getitem2 7005,1,1,0,0,254,0,getcharid(0)& 65535, getcharid(0) >> 16, killerrid;
+	}
+	end;
+OnEndd:
+	.game_team1$ = "";
+	.game_team2$ = "";
+	.game_status = 0;
+	.game_bet = 0;
+	.game_type = 0;
+	.game_sys_wait = 0;
+	return;
+OnInit:
+	.sys_member = 1;
+	end;
+OnTeam2AskInfo:
+	if( strcharinfo(0) != .game_team2$ )
+		end;
+	mes "Bet ["+.game_bet+"]z";
+	mes "Type ["+( .game_type == 1 ? "Solo" : "Party" )+"]";
+	switch(select("Decline", "Accept", "Close"))
+	{
+		case 3:
+			close;
+		case 2:
+			if( !getcharid(1) )
+			{
+				mes "You need a party.";
+				close;
+			}
+			if( .game_type == 2 && ( getpartyleader(getcharid(1),2) != getcharid(0) ||
+				_GetPatryMemberAmount(getcharid(1)) != .sys_member ) )
+			{
+				mes "You don't own party","or your team member amount is not "+.sys_member+".";
+				close;
+			}
+			if( .game_bet > Zeny )
+			{
+				mes "You don't have enough zeny.";
+				close;
+			}
+			if( .game_sys_wait < gettimetick(2) )
+			{
+				mes "Too late";
+				close;
+			}
+			Zeny -= .game_bet;
+			.game_status = 2;
+			.game_sys_wait = 0;
+			close;
+		case 1:
+			next;
+			mes "Are you sure?";
+			if( select("No", "Yes") == 2 )
+			{
+				.@aids = getcharid(3);
+				if( attachrid(getcharid(3, .game_team1$)) )
+				{
+					Zeny = Zeny + .game_bet;
+					detachrid;
+					attachrid .@aids;
+				}
+				.game_sys_wait = 0;
+			}
+			close;
+	}
+	end;
+	function	_GetPatryMemberAmount	{
+		deletearray $@partymembername$;
+		$@partymembercount = 0;
+		getpartymember getarg(0), 0;
+		.@result = .@amount = $@partymembercount;
+		for( .@i = 0; .@i < .@amount; .@i++ )
+			if( getcharid(0, $@partymembername$[.@i]) == 0 )
+				.@result--;
+			else if( getarg(1,0) == 1 )
+			{
+				getmapxy(.@m$, .@x, .@y, 0, $@partymembername$[.@i]);
+				if( .@m$ != "guild_vs1" )
+					.@result--;
+			}
+		return .@result;
+	}
+}

@@ -1,0 +1,370 @@
+/*
+-	script	BattleRefine2	-1,{
+
+OnNPCKillEvent:
+
+	// Contador de monstros mortos
+	set #mob_kills, #mob_kills + 1;
+
+	// ðŸ”¥ Se o jogador atingir 1000 monstros mortos, ele recebe um Ferino garantido
+	if (#mob_kills >= 1000) {
+		set #mob_kills, 0; // Reseta a contagem
+		getitem 2508, 1; // Ferino
+		announce "[Battle Refine] " + strcharinfo(0) + " derrotou 1000 monstros e recebeu um Ferino!", bc_all, 0xFFFF00;
+	}
+
+	// ðŸŒŸ Chance de refinamento aleatÃ³rio
+	set .@chance, 1; // Chance base de 1%
+	if (vip_status(3)) set .@chance, 2; // VIP tem o dobro de chance (2%)
+
+	if (rand(1,100) <= .@chance) {
+		set @refine, rand(1, 20);
+		if (getequipisenableref(@refine) == 1 && getequiprefinerycnt(@refine) < 20) {
+			successrefitem(@refine);
+			announce "[Battle Refine] " + strcharinfo(0) + " refinou sua arma durante a batalha!", bc_self, 0xFFFF00;
+			specialeffect2 EF_REFINEOK;
+		}
+	}
+
+	// âš’ï¸ Encantamento aleatÃ³rio em armas +10 ou mais
+	set @weapon, getequipid(EQI_HAND_R); // Pega a arma equipada
+	set .@refine_level, getequiprefinerycnt(EQI_HAND_R); // Pega o nÃ­vel de refino da arma
+
+	if (@weapon > 0 && .@refine_level >= 10) {
+		// Lista de possÃ­veis encantamentos
+		setarray .@bonus_list[0], 17, 18, 19, 20, 21, 22, 23, 24, 25, 26;
+		set .@bonus, .@bonus_list[rand(getarraysize(.@bonus_list))];
+
+		// Aplica o encantamento na arma
+		bonus3 bAutoSpellWhenHit, .@bonus, 5, 100;
+
+		announce "[Battle Refine] " + strcharinfo(0) + " encantou sua arma +10 com um efeito especial!", bc_self, 0x00FF00;
+		specialeffect2 EF_ENCHANT;
+	}
+
+	end;
+}
+*/
+
+/*
+-	script	BattleRefine2	-1,{
+
+OnNPCKillEvent:
+
+	// Contador de monstros mortos
+	set #mob_kills, #mob_kills + 1;
+
+	// ðŸ”¥ Ferino garantido a cada 1000 kills
+	if (#mob_kills >= 1000) {
+		set #mob_kills, 0;
+		getitem 2508, 1;
+		announce "[Battle Refine] " + strcharinfo(0) + " derrotou 1000 monstros e recebeu um Ferino!", bc_all, 0xFFFF00;
+	}
+
+	// ðŸŒŸ Chance de refinamento aleatÃ³rio
+	set .@chance, 1;
+	if (vip_status(3)) set .@chance, 2;
+
+	if (rand(1,100) <= .@chance) {
+		set @refine, rand(1, 20);
+		if (getequipisenableref(@refine) == 1 && getequiprefinerycnt(@refine) < 20) {
+			successrefitem(@refine);
+			announce "[Battle Refine] " + strcharinfo(0) + " refinou sua arma durante a batalha!", bc_self, 0xFFFF00;
+			specialeffect2 EF_REFINEOK;
+		}
+	}
+
+	// âš’ï¸ Encantamento ao atingir +10 (ocorre apenas uma vez)
+	set @weapon, getequipid(EQI_HAND_R);
+	set .@refine_level, getequiprefinerycnt(EQI_HAND_R);
+	set .@has_enchanted, getequiprandomoption(EQI_HAND_R, 0, ROA_ID, getcharid(0));
+
+	if (@weapon > 0 && .@refine_level == 10 && !.@has_enchanted) {
+
+		// Lista de opÃ§Ãµes ignoradas
+		setarray .@ignore[0], 86, 173, 174, 190, 191, 192, 193;
+
+		// Escolhe um encantamento aleatÃ³rio vÃ¡lido
+		set .@opt, rand(1, 192);
+		for (set .@i, 0; .@i < getarraysize(.@ignore); set .@i, .@i + 1) {
+			if (.@opt == .@ignore[.@i]) {
+				set .@opt, rand(1, 192);
+				set .@i, 0;
+			}
+		}
+
+		// Aplica o encantamento
+		set .@value, rand(5, 15);
+		setrandomoption(EQI_HAND_R, 0, .@opt, .@value, 0, getcharid(0));
+
+		// Mensagem e efeito visual
+		announce "[Battle Refine] " + strcharinfo(0) + " encantou sua arma +10 com um efeito especial!", bc_self, 0x00FF00;
+		specialeffect2 EF_ENCHANT;
+	}
+
+	end;
+}
+*/
+
+/*
+-	script	BattleRefine2	-1,{
+
+OnNPCKillEvent:
+
+	// Contador de monstros mortos
+	set #mob_kills, #mob_kills + 1;
+
+	// ðŸ”¥ Old Card Album garantido a cada 1000 kills
+	if (#mob_kills >= 1000) {
+		set #mob_kills, 0;
+		getitem 616, 1;
+		announce "[Battle Refine] " + strcharinfo(0) + " derrotou 1000 monstros e recebeu um Old Card Album!", bc_all, 0xFFFF00;
+	}
+
+	// ðŸŒŸ Chance de refinamento aleatÃ³rio
+	set .@chance, 1;
+	if (vip_status(3)) set .@chance, 2;
+
+	if (rand(1,100) <= .@chance) {
+		set @refine, rand(1, 20);
+		if (getequipisenableref(@refine) == 1 && getequiprefinerycnt(@refine) < 20) {
+			successrefitem(@refine);
+			announce "[Battle Refine] " + strcharinfo(0) + " refinou seu equipamento durante a batalha!", bc_self, 0xFFFF00;
+			specialeffect2 EF_REFINEOK;
+		}
+	}
+
+	// âš’ï¸ Encantamento para qualquer equipamento ao atingir +10 (ocorre apenas uma vez)
+	setarray .@eq_slots, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES, EQI_ACC_R, EQI_ACC_L, EQI_COSTUME_HEAD_TOP, EQI_COSTUME_HEAD_MID, EQI_COSTUME_HEAD_LOW;
+
+	for (set .@i, 0; .@i < getarraysize(.@eq_slots); set .@i, .@i + 1) {
+
+		set .@equip, .@eq_slots[.@i];
+		set .@equip_id, getequipid(.@equip);
+		set .@refine_level, getequiprefinerycnt(.@equip);
+		set .@has_enchanted, getequiprandomoption(.@equip, 0, ROA_ID, getcharid(0));
+
+		// âš?Verifica se o equipamento existe, estÃ¡ refinado +10 e ainda nÃ£o foi encantado
+		if (.@equip_id > 0 && .@refine_level == 10 && !.@has_enchanted) {
+
+			// Lista de opÃ§Ãµes ignoradas
+			setarray .@ignore[0], 86, 173, 174, 190, 191, 192, 193;
+
+			// Escolhe um encantamento aleatÃ³rio vÃ¡lido
+			set .@opt, rand(1, 192);
+			for (set .@x, 0; .@x < getarraysize(.@ignore); set .@x, .@x + 1) {
+				if (.@opt == .@ignore[.@x]) {
+					set .@opt, rand(1, 192);
+					set .@x, 0;
+				}
+			}
+
+			// Aplica o encantamento
+			set .@value, rand(5, 15);
+			setrandomoption(.@equip, 0, .@opt, .@value, 0, getcharid(0));
+
+			// Mensagem e efeito visual
+			announce "[Battle Refine] " + strcharinfo(0) + " encantou " + getequipname(.@equip) + " +10 com um efeito especial!", bc_self, 0x00FF00;
+			specialeffect2 EF_ENCHANT;
+		}
+	}
+
+	end;
+}
+*/
+
+/*
+-	script	BattleRefine2	-1,{
+
+OnNPCKillEvent:
+
+	// Contador de monstros mortos
+	set #mob_kills, #mob_kills + 1;
+
+	// ?? Old Card Album garantido a cada 1000 kills
+	if (#mob_kills >= 1000) {
+		set #mob_kills, 0;
+		getitem 616, 1;
+		announce "[Battle Refine] " + strcharinfo(0) + " derrotou 1000 monstros e recebeu um Old Card Album!", bc_all, 0xFFFF00;
+	}
+
+	// ?? Chance de refinamento aleat¨®rio
+	set .@chance, 1;
+	if (vip_status(3)) set .@chance, 2; // VIP tem 2x mais chance
+
+	if (rand(1,100) <= .@chance) {
+		// Refinar qualquer equipamento
+		setarray .@eq_slots, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES, EQI_ACC_R, EQI_ACC_L, EQI_COSTUME_HEAD_TOP, EQI_COSTUME_HEAD_MID, EQI_COSTUME_HEAD_LOW;
+		for (set .@i, 0; .@i < getarraysize(.@eq_slots); set .@i, .@i + 1) {
+			set .@equip, .@eq_slots[.@i];
+			set .@equip_id, getequipid(.@equip);
+			set .@refine_level, getequiprefinerycnt(.@equip);
+
+			if (.@equip_id > 0 && .@refine_level < 20) {
+				successrefitem(.@equip);
+				announce "[Battle Refine] " + strcharinfo(0) + " refinou " + getequipname(.@equip) + " durante a batalha!", bc_self, 0xFFFF00;
+				specialeffect2 EF_REFINEOK;
+			}
+		}
+	}
+
+	// ?? Encantamento ao atingir +10 ou +20
+	setarray .@eq_slots, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES, EQI_ACC_R, EQI_ACC_L, EQI_COSTUME_HEAD_TOP, EQI_COSTUME_HEAD_MID, EQI_COSTUME_HEAD_LOW;
+	for (set .@i, 0; .@i < getarraysize(.@eq_slots); set .@i, .@i + 1) {
+		set .@equip, .@eq_slots[.@i];
+		set .@equip_id, getequipid(.@equip);
+		set .@refine_level, getequiprefinerycnt(.@equip);
+		set .@has_enchanted, getequiprandomoption(.@equip, 0, ROA_ID, getcharid(0));
+
+		if (.@equip_id > 0 && (.@refine_level == 10 || .@refine_level == 20) && !.@has_enchanted) {
+			// Lista de op??es ignoradas
+			setarray .@ignore[0], 86, 173, 174, 190, 191, 192, 193;
+
+			// Escolhe um encantamento aleat¨®rio v¨¢lido
+			set .@opt, rand(1, 192);
+			for (set .@x, 0; .@x < getarraysize(.@ignore); set .@x, .@x + 1) {
+				if (.@opt == .@ignore[.@x]) {
+					set .@opt, rand(1, 192);
+					set .@x, 0;
+				}
+			}
+
+			// Define o valor do encantamento
+			set .@value, (.@refine_level == 10) ? rand(5, 15) : rand(15, 30);
+
+			// Aplica o encantamento
+			setrandomoption(.@equip, 0, .@opt, .@value, 0, getcharid(0));
+
+			// Mensagem e efeito visual
+			announce "[Battle Refine] " + strcharinfo(0) + " encantou " + getequipname(.@equip) + " +" + .@refine_level + " com um efeito especial!", bc_self, 0x00FF00;
+			specialeffect2 EF_ENCHANT;
+		}
+	}
+
+	end;
+}
+*/
+
+/*
+-	script	BattleRefine2	-1,{
+
+OnNPCKillEvent:
+
+	// Contador de monstros mortos
+	set #mob_kills, #mob_kills + 1;
+
+	// ?? Old Card Album garantido a cada 1000 kills
+	if (#mob_kills >= 1000) {
+		set #mob_kills, 0;
+		getitem 616, 1;
+		announce "[Battle Refine] " + strcharinfo(0) + " derrotou 1000 monstros e recebeu um Old Card Album!", bc_all, 0xFFFF00;
+	}
+
+	// ?? Chance de refinamento aleat¨®rio
+	set .@chance, 1;
+	if (vip_status(3)) set .@chance, 2; // VIP tem 2x mais chance
+
+	if (rand(1,100) <= .@chance) {
+		// Refinar qualquer equipamento
+		setarray .@eq_slots, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES, EQI_ACC_R, EQI_ACC_L, EQI_COSTUME_HEAD_TOP, EQI_COSTUME_HEAD_MID, EQI_COSTUME_HEAD_LOW;
+		for (set .@i, 0; .@i < getarraysize(.@eq_slots); set .@i, .@i + 1) {
+			set .@equip, .@eq_slots[.@i];
+			set .@equip_id, getequipid(.@equip);
+			set .@refine_level, getequiprefinerycnt(.@equip);
+
+			// ?? Garante que o equipamento n?o seja refinado se j¨¢ estiver +20
+			if (.@equip_id > 0 && .@refine_level < 20) {
+				successrefitem(.@equip);
+				announce "[Battle Refine] " + strcharinfo(0) + " refinou " + getequipname(.@equip) + " durante a batalha!", bc_self, 0xFFFF00;
+				specialeffect2 EF_REFINEOK;
+			}
+		}
+	}
+
+	// ?? Encantamento ao atingir +10 ou +20
+	setarray .@eq_slots, EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES, EQI_ACC_R, EQI_ACC_L, EQI_COSTUME_HEAD_TOP, EQI_COSTUME_HEAD_MID, EQI_COSTUME_HEAD_LOW;
+	for (set .@i, 0; .@i < getarraysize(.@eq_slots); set .@i, .@i + 1) {
+		set .@equip, .@eq_slots[.@i];
+		set .@equip_id, getequipid(.@equip);
+		set .@refine_level, getequiprefinerycnt(.@equip);
+
+		// Se o equipamento for v¨¢lido e atingiu +10 ou +20, aplica encantamento uma ¨²nica vez
+		if (.@equip_id > 0 && (.@refine_level == 10 || .@refine_level == 20)) {
+			// Verifica se o equipamento j¨¢ foi encantado nesse n¨ªvel
+			set .@already_enchanted, getequiprandomoption(.@equip, 0, ROA_ID, getcharid(0)) 
+				|| getequiprandomoption(.@equip, 1, ROA_ID, getcharid(0)) 
+				|| getequiprandomoption(.@equip, 2, ROA_ID, getcharid(0)) 
+				|| getequiprandomoption(.@equip, 3, ROA_ID, getcharid(0));
+
+			if (!.@already_enchanted) { 
+				// Define o valor do encantamento
+				set .@value, (.@refine_level == 10) ? rand(5, 15) : rand(15, 30);
+
+				// Lista de op??es ignoradas
+				setarray .@ignore[0], 86, 173, 174, 190, 191, 192, 193;
+
+				// Escolhe um encantamento aleat¨®rio v¨¢lido
+				set .@opt, rand(1, 192);
+				for (set .@x, 0; .@x < getarraysize(.@ignore); set .@x, .@x + 1) {
+					if (.@opt == .@ignore[.@x]) {
+						set .@opt, rand(1, 192);
+						set .@x, 0;
+					}
+				}
+
+				// Verifica se o encantamento j¨¢ existe e se o novo valor ¨¦ maior
+				set .@found_slot, -1;
+				for (set .@s, 0; .@s < 4; set .@s, .@s + 1) {
+					set .@existing_opt, getequiprandomoption(.@equip, .@s, ROA_ID, getcharid(0));
+					set .@existing_val, getequiprandomoption(.@equip, .@s, ROA_VALUE, getcharid(0));
+
+					// Se for o mesmo encantamento e o valor for maior, substitui
+					if (.@existing_opt == .@opt && .@value > .@existing_val) {
+						setrandomoption(.@equip, .@s, .@opt, .@value, 0, getcharid(0));
+						set .@found_slot, .@s;
+						break;
+					}
+					// Se encontrar um slot vazio, usa ele
+					else if (.@existing_opt == 0 && .@found_slot == -1) {
+						set .@found_slot, .@s;
+					}
+				}
+
+				// Se encontrou um slot vazio, aplica o novo encantamento
+				if (.@found_slot > -1) {
+					setrandomoption(.@equip, .@found_slot, .@opt, .@value, 0, getcharid(0));
+					announce "[Battle Refine] " + strcharinfo(0) + " encantou " + getequipname(.@equip) + " +" + .@refine_level + " com um efeito especial!", bc_self, 0x00FF00;
+					specialeffect2 EF_ENCHANT;
+				}
+			}
+		}
+	}
+
+	end;
+}
+*/
+
+
+
+//EQI_COMPOUND_ON (-1)      - Item slot that calls this script (In context of item script)
+//EQI_ACC_L (0)             - Accessory 1
+//EQI_ACC_R (1)             - Accessory 2
+//EQI_SHOES (2)             - Footgear (shoes, boots)
+//EQI_GARMENT (3)           - Garment (mufflers, hoods, manteaux)
+//EQI_HEAD_LOW (4)          - Lower Headgear (beards, some masks)
+//EQI_HEAD_MID (5)          - Middle Headgear (masks, glasses)
+//EQI_HEAD_TOP (6)          - Upper Headgear
+//EQI_ARMOR (7)             - Armor (jackets, robes)
+//EQI_HAND_L (8)            - Left hand (weapons, shields)
+//EQI_HAND_R (9)            - Right hand (weapons)
+//EQI_COSTUME_HEAD_TOP (10) - Upper Costume Headgear
+//EQI_COSTUME_HEAD_MID (11) - Middle Costume Headgear
+//EQI_COSTUME_HEAD_LOW (12) - Lower Costume Headgear
+//EQI_COSTUME_GARMENT (13)  - Costume Garment
+//EQI_AMMO (14)    		  - Arrow/Ammunition
+//EQI_SHADOW_ARMOR (15)     - Shadow Armor
+//EQI_SHADOW_WEAPON (16)    - Shadow Weapon
+//EQI_SHADOW_SHIELD (17)    - Shadow Shield
+//EQI_SHADOW_SHOES (18)     - Shadow Shoes
+//EQI_SHADOW_ACC_R (19)     - Shadow Accessory 2
+//EQI_SHADOW_ACC_L (20)     - Shadow Accessory 1

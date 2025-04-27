@@ -1,0 +1,656 @@
+//===== rAthena Script ============================================================================================
+//= auto shop
+//===== By: =================================================================================================================
+//= Kuro 
+//===== Current Version: ====================================================================================================
+//= 1.0
+//===== Compatible With: ====================================================================================================
+//= rAthena
+//===== Description: ========================================================================================================
+//= Allows players to create and manage a shop while playing
+//===== Additional Comments: ================================================================================================
+//= 1.0 first version :
+//	-player creates his shop by using the '@shop' command
+//	-possibility to add a cost to the shop creation and a tax to the items sold, PLEASE REFER TO THE "ADDING SHOPS" PART IF YOU WANT TO ADD SHOPS
+//	-if you are the owner of a shop and buy an item in it, you won't have to pay the tax
+//	-player can manage his shop by using the '@shop' command
+//	-any owner of any shop can log in and out at any moment, he'll always get his money and items in case he sold something and/or his shop was deleted
+//
+//===========================================================================================================================
+/*=============================================ADDING SHOPS==================================================================
+						*if you want to add more shops, please refer to this part:*
+
+1)copy paste this >> -	shop	Subshop<NUMBER OF YOUR SHOP>	-1,512:-1
+
+2)copy paste this V V 
+moc_fild12,101,163,4	script	Shop#<NUMBER OF YOUR SHOP>	464,{
+OnClick:
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+
+3)edit the '.ShopAmount' var in the player setup >> .Shopamount = <AMOUNT OF SHOPS>
+
+===========================================END OF ADDING SHOPS=============================================================*/
+
+-	shop	SellingShop	-1,512:-1
+
+-	shop	Subshop1	-1,512:-1
+-	shop	Subshop2	-1,512:-1
+-	shop	Subshop3	-1,512:-1
+-	shop	Subshop4	-1,512:-1
+-	shop	Subshop5	-1,512:-1
+-	shop	Subshop6	-1,512:-1
+-	shop	Subshop7	-1,512:-1
+-	shop	Subshop8	-1,512:-1
+-	shop	Subshop9	-1,512:-1
+-	shop	Subshop10	-1,512:-1
+
+//=============================================================Shops==============================================================
+moc_fild12,101,163,4	script	Shop#1	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	npcshopattach "Subshop"+strnpcinfo(2);
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,102,163,4	script	Shop#2	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,103,163,4	script	Shop#3	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,104,163,4	script	Shop#4	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,105,163,4	script	Shop#5	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,106,163,4	script	Shop#6	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,107,163,4	script	Shop#7	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3);
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,108,163,4	script	Shop#8	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,109,163,4	script	Shop#9	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+moc_fild12,110,163,4	script	Shop#10	464,{
+OnClick:
+	@BuyingShopSpec = 1;
+	callshop "Subshop"+strnpcinfo(2),1;
+	npcshopattach "Subshop"+strnpcinfo(2);
+	end;
+	
+OnBuyItem:
+	callfunc "BuyItem",getcharid(3,strcharinfo(0)),strnpcinfo(2);
+	end;
+
+OnInit:
+	disablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 0;
+	end;
+
+OnEnable:
+	enablenpc strnpcinfo(3) ; setd "$Shop"+strnpcinfo(2)+"enable" , 1;
+	unitwarp getnpcid(0) , .map$ , .x , .y;
+	waitingroom .shopname$,1,strnpcinfo(0)+"::OnClick",1;
+	end;
+}
+//=========================================================end of Shops=======================================================================
+
+-	script	ShopManager	-1,{
+function GetShop ; function CheckOwner ; function CheckNumber ; function SetShop ; function AddToShop ; function CheckShopBound ; function GiveItemsBack;
+
+OnInit:
+//===========================player setuo=========================
+	.ShopAmount = 10; //amount of shops availables
+	.TimeDelay = 24; //amount of time a shop will last (in hours)
+	.Cost = 1000; //Cost to create a shop
+	.Tax = 10; //tax deducted from sales (in percent)
+//=======================end of player setup======================
+	bindatcmd "shop",strnpcinfo(3)+"::OnShop";
+	bindatcmd "delall",strnpcinfo(3)+"::OnDelall";
+	for(.@i = 1 ; .@i <= getvariableofnpc(.ShopAmount,"ShopManager") ; .@i++) setd "$Shop"+.@i+"time" , 0;
+	initnpctimer;
+	GiveItemsBack();
+	end;
+	
+OnShop:
+	if (!GetShop()) { mes "        ^993300[Shop Manager]^000000" ; mes "All of the shops are already taken." ; close; }
+	@shop = CheckOwner(getcharid(3,strcharinfo(0)));
+	if (@shop) {
+		mes "               ^993300[Your shop]^000000";
+		mes "Time left before deletion :";
+		mes "^0000ff"+(getd("$Shop"+@shop+"time")/60)+" hours "+(getd("$Shop"+@shop+"time")%60)+" minutes^000000";
+		mes "";
+		mes "What do you want to do?";
+		switch(select("Add items:Change prices:Delete shop:Leave")) {next;
+		case 1:
+			mes "        ^993300[Shop Manager]^000000";
+			mes "^ff0000Please sell all of the items you want to add here.^000000";
+			@SellingShopSpec = 2;
+			callshop "SellingShop",2;
+			npcshopattach "SellingShop";
+			end;
+		case 2:
+			mes "        ^993300[Shop Manager]^000000";
+			mes "^ff0000Please buy all of the items you want to change prices here.^000000";
+			@BuyingShopSpec = 2;
+			callshop "Subshop"+@shop,1;
+			end;
+		case 3:
+			mes "        ^993300[Shop Manager]^000000";
+			mes "Are you sure you want to erase your shop?";
+			if (select("No:Yes") == 1) end;
+			callfunc "DelShop",@shop,0;
+			end;
+		case 4:
+			end;
+		}
+	}
+	mes "        ^993300[Shop Manager]^000000";
+	mes "^ff0000Please sell all of the items you want to shop here.^000000";
+	mes "";
+	if (.Cost && !.Tax) mes "Please note that creating a shop ^0000ffwill cost you "+.Cost+" zeny^000000.";
+	if (!.Cost && .Tax) mes "Please note that a ^0000fftax of "+.Tax+"%^000000 will be dedcuted from your sales.";
+	if (.Cost && .Tax) mes "Please note that creating a shop ^0000ffwill cost you "+.Cost+" zeny^000000 and a ^0000fftax of "+.Tax+"%^000000 will be dedcuted from your sales.";
+	@SellingShopSpec = 1;
+	callshop "SellingShop",2;
+	npcshopattach "SellingShop";
+	end;
+	
+OnSellItem:
+if (@SellingShopSpec == 1) {
+	if (Zeny < .Cost) { mes "[Not enough zeny]" ; mes "You need "+.Cost+" zeny in order to create a shop." ; close; }
+	for(@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++ ) {
+		mes "        ^993300[Price selection]^000000";
+		mes"Item      : ^ff0000"+getitemname(@sold_nameid[@i])+"^000000";
+		mes "Amount : ^0000ff"+@sold_quantity[@i]+"^000000";
+		mes "";
+		PriceSelect:
+		mes "^ff0000Please input the price of the item.^000000";
+		input @input$;
+		if (CheckNumber(@input$)) { mes @input$+" is not a number sir.." ; goto PriceSelect;  }
+		if (atoi(@input$) == 0) {
+			mes "Are you sure you want to sell this item for free !?";
+			if (select("No:Yes") == 1) goto PriceSelect;
+		}
+		setarray @price[@i] , atoi(@input$);
+		next;
+		mes "        ^993300[Price selection]^000000";
+		mes"Item      : ^ff0000"+getitemname(@sold_nameid[@i])+"^000000";
+		mes "Amount : ^0000ff"+@sold_quantity[@i]+"^000000";
+		mes "";
+		mes "Price     : ^ff0000"+@price[@i]+" zeny^000000";
+		if (select("Next item:Change price") == 2) goto PriceSelect;
+		next;
+	}
+	mes "               ^993300[Recap]^000000";
+	for(@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++) mes ""+@sold_quantity[@i]+" "+getitemname(@sold_nameid[@i])+" >> "+@price[@i]+" zeny."; 
+	if (select("Shop it:Leave") == 2) end;
+	next;
+	mes "[Name choice]";
+	mes "Last step :";
+	mes "^ff0000Give a name to your shop. (yeaah)^000000";
+	input @shopname$;
+	SetShop(GetShop(),getcharid(3,strcharinfo(0)));
+	end;
+}
+if (@SellingShopSpec == 2) {
+	for(@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++ ) {
+		mes "        ^993300[Price selection]^000000";
+		mes"Item      : ^ff0000"+getitemname(@sold_nameid[@i])+"^000000";
+		mes "Amount : ^0000ff"+@sold_quantity[@i]+"^000000";
+		mes "";
+		PriceSelect2:
+		mes "^ff0000Please input the price of the item.^000000";
+		input @input$;
+		if (CheckNumber(@input$)) { mes @input$+" is not a number sir.." ; goto PriceSelect2;  }
+		if (atoi(@input$) == 0) {
+			mes "Are you sure you want to sell this item for free !?";
+			if (select("No:Yes") == 1) goto PriceSelect2;
+		}
+		setarray @price[@i] , atoi(@input$);
+		next;
+		mes "        ^993300[Price selection]^000000";
+		mes"Item      : ^ff0000"+getitemname(@sold_nameid[@i])+"^000000";
+		mes "Amount : ^0000ff"+@sold_quantity[@i]+"^000000";
+		mes "";
+		mes "Price     : ^ff0000"+@price[@i]+" zeny^000000";
+		if (select("Next item:Change price") == 2) goto PriceSelect;
+		next;
+	}
+	mes "               ^993300[Recap]^000000";
+	for(@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++) mes ""+@sold_quantity[@i]+" "+getitemname(@sold_nameid[@i])+" >> "+@price[@i]+" zeny."; 
+	if (select("Add it:Leave") == 2) end;
+	AddToShop(@shop,getcharid(3,strcharinfo(0)));
+	dispbottom "You successfully added "+getarraysize(@sold_nameid)+" items to your shop";
+	end;
+}
+
+OnTimer60000:
+	for(.@i = 1 ; .@i <= .ShopAmount ; .@i++) {
+		if (getd("$Shop"+.@i+"time")) {
+			setd "$Shop"+.@i+"time" , getd("$Shop"+.@i+"time") - 1;
+			if (!getd("$Shop"+.@i+"time")) callfunc "DelShop",.@i,0;
+		}
+	}
+	initnpctimer;
+	end;
+
+OnPCLoginEvent:
+	CheckShopBound(getcharid(3,strcharinfo(0)));
+	end;
+
+OnDelall:
+	for (.@i = 0 ; .@i < 10 ; .@i++) {
+		deletearray getd("$Shop"+.@atcmd_parameters$[0]+"itemid"+.@i+"[0]") , 10;
+		deletearray getd("$Shop"+.@atcmd_parameters$[0]+"amount"+.@i+"[0]") , 10;
+		deletearray getd("$Shop"+.@atcmd_parameters$[0]+"price"+.@i+"[0]") , 10;
+	}
+	deletearray getd("$Shop"+.@atcmd_parameters$[0]+"rid[0]") , 10;
+	deletearray getd("$kuroamount[0]") , 10;
+	end;
+
+function GetShop	{
+	for (.@i = 1 ; .@i <= getvariableofnpc(.ShopAmount,"ShopManager") ; .@i++) {
+		if (!getd("$Shop"+.@i+"enable")) return .@i;
+	}
+	return 0;
+}
+
+function	CheckOwner	{
+	for (.@i = 1 ; .@i <= getvariableofnpc(.ShopAmount,"ShopManager") ; .@i++) {
+		if (getd("$Shop"+.@i+"rid["+(getarraysize(getd("$Shop"+.@i+"rid"))-1)+"]") == getarg(0)) return .@i;
+	}
+	return 0;
+}
+
+function CheckNumber	{
+	setarray .@numbers$ , "0","1","2","3","4","5","6","7","8","9";
+	for (.@i = 0 ; .@i < getstrlen(getarg(0)) ; .@i++) {
+		.@ok = 0;
+		for (.@j = 0 ; .@j < getarraysize(.@numbers$) ; .@j++) {
+			if (charat(getarg(0),.@i) == .@numbers$[.@j]) .@ok = 1;
+		}
+		if (!.@ok) return 1;
+	}
+	return 0;
+}
+
+function	SetShop	{
+	attachrid(getarg(1));
+	if (getarg(0) == 0) { mes "Sorry but the last shop has been taken during your set up" ; close; }
+	//creates the items in the shop
+	npcshopitem "Subshop"+getarg(0),@sold_nameid[0],@price[0];
+	delitem @sold_nameid[0],@sold_quantity[0];
+	for(@i = 1 ; @i < getarraysize(@sold_nameid) ; @i++) { delitem @sold_nameid[@i],@sold_quantity[@i] ; npcshopadditem "Subshop"+getarg(0),@sold_nameid[@i],@price[@i]; }
+	//set the shop and player variables
+	for (@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++) {
+		setarray getd("$Shop"+getarg(0)+"itemid"+getarraysize(getd("$Shop"+getarg(0)+"rid"))+"["+@i+"]") , @sold_nameid[@i];
+		setarray getd("$Shop"+getarg(0)+"amount"+getarraysize(getd("$Shop"+getarg(0)+"rid"))+"["+@i+"]") , @sold_quantity[@i];
+		setarray getd("$Shop"+getarg(0)+"price"+getarraysize(getd("$Shop"+getarg(0)+"rid"))+"["+@i+"]") , @price[@i];
+		setarray getd("$"+strcharinfo(0)+"amount["+@i+"]") , @sold_quantity[@i];
+	}
+	setarray getd("$Shop"+getarg(0)+"rid["+getarraysize(getd("$Shop"+getarg(0)+"rid"))+"]") , getarg(1);
+	setd "$Shop"+getarg(0)+"time" , getvariableofnpc(.TimeDelay,"ShopManager")*60;
+	setarray getvariableofnpc(.shopname$,"Shop#"+getarg(0)) , @shopname$;
+	getmapxy @map$,@x,@y,0;
+	set getvariableofnpc(.map$,"Shop#"+getarg(0)) , @map$;
+	set getvariableofnpc(.x,"Shop#"+getarg(0)) , @x;
+	set getvariableofnpc(.y,"Shop#"+getarg(0)) , @y;
+	//enable shop
+	donpcevent "Shop#"+getarg(0)+"::OnEnable";
+	return;
+}
+
+function	AddToShop	{
+	attachrid(getarg(1));
+	for(@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++) { delitem @sold_nameid[@i],@sold_quantity[@i] ; npcshopadditem "Subshop"+getarg(0),@sold_nameid[@i],@price[@i]; }
+	@num = getarraysize(getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)));
+	for (@i = 0 ; @i < getarraysize(@sold_nameid) ; @i++) {
+		setarray getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+(@num+@i)+"]") , @sold_nameid[@i];
+		setarray getd("$Shop"+getarg(0)+"amount"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+(@num+@i)+"]") , @sold_quantity[@i];
+		setarray getd("$Shop"+getarg(0)+"price"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+(@num+@i)+"]") , @price[@i];
+		setarray getd("$"+strcharinfo(0)+"amount["+(@num+@i)+"]") , @sold_quantity[@i];
+	}
+	return;
+}
+
+function	CheckShopBound	{
+	attachrid(getarg(0));
+	for (@i = 1 ; @i <= getvariableofnpc(.ShopAmount,"ShopManager") ; @i++) {
+		for (@j = 0 ; @j < getarraysize(getd("$Shop"+@i+"rid")) ; @j++) {
+			if (getd("$Shop"+@i+"rid["+@j+"]") == getarg(0)) {
+				for (@k = 0 ; @k < getarraysize(getd("$"+strcharinfo(0)+"amount")) ; @k++) {
+					if (getd("$Shop"+@i+"amount"+@j+"["+@k+"]") != getd("$"+strcharinfo(0)+"amount["+@k+"]")) {
+							.@amount = getd("$"+strcharinfo(0)+"amount["+@k+"]") - getd("$Shop"+@i+"amount"+@j+"["+@k+"]");
+							.@price = getd("$Shop"+@i+"price"+@j+"["+@k+"]");
+							Zeny = Zeny + (.@amount*.@price*(100-getvariableofnpc(.Tax,"ShopManager"))/100);
+							dispbottom "You sold "+.@amount+" "+getitemname(getd("$Shop"+@i+"itemid"+@j+"["+@k+"]"))+" and earned "+(.@amount*.@price*(100-getvariableofnpc(.Tax,"ShopManager"))/100)+" zeny ("+getvariableofnpc(.Tax,"ShopManager")+"% tax).";
+							setd "$"+strcharinfo(0)+"amount["+@k+"]" , getd("$Shop"+@i+"amount"+@j+"["+@k+"]");
+					}
+				}
+				if (getd("$Shop"+@i+"enable") == 0 || (@j != (getarraysize(getd("$Shop"+@i+"rid"))-1))) {
+					deletearray getd("$Shop"+@i+"rid["+@j+"]") , 1;
+					for (@k = 0 ; @k < getarraysize(getd("$Shop"+@i+"itemid"+@j)) ; @k++) {
+						getitem getd("$Shop"+@i+"itemid"+@j+"["+@k+"]") , getd("$Shop"+@i+"amount"+@j+"["+@k+"]");
+					}
+					deletearray getd("$Shop"+@i+"itemid"+@j+"[0]") , getarraysize(getd("$Shop"+@i+"itemid"+@j));
+					deletearray getd("$Shop"+@i+"amount"+@j+"[0]") , getarraysize(getd("$Shop"+@i+"amount"+@j));
+					deletearray getd("$Shop"+@i+"price"+@j+"[0]") , getarraysize(getd("$Shop"+@i+"price"+@j));
+					deletearray getd("$"+strcharinfo(0)+"amount[0]") , getarraysize(getd("$"+strcharinfo(0)+"amount"));
+				}
+			}
+		}
+	}
+	return;
+}
+
+function	GiveItemsBack	{
+	for (.@i = 1 ; .@i <= getvariableofnpc(.ShopAmount,"ShopManager") ; .@i++) {
+			if (attachrid(getd("$Shop"+.@i+"rid["+(getarraysize(getd("$Shop"+.@i+"rid"))-1)+"]"))) {
+				for (@i = 0 ; @i < getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1))) ; @i++) getitem getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)+"["+@i+"]"),getd("$Shop"+.@i+"amount"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)+"["+@i+"]");
+				dispbottom "Your shop has been erased due to a reloadscript.";
+				if (getvariableofnpc(.Cost,"ShopManager")) {
+					Zeny = Zeny + getvariableofnpc(.Cost,"ShopManager");
+					dispbottom "Here are your "+getvariableofnpc(.Cost,"ShopManager")+" zeny you spent to create it.";
+				}
+				deletearray getd("$Shop"+.@i+"rid["+(getarraysize(getd("$Shop"+.@i+"rid"))-1)+"]") , 1;
+				deletearray getd("$Shop"+.@i+"itemid"+getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)))+"[0]") , getarraysize(getd("$Shop"+.@i+"itemid"+getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)))));
+				deletearray getd("$Shop"+.@i+"amount"+getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)))+"[0]") , getarraysize(getd("$Shop"+.@i+"amount"+getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)))));
+				deletearray getd("$Shop"+.@i+"price"+getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)))+"[0]") , getarraysize(getd("$Shop"+.@i+"price"+getarraysize(getd("$Shop"+.@i+"itemid"+(getarraysize(getd("$Shop"+.@i+"rid"))-1)))));
+				deletearray getd("$"+strcharinfo(0)+"amount[0]") , getarraysize(getd("$"+strcharinfo(0)+"amount"));
+			}
+	}
+	return;
+}
+
+}
+//===========================================================shops funcs========================================================================
+function	script	BuyItem	{
+	.@rid = getarg(0);
+	attachrid(.@rid);
+if (@BuyingShopSpec == 1) {
+	for (@i = 0 ; @i < getarraysize(@bought_nameid) ; @i++) {
+		for (@j = 0 ; @j < getarraysize(getd("$Shop"+getarg(1)+"itemid"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1))) ; @j++) {
+			if (@bought_nameid[@i] == getd("$Shop"+getarg(1)+"itemid"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]")) {
+				if (.@itemid == @bought_nameid[@i]) break;
+				.@itemid = @bought_nameid[@i];
+				if (@bought_quantity[@i] > getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]")) { mes "You can't afford more than "+getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]")+" "+getitemname(@bought_nameid[@i])+" ." ; close; }
+				if (.@rid != getd("$Shop"+getarg(1)+"rid["+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"]")) Zeny = Zeny - getd("$Shop"+getarg(1)+"price"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]")*@bought_quantity[@i];
+				getitem @bought_nameid[@i] , @bought_quantity[@i];
+				setarray getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]") , getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]") - @bought_quantity[@i];
+				.@price = getd("$Shop"+getarg(1)+"price"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]") ; .@amount = @bought_quantity[@i] ; .@itemid = @bought_nameid[@i];
+				if (attachrid(getd("$Shop"+getarg(1)+"rid["+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"]"))) {
+					setarray getd("$"+strcharinfo(0)+"amount["+@j+"]") , getd("$"+strcharinfo(0)+"amount["+@j+"]") - .@amount;
+					if (.@rid != getd("$Shop"+getarg(1)+"rid["+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"]")) {
+						Zeny = Zeny + (.@amount*.@price*(100-getvariableofnpc(.Tax,"ShopManager"))/100);
+						dispbottom "You just sold "+.@amount+" "+getitemname(.@itemid)+" and earned "+(.@amount*.@price*(100-getvariableofnpc(.Tax,"ShopManager"))/100)+" zeny ("+getvariableofnpc(.Tax,"ShopManager")+"% tax)."; 
+					}
+					else {
+						dispbottom "You got back "+.@amount+" "+getitemname(.@itemid)+" from your shop and did not pay for it"; 
+					}
+				}
+				attachrid(.@rid);
+				if (getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]") < 1) npcshopdelitem "Subshop"+getarg(1),@bought_nameid[@i];
+				if (callfunc("CheckShop",getarg(1))) callfunc "DelShop",getarg(1),1;
+			}
+		}
+	}
+}
+if (@BuyingShopSpec == 2) {
+	for(@i = 0 ; @i < getarraysize(@bought_nameid) ; @i++ ) {
+		for (@j = 0 ; @j < getarraysize(getd("$Shop"+getarg(1)+"itemid"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1))) ; @j++) {
+			if (@bought_nameid[@i] == getd("$Shop"+getarg(1)+"itemid"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@j+"]")) @nb = @j;
+		}
+		mes "        ^993300[Price selection]^000000";
+		mes"Item      : ^ff0000"+getitemname(@bought_nameid[@i])+"^000000";
+		mes "Amount : ^0000ff"+getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@nb+"]")+"^000000";
+		mes "Current Price : ^0000ff"+getd("$Shop"+getarg(1)+"price"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@nb+"]")+"^000000";
+		mes "";
+		PriceSelect3:
+		mes "^ff0000Please input the new price of the item.^000000";
+		input @input$;
+		setarray .@numbers$ , "0","1","2","3","4","5","6","7","8","9";
+		@notnumber = 0;
+		for (.@i = 0 ; .@i < getstrlen(@input$) ; .@i++) {
+			@ok = 0;
+			for (.@j = 0 ; .@j < getarraysize(.@numbers$) ; .@j++) {
+				if (charat(@input$,.@i) == .@numbers$[.@j]) @ok = 1;
+			}
+			if (@ok == 0) @notnumber = 1;
+		}
+		if (@notnumber) { mes @input$+" is not a number sir.." ; goto PriceSelect3;  }
+		if (atoi(@input$) == 0) {
+			mes "Are you sure you want to sell this item for free !?";
+			if (select("No:Yes") == 1) goto PriceSelect3;
+		}
+		setarray @price[@i] , atoi(@input$);
+		next;
+		mes "        ^993300[Price selection]^000000";
+		mes"Item      : ^ff0000"+getitemname(@bought_nameid[@i])+"^000000";
+		mes "Amount : ^0000ff"+getd("$Shop"+getarg(1)+"amount"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@nb+"]")+"^000000";
+		mes "Current Price : ^0000ff"+getd("$Shop"+getarg(1)+"price"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@nb+"]")+"^000000";
+		mes "";
+		mes "New Price     : ^ff0000"+@price[@i]+" zeny^000000";
+		if (select("Next item:Change price") == 2) goto PriceSelect;
+		setarray @newprice[@i*2] , @nb , @price[@i];
+		next;
+	}
+	mes "               ^993300[Recap]^000000";
+	for(@i = 0 ; @i < getarraysize(@bought_nameid) ; @i++) mes ""+getitemname(@bought_nameid[@i])+" >> "+@price[@i]+" zeny."; 
+	if (select("Apply:Quit") == 2) end;
+	for (@i = 0 ; @i < getarraysize(@bought_nameid) ; @i++) {
+		npcshopdelitem "Subshop"+getarg(1),@bought_nameid[@i];
+		npcshopadditem "Subshop"+getarg(1),@bought_nameid[@i],@price[@i];
+	}
+	for (@i = 0 ; @i < (getarraysize(@newprice)-1) ; @i += 2) {
+		setarray getd("$Shop"+getarg(1)+"price"+(getarraysize(getd("$Shop"+getarg(1)+"rid"))-1)+"["+@newprice[@i]+"]") , @newprice[@i+1];
+	}
+	dispbottom "You successfully changed the price of "+(getarraysize(@bought_nameid))+" items";;
+}
+return;
+}
+
+function	script	CheckShop	{
+	for (.@i = 0 ; .@i < getarraysize(getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1))) ; .@i++) {
+		if (getd("$Shop"+getarg(0)+"amount"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+.@i+"]")) return 0;
+	}
+	return 1;
+}
+
+function	script	DelShop	{
+	if (attachrid(getd("$Shop"+getarg(0)+"rid["+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"]"))) {
+		if (getarg(1) == 1) dispbottom "You sold every items in your shop and so it has been erased.";
+		if (getarg(1) == 2) {
+			for(@i = 0 ; @i < getarraysize(getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1))) ; @i++) getitem getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+@i+"]"),getd("$Shop"+getarg(0)+"amount"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+@i+"]");
+			dispbottom "Your shop lasted "+getvariableofnpc(.TimeDelay,"ShopManager")+" hours and so has been erased.";
+		}
+		else {
+			for(@i = 0 ; @i < getarraysize(getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1))) ; @i++) getitem getd("$Shop"+getarg(0)+"itemid"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+@i+"]"),getd("$Shop"+getarg(0)+"amount"+(getarraysize(getd("$Shop"+getarg(0)+"rid"))-1)+"["+@i+"]");
+			dispbottom "Your shop has been erased.";
+		}
+	}
+	donpcevent "Shop#"+getarg(0)+"::OnInit";
+	return;
+}
+
+
+
+

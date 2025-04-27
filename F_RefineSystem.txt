@@ -1,0 +1,142 @@
+/* item_db.txt
+
+984,Oridecon,Oridecon,11,1100,,200,,,,,0xFFFFFFFF,63,2,,,,,,{ callfunc( "F_RefineSystem",984,3,0,10,20000 ); },{},{}
+985,Elunium,Elunium,11,1100,,200,,,,,0xFFFFFFFF,63,2,,,,,,{ callfunc( "F_RefineSystem",985,0,0,10,20000 ); },{},{}
+1010,Phracon,Phracon,11,200,,200,,,,,0xFFFFFFFF,63,2,,,,,,{ callfunc( "F_RefineSystem",1010,1,0,10,1000 ); },{},{}
+1011,Emveretarcon,Emveretarcon,11,1000,,200,,,,,0xFFFFFFFF,63,2,,,,,,{ callfunc( "F_RefineSystem",1011,2,0,10,2500 ); },{},{}
+
+*/
+//....callfunc ("F_RefineSystem" <itemID>,<level Armor/weapons>,<MinRefine>,<MaxRefine>,<zeny>)
+// Usage: (ItemType, must set to 11)
+// callfunc( "F_RefineSystem",1010,1,0,10,1000 ); // Phracon
+// callfunc( "F_RefineSystem",1011,2,0,10,2500 ); // Emveretarcon
+// callfunc( "F_RefineSystem",984,3,0,10,20000 ); // Oridecon
+// callfunc( "F_RefineSystem",985,0,0,10,20000 ); // Elunium
+/*
+function	script	F_RefineSystem	{
+	.@ore_itemid = getarg( 0,0 );
+	.@level = getarg( 1,0 );
+	.@min_refine = getarg( 2,0 );
+	.@max_refine = getarg( 3,( MAX_REFINE-1 ) );
+	.@zeny = getarg( 4,0 );
+	
+	if ( .@ore_itemid && .@level < 5 ) {
+		for ( .@i = EQI_SHOES; .@i <= EQI_HAND_R; .@i++ ) {
+			
+				.@fail = 0;
+				
+			if ( .@i == EQI_HEAD_LOW || .@i == EQI_HEAD_MID )
+				.@fail++;
+			
+			.@itemid = getequipid( .@i );
+			if ( .@itemid == -1 ) 
+				.@fail++;
+				
+			.@refine = getequiprefinerycnt( .@i );
+			.@slot = getitemslots( .@itemid );
+			.@itemid_type = getiteminfo( .@itemid,2 );
+			
+			if ( .@itemid_type == IT_ARMOR && .@level > 0 ) 
+				.@fail++;
+			if ( .@itemid_type == IT_WEAPON && ( .@level == 0 || getequipweaponlv( .@i ) > .@level ) )
+				.@fail++;
+				
+			if ( !.@fail )
+				if ( .@refine >= .@min_refine && .@refine <= .@max_refine )
+					.@menu$ = .@menu$ + ( .@refine ? "+"+.@refine+" ":"" ) + getitemname( .@itemid )+" ["+.@slot+"]";
+			
+			.@menu$ = .@menu$ + ":";
+		}
+		.@i = select( .@menu$ ) + 1;
+		if ( Zeny >= .@zeny ) {
+			Zeny -= .@zeny;
+			delitem .@ore_itemid,1;
+			if ( rand( 100 ) < getequippercentrefinery( .@i ) ) {
+				successrefitem .@i;
+				specialeffect2 EF_REFINEOK;
+			}
+			else {
+				failedrefitem .@i;
+				specialeffect2 EF_REFINEFAIL;
+			}
+		}
+		end;
+	}
+	
+	return;
+}
+*/
+
+function	script	F_RefineSystem	{
+    .@ore_itemid = getarg(0, 0);
+    .@level = getarg(1, 0);
+    .@min_refine = getarg(2, 0);
+    .@max_refine = getarg(3, (MAX_REFINE - 1));
+    .@zeny = getarg(4, 0);
+
+    if (.@ore_itemid && .@level < 5) {
+        .@menu$ = "";
+        .@equip_count = 0;
+
+        for (.@i = EQI_SHOES; .@i <= EQI_HAND_R; .@i++) {
+            .@fail = 0;
+
+            if (.@i == EQI_HEAD_LOW || .@i == EQI_HEAD_MID)
+                continue; // Ignora equipamentos inválidos para refinamento.
+
+            .@itemid = getequipid(.@i);
+            if (.@itemid == -1) 
+                continue; // Ignora espaços vazios.
+
+            .@refine = getequiprefinerycnt(.@i);
+            .@slot = getitemslots(.@itemid);
+            .@itemid_type = getiteminfo(.@itemid, 2);
+
+            if (.@itemid_type == IT_ARMOR && .@level > 0)
+                continue;
+            if (.@itemid_type == IT_WEAPON && (.@level == 0 || getequipweaponlv(.@i) > .@level))
+                continue;
+
+            if (.@refine >= .@min_refine && .@refine <= .@max_refine) {
+                .@menu$ = .@menu$ + ( .@refine ? "+" + .@refine + " " : "" ) + getitemname(.@itemid) + " [" + .@slot + "]";
+                .@menu$ = .@menu$ + ":";
+                .@equip_list[.@equip_count] = .@i; // Salva índice correto
+                .@equip_count++;
+            }
+        }
+
+        if (.@equip_count == 0) {
+            dispbottom "Você não tem nenhum equipamento válido para refinar.";
+            end;
+        }
+
+        .@choice = select(.@menu$);
+        if (.@choice == 0) end; // Jogador cancelou.
+
+        .@i = .@equip_list[.@choice - 1]; // Pega o índice correto do equipamento.
+
+        .@itemid = getequipid(.@i);
+        if (.@itemid == -1) {
+            dispbottom "Erro: O equipamento não existe.";
+            end;
+        }
+
+        if (Zeny >= .@zeny) {
+            Zeny -= .@zeny;
+            delitem .@ore_itemid, 1;
+
+            if (rand(100) < getequippercentrefinery(.@i)) {
+                successrefitem .@i;
+                specialeffect2 EF_REFINEOK;
+                dispbottom "Refinamento bem-sucedido!";
+            } else {
+                failedrefitem .@i;
+                specialeffect2 EF_REFINEFAIL;
+                dispbottom "Refinamento falhou!";
+            }
+        } else {
+            dispbottom "Você não tem Zeny suficiente.";
+        }
+    }
+    end;
+}

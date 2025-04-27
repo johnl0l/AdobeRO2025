@@ -1,0 +1,53 @@
+/*
+
+ __                  ____                       __              
+/\ \                /\  _`\   __              /'__`\            
+\ \ \____  __  __   \ \,\L\_\/\_\    ___ ___ /\ \/\ \    ___    
+ \ \ '__`\/\ \/\ \   \/_\__ \\/\ \ /' __` __`\ \ \ \ \ /' _ `\  
+  \ \ \L\ \ \ \_\ \    /\ \L\ \ \ \/\ \/\ \/\ \ \ \_\ \/\ \/\ \ 
+   \ \_,__/\/`____ \   \ `\____\ \_\ \_\ \_\ \_\ \____/\ \_\ \_\
+    \/___/  `/___/> \   \/_____/\/_/\/_/\/_/\/_/\/___/  \/_/\/_/
+               /\___/                                           
+               \/__/   
+
+*/
+-	script	effect	-1,{
+
+//Effect Script to view effects
+	
+	OnWhisperGlobal:
+
+	if (getgmlevel() < 10) end;
+	
+	if (@whispervar0$ == "help") {
+		dispbottom "usage: effect#<delay>{#<start effect id>} (delay in ms, may ID= 700)";
+		dispbottom "While the script is running type anything to stop the script.";
+	}
+	
+	if (@whispervar0$ == "effect" && @whispervar1$ != "") {
+		
+		if (atoi(@whispervar1$) < 500) { dispbottom "Maybe you'll crash your client with that speed.."; end; }
+		
+		if (atoi(@whispervar2$) > 700) { dispbottom "The Effect-Start-ID is to big."; end; }
+		
+		set @delay, atoi(@whispervar1$);
+		
+		if (atoi(@whispervar2$) == 0) set @i,1; else set @i,atoi(@whispervar2$);
+		
+		while(@whispervar0$ == "effect" && @i < 700) {
+			
+			set @started,1;
+			set @i, @i + (@i == 19 || @i == 243); //invalid effect ids;
+			specialeffect2 @i;
+			dispbottom "EffectID: "+@i;
+			sleep2 @delay;
+			set @i,@i+1;
+			
+		}
+	} else if (@started) { dispbottom "STOPPED"; set @started,0; }  
+	
+	if (@whispervar0$ == "reset" && @i > 1) { set @i,1; dispbottom "EffectID has been resetted"; }
+
+	end;
+
+}

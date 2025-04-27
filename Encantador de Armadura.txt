@@ -1,0 +1,70 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+//===== Cronus Script =======================================
+//===== Por: ================================================
+//= Johnlol
+//===== Versão Atual: =======================================
+//= 1.0	- Script Inicializado.
+//= 1.1 - Adicionado função de checagem de sexo mais clean.
+//===== Compatível Com: =====================================
+//= Cronus / eAthena
+//===== Descrição: ==========================================
+//= Encanta a Arma com qualquer elemento.
+//===== Bugs: ===============================================
+//= Não encontrei nenhum.
+//===========================================================
+
+prontera,145,191,4	script	Armadura Encantada	58,{
+
+	set .@npcencantador$,"[ ^1E90FFArmadura Encantada^000000 ]";
+	set @PrecoEncantar,30000;	// Preço para encantar a arma
+
+	mes .@npcencantador$;
+	mes "Olá ^0000CD"+strcharinfo(0)+"^000000, bem vindo ao ^FF0000Armadura Encantada^000000, eu posso Encantar a sua Armadura com qualquer elemento por ^FF00005 minutos!^000000";
+	mes "Para encantar sua armadura cobrarei ^FF0000"+@PrecoEncantar+"^000000z.";
+	next;
+	if(select("^FF0000Sim^000000.:Não.")==2){
+		mes .@npcencantador$;
+		mes "Volte quando precisar.";
+		close;
+	}
+	if(zeny < @PrecoEncantar){
+		mes .@npcencantador$;
+		mes "Você não tem o dinheiro suficiente.";
+		close;
+	}
+	mes .@npcencantador$;
+	mes "Qual elemento você quer?";
+	set zeny,zeny-@PrecoEncantar;
+	next;
+	switch(select("^0000FFWater^000000:^FF0000Fire^000000:^5C4033Earth^000000:^215E21Wind^000000:^CFB53BHoly^000000:^6B238EDark^000000:Sair~")){
+	case 1:
+		specialeffect2 469; sc_start4 SC_ELEMENTALCHANGE,300000,1,Ele_Water,1,0;			// 400000 = 1 Minuto: Encantar com Geada, Duração: 5 Minutos, Level 5
+		close;
+	case 2:
+		specialeffect2 470; sc_start4 SC_ELEMENTALCHANGE,300000,1,Ele_Fire,1,0;			// 400000 = 1 Minuto: Encantar com Chama, Duração: 5 Minutos, Level 5
+		close;
+	case 3:
+		specialeffect2 467; sc_start4 SC_ELEMENTALCHANGE,300000,1,Ele_Earth,1,0;			// 400000 = 1 Minuto: Encantar com Terremoto, Duração: 5 Minutos, Level 5
+		close;
+	case 4:
+		specialeffect2 468; sc_start4 SC_ELEMENTALCHANGE,300000,1,Ele_Wind,1,0;			// 400000 = 1 Minuto: Encantar com Ventania, Duração: 5 Minutos, Level 5
+		close;
+	case 5:
+		specialeffect2 473; sc_start4 SC_ELEMENTALCHANGE,300000,1,Ele_Holy,1,0;				// 400000 = 1 Minuto: Encantar com Sagrado, Duração: 5 Minutos, Level 5
+		close;
+	case 6:
+		specialeffect2 472; sc_start4 SC_ELEMENTALCHANGE,300000,1,Ele_Dark,1,0;			// 400000 = 1 Minuto: Encantar com Maldito, Duração: 5 Minutos, Level 5
+		close;
+	case 7:
+		set zeny,zeny+@PrecoEncantar;
+		close;
+	}
+}

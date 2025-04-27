@@ -1,0 +1,28 @@
+//http://rathena.org/board/topic/53877-lucky-pick-event/
+//emistry script
+
+-	script	AutoFunEvent	-1,{
+OnInit:
+OnClock0000:
+set .LuckyTime,rand(24);
+
+OnMinute26:
+if( gettime(3) == .LuckyTime ){
+set .DelayMin,rand(60);
+sleep ( rand(60) * 1000 );
+while(1){
+ query_sql "select account_id from `char` where online = 1 order by rand() limit 1", .@aid;
+ attachrid .@aid;
+ if( CheckVending() ){
+  DetachRID();
+  continue;
+  }
+ announce strcharinfo(0) +" won 500 cash in Lucky Pick Event ", 0,0x00FF00;
+ set #CASHPOINTS,#CASHPOINTS+500;
+ //getitem 512,1000;
+ dispbottom "You got 500 cash point";
+ break;
+}
+}
+end;
+}

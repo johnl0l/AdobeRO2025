@@ -1,0 +1,23 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+// @checkpoints
+-	script	Check Points	-1,{
+    OnInit:
+        bindatcmd("checkpoints", strnpcinfo(3)+ "::OnCheck"); // << This is your new custom @command
+        end;
+OnPCLoginEvent:
+dispbottom "You currently have " +#CASHPOINTS+ " Cash Points & " +#KAFRAPOINTS+ " Kafra Points",0xFF0000;
+        //dispbottom "You currently have " +#KAFRAPOINTS+ " Kafra Points";
+        end;
+    OnCheck:
+        dispbottom "You currently have " +#CASHPOINTS+ " Cash Points & " +#KAFRAPOINTS+ " Kafra Points",0xFF0000;
+        //dispbottom "You currently have " +#KAFRAPOINTS+ " Kafra Points";
+        end;
+}

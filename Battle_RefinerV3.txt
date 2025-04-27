@@ -1,0 +1,202 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+// [==================================================]
+// [                 Battle Refiner                   ]
+// [==================================================]
+// [ Version 5                                        ]
+// [==================================================]
+// [ Description:                                     ]
+// [--------------------------------------------------]
+// [                                                  ]
+// [ - Everytime when you kill a monster, it adds a   ]
+// [ very little chance to successfully refine an     ]
+// [ equiped item.                                    ]
+// [ - Control Panel whispering to NPC:Battle Refiner.]
+// [                                                  ]
+// [==================================================]
+// [ Changelog:                                       ]
+// [--------------------------------------------------]
+// [                                                  ]
+// [ v1: [Ivion]                                      ]
+// [                                                  ]
+// [ v2: [Ivion]                                      ]
+// [ - Bugfix: Non monster enemies causes errors.     ]
+// [ - It won't check non refinable slots (7 -> 10).  ]
+// [ - Decreased the default chance by 50%.           ]
+// [                                                  ]
+// [ v3: [Ivion]                                      ]
+// [ - Added Max refine setting.                      ]
+// [                                                  ]
+// [ v4: [Ivion]                                      ]
+// [ - Bugfix: Overflows when killing low level mobs. ]
+// [                                                  ]
+// [ v5: [Ivion]                                      ]
+// [ - Control Panel whispering to NPC:Battle Refiner.]
+// [==================================================]
+
+-	script	BattleRefiner	-1,{
+OnInit:
+	bindatcmd "BattleRefiner",strnpcinfo(3)+"::OnRefiner";
+// [==================================================]
+// [ Configuration:                                   ]
+// [--------------------------------------------------]
+
+	set .r1,90;	// Rate. (%)
+	set .r2,10;	// Max refine.
+
+// [--------------------------------------------------]
+// [ End of configuration.                            ]
+// [==================================================]
+
+end;
+
+OnNPCKillEvent:
+	set .@a,rand(1,10);
+	if(getequipisequiped(.@a) && getequipisenableref(.@a) && !(br & pow(2,.@a - 1))) {
+		set .@c,getequiprefinerycnt(.@a);
+		if(.@c < .r2) {
+			if((.@a == 3) || (.@a == 4)) set .@b,getequipweaponlv(.@a);
+			else set .@b,3;
+			if(!rand(pow(2,.@b + .@c))) {
+				set .@d,strmobinfo(3,killedrid);
+				if(.@d) if(!rand(pow(BaseLevel,2) * 400 / (pow(.@d,2) * .r1))) successrefitem .@a;
+			}
+		}
+	}
+	end;
+
+OnConfig:
+OnRefiner:
+	set .@n$,"^008888Battle Refiner^000000";
+	mes .@n$;
+	mes "Este é o Painel de Controle do Sistema do Battle Refiner";
+	mes "Você pode ativar ou desativar o Battle Refiner para cada uma de suas equipes.";
+	next;
+	do {
+		setarray .@a$[0],"Upper","Armor","Left","Right","Garment","Footgear";
+		set .@a,getarraysize(.@a$);
+		while(.@a) {
+			set .@a,.@a - 1;
+			if(br & pow(2,.@a))	set .@a$[.@a],"^bbbbbb"+.@a$[.@a]+" ^000000(^bb0000off^000000)";
+			else			set .@a$[.@a],.@a$[.@a]+" (^00bb00on^000000)";
+		}
+		set .@a,select("^880000Exit^000000",.@a$[0],.@a$[1],.@a$[2],.@a$[3],.@a$[4],.@a$[5]) - 1;
+		if(.@a) {
+			if(br & pow(2,.@a - 1))	set br,br - pow(2,.@a - 1);
+			else			set br,br | pow(2,.@a - 1);
+		}
+	} while(.@a);
+	mes .@n$;
+	mes "Tenha um bom dia.";
+	close;
+}
+
+
+//EQI_HEAD_TOP (1)          - Upper Headear
+//EQI_ARMOR (2)             - Armor (jackets, robes)
+//EQI_HAND_L (3)            - Left hand (weapons, shields)
+//EQI_HAND_R (4)            - Right hand (weapons)
+//EQI_GARMENT (5)           - Garment (mufflers, hoods, manteaus)
+//EQI_SHOES (6)             - Footgear (shoes, boots)
+//EQI_ACC_L (7)             - Accessory 1
+//EQI_ACC_R (8)             - Accessory 2
+//EQI_HEAD_MID (9)          - Middle Headgear (masks, glasses)
+//EQI_HEAD_LOW (10)         - Lower Headgear (beards, some masks)
+//EQI_COSTUME_HEAD_LOW (11) - Lower Costume Headgear
+//EQI_COSTUME_HEAD_MID (12) - Middle Costume Headgear
+//EQI_COSTUME_HEAD_TOP (13) - Upper Costume Headgear
+//EQI_COSTUME_GARMENT (14)  - Costume Garment
+//EQI_AMMO (15)    		  - Arrow/Ammunition
+//EQI_SHADOW_ARMOR (16)     - Shadow Armor
+//EQI_SHADOW_WEAPON (17)    - Shadow Weapon
+//EQI_SHADOW_SHIELD (18)    - Shadow Shield
+//EQI_SHADOW_SHOES (19)     - Shadow Shoes
+//EQI_SHADOW_ACC_R (20)     - Shadow Accessory 2
+//EQI_SHADOW_ACC_L (21)     - Shadow Accessory 1
+
+//EQI_COMPOUND_ON (-1)      - Item slot that calls this script (In context of item script)
+//EQI_ACC_L (0)             - Accessory 1
+//EQI_ACC_R (1)             - Accessory 2
+//EQI_SHOES (2)             - Footgear (shoes, boots)
+//EQI_GARMENT (3)           - Garment (mufflers, hoods, manteaux)
+//EQI_HEAD_LOW (4)          - Lower Headgear (beards, some masks)
+//EQI_HEAD_MID (5)          - Middle Headgear (masks, glasses)
+//EQI_HEAD_TOP (6)          - Upper Headgear
+//EQI_ARMOR (7)             - Armor (jackets, robes)
+//EQI_HAND_L (8)            - Left hand (weapons, shields)
+//EQI_HAND_R (9)            - Right hand (weapons)
+//EQI_COSTUME_HEAD_TOP (10) - Upper Costume Headgear
+//EQI_COSTUME_HEAD_MID (11) - Middle Costume Headgear
+//EQI_COSTUME_HEAD_LOW (12) - Lower Costume Headgear
+//EQI_COSTUME_GARMENT (13)  - Costume Garment
+//EQI_AMMO (14)    		  - Arrow/Ammunition
+//EQI_SHADOW_ARMOR (15)     - Shadow Armor
+//EQI_SHADOW_WEAPON (16)    - Shadow Weapon
+//EQI_SHADOW_SHIELD (17)    - Shadow Shield
+//EQI_SHADOW_SHOES (18)     - Shadow Shoes
+//EQI_SHADOW_ACC_R (19)     - Shadow Accessory 2
+//EQI_SHADOW_ACC_L (20)     - Shadow Accessory 1
+
+/*
+
+-	script	BattleRefiner	-1,{
+
+OnInit:
+	// Configuração das taxas e níveis máximos
+	set .Rate, 90; // Chance base de refino (%)
+	set .MaxRefine, 10; // Nível máximo de refino permitido
+	bindatcmd("BattleRefiner", strnpcinfo(3) + "::OnRefiner");
+end;
+
+OnNPCKillEvent:
+	if (vip_status(2) || getgmlevel()) { // Apenas VIPs e GMs podem usar
+		set .@equip, rand(1, 10);
+		if (getequipisequiped(.@equip) && getequipisenableref(.@equip) && !(br & (1 << (.@equip - 1)))) {
+			set .@refLevel, getequiprefinerycnt(.@equip);
+			if (.@refLevel < .MaxRefine) {
+				set .@weaponLv, (.@equip == 3 || .@equip == 4) ? getequipweaponlv(.@equip) : 3;
+				if (!rand(1 << (.@weaponLv + .@refLevel))) {
+					set .@mobLevel, strmobinfo(3, killedrid);
+					if (.@mobLevel && !rand((BaseLevel * BaseLevel * 400) / (.@mobLevel * .@mobLevel * .Rate))) {
+						successrefitem .@equip;
+						dispbottom "[Battle Refiner] Seu equipamento foi refinado automaticamente!";
+					}
+				}
+			}
+		}
+	}
+end;
+
+OnRefiner:
+	if (!(vip_status(2) || getgmlevel())) {
+		mes "Apenas jogadores VIP ou GMs podem acessar este sistema.";
+		close;
+	}
+	mes "^008888Battle Refiner^000000";
+	mes "Este é o Painel de Controle do Sistema do Battle Refiner.";
+	mes "Você pode ativar ou desativar o Battle Refiner para cada peça do seu equipamento.";
+	next;
+	do {
+		setarray .@equipList$[0], "Upper", "Armor", "Left", "Right", "Garment", "Footgear";
+		for (set .@i, 0; .@i < getarraysize(.@equipList$); set .@i, .@i + 1) {
+			if (br & (1 << .@i)) set .@equipList$[.@i], "^bbbbbb" + .@equipList$[.@i] + " ^000000(^bb0000OFF^000000)";
+			else set .@equipList$[.@i], .@equipList$[.@i] + " (^00bb00ON^000000)";
+		}
+		set .@choice, select("^880000Sair^000000", .@equipList$[0], .@equipList$[1], .@equipList$[2], .@equipList$[3], .@equipList$[4], .@equipList$[5]) - 1;
+		if (.@choice >= 0) {
+			br = br ^ (1 << .@choice);
+		}
+	} while (.@choice >= 0);
+	mes "^008888Battle Refiner^000000";
+	mes "Configuração salva! Tenha um bom jogo.";
+	close;
+}
+
+
+*/

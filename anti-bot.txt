@@ -1,0 +1,30 @@
+-	script	anti-bot	FAAKE_NPC,{
+OnNPCKillEvent:
+	if ( getmapflag( strcharinfo(PC_MAP), mf_nosave ) )
+		end; // never trigger anti-bot on event maps
+	++@anti_bot_mob_killed;
+	if ( @anti_bot_mob_killed < 100 ) end;
+	setpcblock PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_IMMUNE | PCBLOCK_COMMANDS, true;
+	.@a = rand(1,9);
+	.@b = rand(0, 9 - .@a);
+	mes "What is the number";
+	mes .@a +" + "+ .@b +" = ?";
+	next;
+	input .@ans, 1, 10;
+	if ( .@a + .@b != .@ans ) {
+		++#anti_bot_wrong_answer;
+		if ( #anti_bot_wrong_answer >= 3 ) {
+			atcommand "@jailfor 30m "+ strcharinfo(PC_NAME);
+			end;
+		}
+		mes "wrong answer";
+		close2;
+		setpcblock PCBLOCK_COMMANDS, false; // hmm ....
+		atcommand "@kick "+ strcharinfo(PC_NAME);
+		end;
+	}
+	mes "ok you are free to go";
+	#anti_bot_wrong_answer = 0;
+	setpcblock PCBLOCK_MOVE | PCBLOCK_ATTACK | PCBLOCK_SKILL | PCBLOCK_USEITEM | PCBLOCK_IMMUNE | PCBLOCK_COMMANDS, false;
+	close;
+}

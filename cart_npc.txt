@@ -1,0 +1,47 @@
+prontera,150,184,4	script	cart_npc	73,{
+	.@name$ = "[ ^0066ffcart giver^000000 ]";
+	// in case the skill is lost for some reason
+	if (CartType && !getskilllv(39)) { mes .@name$,"Oh my, you lost the skill!","Sorry for this, I'm giving it back right away!" ; skill 39,10,3 ; setcart CartType ; close; }
+	
+	if (Class == 5 || Class == 10 || Class == 18 || Class == 4005 || Class == 4010 || Class == 4018 || Class == 4028 || Class == 4032 || Class == 4040 || Class == 4057 || Class == 4063 || Class == 4071 || Class == 4078 || Class == 4085 || Class == 4086 || Class == 4106 || Class == 4111) { mes .@name$,"Tryin' to fool me, ain't you? Like you even need me.." ; close; }
+	mes .@name$,"Hi there! I'm the cart giver!";
+	mes "I can give you a cart for a few <ITEM>tokens<INFO>7227</INFO></ITEM> if you want"," ";
+	mes "Do want want a cart?";
+	if (CartType) mes "Or remove it maybe? Don't worry you can get it back anytime whithout paying.";
+	next;
+	if (select("Hell yeah!:What? No") == 2) close;
+	mes .@name$,"Buying a cart is worth ^0000ff1000^000000 <ITEM>tokens<INFO>7227</INFO></ITEM>";
+	mes "Changing its type is worth ^0000ff100^000000 <ITEM>tokens<INFO>7227</INFO></ITEM>"," ";
+	mes "You can see the cart types <URL>here<INFO>https://www.google.be/imgres?imgurl=http%3A%2F%2Fimage.noelshack.com%2Ffichiers%2F2016%2F10%2F1457361787-new-carts.png&imgrefurl=http%3A%2F%2Fwww.aurora-odin.de%2F&docid=77fw6-EyusBFrM&tbnid=KR15X3SNwU_kgM%3A&w=383&h=191&bih=775&biw=1600&ved=0ahUKEwigm_nNleLNAhVJPRoKHVzNDbsQMwgfKAMwAw&iact=mrc&uact=8</INFO></URL>" ; next;
+	if (!CartType) { if ((.@select = select("Buy cart:Change type:Leave")) == 3) close; }
+	else if (!checkcart()) { if ((.@select = select("Get cart back:Leave")) == 2) close; }
+	else { if ((.@select = select("Buy cart:Change type:Remove cart:Leave")) == 4) close; }
+	
+	if (.@select == 1) {
+		if (CartType && !checkcart()) { setcart CartType ; mes .@name$,"There you go again, enjoy!" ; close; }
+		if (CartType && checkcart()) { mes .@name$,"You already have a cart, don't you?" ; close; }
+		if (countitem(7227) < 1000) { mes .@name$,"You don't have enough tokens! Like I'd do that for free.","Come back when you can pay me hehe." ; close; }
+		delitem 7227,1000;
+		if (!CartType) skill 39,10,3; // are you supposed to loose it at some point??
+		setcart 1 ; CartType = 1;
+		mes .@name$,"There you go, enjoy your new cart!";
+		close;
+	}
+	else if (.@select == 2) {
+		if (!CartType) { mes .@name$,"You don't even have a cart! Come back when your brain is working again hehe." ; close; }
+		if (countitem(7227) < 100) { mes .@name$,"You don't have enough tokens! Like I'd do that for free.","Come back when you can pay me hehe." ; close; }
+		mes .@name$,"Sure, which cart would you like?","","Here is the list of <URL>carts<INFO>https://www.google.be/imgres?imgurl=http%3A%2F%2Fimage.noelshack.com%2Ffichiers%2F2016%2F10%2F1457361787-new-carts.png&imgrefurl=http%3A%2F%2Fwww.aurora-odin.de%2F&docid=77fw6-EyusBFrM&tbnid=KR15X3SNwU_kgM%3A&w=383&h=191&bih=775&biw=1600&ved=0ahUKEwigm_nNleLNAhVJPRoKHVzNDbsQMwgfKAMwAw&iact=mrc&uact=8</INFO></URL>" ; next;
+		if ((.@select = select("cart 1 : cart 2 : cart 3 : cart 4 : cart 5 : cart 6 : cart 7 : cart 8 : cart 9 : leave")) == 10) close;
+		if (.@select == CartType) { mes .@name$,"You already have that one, don't waste your tokens like that.." ; close; }
+		delitem 7227,100;
+		setcart .@select ; CartType = .@select;
+		mes .@name$,"There you go, enjoy your new cart!";
+		close;
+	}
+	else {
+		if (!checkcart()) { mes .@name$,"You don't even have one.." ; close; }
+		setcart 0;
+		mes .@name$,"There you go, see you soon!";
+		close;
+	}
+}

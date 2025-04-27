@@ -1,0 +1,156 @@
+function	script	timeleft__	{
+	if ( ( .@left = getarg(0) ) <= 0 ) return getarg(0);
+	.@day = .@left / 86400;
+	.@hour = .@left % 86400 / 3600;
+	.@min = .@left % 3600 / 60;
+	.@sec = .@left % 60;
+	if ( .@day )
+		return .@day +" day "+ .@hour +" hour";
+	else if ( .@hour )
+		return .@hour +" hour "+ .@min +" min";
+	else if ( .@min )
+		return .@min +" min "+ .@sec +" sec";
+	else
+		return .@sec +" sec";
+}
+
+-	shop	vipshop#7	-1,501:100
+-	shop	vipshop#30	-1,501:100
+
+-	script	vipnpc	FAKE_NPC,{
+OnInit:
+	bindatcmd "vipshop", strnpcinfo(0)+"::Onvipshop";
+	end;
+Onvipshop:
+	if ( #vipshop == 1 ) callshop "vipshop#7", 1;
+	else if ( #vipshop == 2 ) callshop "vipshop#30", 1;
+	else {
+		mes "which vip status do you want to buy ?";
+		mes "vip 7 days = 10 Cash points";
+		mes "vip 30 days = 20 Cash points";
+		next;
+		if ( select ( "Vip 7 Days", "Vip 30 Days" ) == 1 ) {
+			if ( #CASHPOINTS < 10 ) {
+				mes "you don't have enough Cash points";
+				close;
+			}
+			mes "Thanks for purchasing !";
+			#vipshop = 1;
+			#CASHPOINTS -= 10;
+			addtimer 7*24*60*60*1000, strnpcinfo(0)+"::OnTimeUp";
+			#viptimeleft = 7*24*60*60 + gettimetick(2);
+			close;
+		}
+		else {
+			if ( #CASHPOINTS < 20 ) {
+				mes "you don't have enough Cash points";
+				close;
+			}
+			mes "Thanks for purchasing !";
+			#vipshop = 2;
+			#CASHPOINTS -= 20;
+		//	addtimer 30*24*60*60*1000, strnpcinfo(0)+"::OnTimeUp"; // over integer limit
+			#viptimeleft = 30*24*60*60 + gettimetick(2);
+			close;
+		}
+	}
+	dispbottom "You currently have "+ #CASHPOINTS +" Cash points .Expire in "+ callfunc( "timeleft__", #viptimeleft - gettimetick(2) )+".";
+	end;
+OnPCLoginEvent:
+	if ( #viptimeleft < gettimetick(2) )
+		addtimer 1, strnpcinfo(0)+"::OnTimeUp"; // sometimes doevent doesn't work
+	else if ( #viptimeleft - gettimetick(2) < 2147483 ) // don't execute addtimer if over integer limit
+		addtimer ( #viptimeleft - gettimetick(2) )*1000, strnpcinfo(0)+"::OnTimeUp";
+	end;
+OnTimeUp:
+	#viptimeleft = #vipshop = 0;
+	end;
+}
+
+-	script	vipnpc#7	FAKE_NPC,{
+OnInit:
+	function    addshopitem    {
+		npcshopdelitem "vipshop#7", 501;
+		.@count = getargcount();
+		for ( .@i = 0; .@i < .@count; .@i++ ) {
+			if ( .@i % 2 == 0 )
+				.itemid[ .@i /2 ] = getarg( .@i );
+			else {
+				.itemcost[ .@i /2 ] = getarg( .@i );
+				npcshopadditem "vipshop#7", .itemid[ .@i /2 ], .itemcost[ .@i /2 ];
+			}
+		}
+	}
+   addshopitem // adds shop items here for vip#7
+        501,10,
+        502,20,
+        503,30,
+        504,40,
+        505,50;
+	npcshopattach "vipshop#7";
+	.@itemsize = getarraysize( .itemid );
+	for ( .@i = 0; .@i < .@itemsize; .@i++ )
+		.itemcost[ .itemid[.@i] ] = .itemcost[.@i];
+	end;
+OnBuyItem:
+	if ( !@bought_quantity ) end;
+	.@size = getarraysize( @bought_nameid );
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		.@itemcost += .itemcost[ @bought_nameid[.@i] ] * @bought_quantity[.@i];
+	if ( .@itemcost > #CASHPOINTS ) {
+		mes "you don't have enough Cash points";
+		close;
+	}
+	if ( !checkweight2( @bought_nameid, @bought_quantity ) ) {
+		mes "you can't carry all these items !";
+		close;
+	}
+	#CASHPOINTS -= .@itemcost;
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		getitem @bought_nameid[.@i], @bought_quantity[.@i];
+	end;
+}
+
+-	script	vipnpc#30	FAKE_NPC,{
+OnInit:
+	function    addshopitem    {
+		npcshopdelitem "vipshop#30", 501;
+		.@count = getargcount();
+		for ( .@i = 0; .@i < .@count; .@i++ ) {
+			if ( .@i % 2 == 0 )
+				.itemid[ .@i /2 ] = getarg( .@i );
+			else {
+				.itemcost[ .@i /2 ] = getarg( .@i );
+				npcshopadditem "vipshop#30", .itemid[ .@i /2 ], .itemcost[ .@i /2 ];
+			}
+		}
+	}
+   addshopitem // adds shop items here for vip#30
+        501,5,
+        502,10,
+        503,15,
+        504,20,
+        505,25;
+	npcshopattach "vipshop#30";
+	.@itemsize = getarraysize( .itemid );
+	for ( .@i = 0; .@i < .@itemsize; .@i++ )
+		.itemcost[ .itemid[.@i] ] = .itemcost[.@i];
+	end;
+OnBuyItem:
+	if ( !@bought_quantity ) end;
+	.@size = getarraysize( @bought_nameid );
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		.@itemcost += .itemcost[ @bought_nameid[.@i] ] * @bought_quantity[.@i];
+	if ( .@itemcost > #CASHPOINTS ) {
+		mes "you don't have enough Cash points";
+		close;
+	}
+	if ( !checkweight2( @bought_nameid, @bought_quantity ) ) {
+		mes "you can't carry all these items !";
+		close;
+	}
+	#CASHPOINTS -= .@itemcost;
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		getitem @bought_nameid[.@i], @bought_quantity[.@i];
+	end;
+}

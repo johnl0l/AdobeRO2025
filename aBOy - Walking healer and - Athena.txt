@@ -1,0 +1,41 @@
+//ab0y88
+//added more effect rather than just heal.
+//thx to Aozi, rokimoki, and hopper
+//hope you guys enjoy it.
+
+
+
+payon,162,230,4	script	Healer Angeling	1096,2,2,{
+
+
+OnInit:
+    initnpctimer;
+    end;
+OnTimer15000: //15 seconds
+    npcwalkto 175,230;
+    end;
+OnTimer30000:
+    npcwalkto 162,230;
+    stopnpctimer;
+    initnpctimer;
+    end;
+OnTouch:
+    if (Hp == MaxHp && Sp == MaxSp) {
+    end;
+    }
+    npctalk "Heal !!";
+    skilleffect 28,9999;
+    percentheal 100,100;
+    sc_start SC_ANGELUS,.duration,10; // Angelus lvl 10
+    sc_start SC_BLESSING,.duration,10; // Blessing lvl 10
+    sc_start SC_INCREASEAGI,.duration,10; // Increase agi lvl 10
+    sc_start SC_IMPOSITIO,.duration,5; // Impositio manus lvl 5
+    sc_start SC_SUFFRAGIUM,.duration,3; // Suffragium lvl 3
+    sc_start SC_MAGNIFICAT,.duration,5; // Magnificat lvl 10
+    sc_start SC_WINDWALK,.duration,10; // Wind walk lvl 10
+    sc_start SC_NEN,.duration,5; // Soul ninja skill lvl 5
+    sc_start SC_CONCENTRATION,.duration,10; // Improve Concentration lvl 10
+    getitem 7139,1; // Get the Glistering Coat needed to cast FCP
+    atcommand "@useskill 479 5 " +strcharinfo(0); // Full chemical protection lvl 5
+    end;
+}

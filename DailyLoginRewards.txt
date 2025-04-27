@@ -1,0 +1,148 @@
+//======Name========================================
+// Daily Login Rewards
+//======Version=====================================
+// 1.1
+// Author: Sandbox, Winterfox
+//======Comments====================================
+// Updated outdated Syntax-
+// Made slight optimizations.
+// Added a delay of 3 hours before the player is
+// able to claim his reward and only if he has
+// not been idle longer than 5 minutes in this
+// time frame.
+//==================================================
+
+-	script	DailyLoginRewards	-1,{
+	OnInit:
+		//Set to your server name
+		.Serv_Name$ = "Republic";
+
+		 //Set to desired item prizes
+		setarray( .D_Prize, 12883, 12428, 17126, 12262, 12399 );
+		
+		 //Amount of prize to be given
+		setarray( .D_Amt, 50, 50, 50, 50, 1 );
+	end;
+	OnPCLoginEvent:
+		if( gettimetick( 2 ) < #ClaimDelay ) {
+			dispbottom( "Daily Login Activated. You allready got your daily login reward. " );
+			end;
+		}
+
+		// Show notice about the Daily Login Rewards
+		dispbottom( "Daily Login Activated. Please be Online for 2 hours without being idle for more than 5 minutes to receive daily login reward. " );
+
+		// Start a timer after 1 minute to sum up idle time
+		addtimer( 60000, strnpcinfo(3 ) + "::OnIdleCheck" );
+
+		// Start a timer to clam the daily reward after 3 hours
+		addtimer( 7200000, strnpcinfo(3) + "::OnStartClaim" );
+	end;
+	OnIdleCheck:
+		// Add the current idle time to the idle time counter.
+		#overallIdleTime += checkidle();
+
+		// Set a new timer to recheck after 1 minute.
+		addtimer( 60000,  strnpcinfo( 3 ) + "::OnIdleCheck" );
+	end;
+	OnStartClaim:
+		// If the idle time was 5 minutes or more in the last 3 hours reset to check if the person is the next 3 hours less idle than 5 minutes.
+		if( #overallIdleTime >= 300 ) {
+			#overallIdleTime = 0;
+
+			// Start a timer to clam the daily reward after 2 hours
+			addtimer( 7200000, strnpcinfo(3) + "::OnStartClaim" );
+
+			dispbottom( "You were afk for 5 minutes therefore you have to wait 2 hours again without ideling for more than 5 minutes to get your prize." );
+
+			end;
+		}
+
+		deltimer( strnpcinfo(3 ) + "::OnIdleCheck" );
+
+		// If the streak was broken reset the streak count.
+		if( gettimetick( 2 ) > #StreakDelay )  #LogStreak = 0;
+
+		// If the rewards reached their end, reset them.
+		if( #RewardStreak > getarraysize( .D_Prize ) ) #RewardStreak = 0;
+
+		if( #RewardStreak == 0 )
+			dispbottom( "Welcome to " + .Serv_Name$ + "! You've received " + .D_Amt[ #RewardStreak ] + " " + getitemname( .D_Prize[ #RewardStreak ] )+" for logging in! Visit us daily to get more prize! When you've managed to play with us for 5 consecutive days, you will receive bonus prizes!" );
+announce "Announcement: " + strcharinfo(0) + " have received the daily reward",0;
+		if( #RewardStreak > 0 )
+			dispbottom( "Welcome back to " + .Serv_Name$ + "! You've received " + .D_Amt[ #RewardStreak ] + " " + getitemname( .D_Prize[ #RewardStreak ] ) + " for logging in! Visit us daily to get more prize! When you've managed to play with us for 5 consecutive days, you will receive bonus prizes!" );
+
+		getitem( .D_Prize[ #RewardStreak ], .D_Amt[ #RewardStreak ]);
+		
+		#RewardStreak += 1;
+		#LogStreak += 1;
+		#ClaimDelay = gettimetick( 2 ) + 86400;
+		#StreakDelay = gettimetick( 2 ) + 172800;
+
+		if( #LogStreak == 5 ) {
+			for( .@i = 0; .@i < getarraysize( .D_Prize ); set .@i, .@i++ )
+				getitem( .D_Prize[.@i], .D_Amt[.@i] );
+
+			dispbottom( "Congratulations! You've received all the daily rewards for logging in 5 consecutive days!" );
+announce "Announcement:" + strcharinfo(0) + " have received all the daily rewards for logging in 5 consecutive days!",0;
+
+			#LogStreak = 0;
+		}
+	end;
+	OnPCLogoutEvent:
+		// Reset idle time on logout.
+		#overallIdleTime = 0;
+	end;
+}
+
+/*
+
+//======Name========================================
+// Daily Login Rewards
+//======Version=====================================
+// 1.0
+// Author: Sandbox
+//======Comments====================================
+// 
+//==================================================
+
+-	script	DailyLoginRewards	-1,{
+
+
+setarray .@D_Prize[0],12883,12428,17126,12262,12399; //Set to desired item prizes
+setarray .@D_Amt[0],50,50,50,50,1; //Amount of prize to be given
+set .@Serv_Name$,"AdobeRO"; //Set to your server name
+
+
+OnPCLoginEvent:
+
+	if(gettimetick(2) > #ClaimDelay) {
+		if(gettimetick(2) > #StreakDelay) set #LogStreak,0;
+		
+		if(#RewardStreak == 0) {
+			dispbottom "Welcome to "+.@Serv_Name$+"! You've received "+.@D_Amt[#RewardStreak]+" "+getitemname(.@D_Prize[#RewardStreak])+" for logging in! Visit us daily to get more prize! When you've managed to play with us for 5 consecutive days, you will receive bonus prizes!";
+		}
+
+		else {
+			dispbottom "Welcome back to "+.@Serv_Name$+"! You've received "+.@D_Amt[#RewardStreak]+" "+getitemname(.@D_Prize[#RewardStreak])+" for logging in! Visit us daily to get more prize! When you've managed to play with us for 5 consecutive days, you will receive bonus prizes!";
+		}
+
+		getitem .@D_prize[#RewardStreak],.@D_Amt[#RewardStreak];
+		set #RewardStreak,#RewardStreak+1;
+		set #LogStreak,#LogStreak+1;
+		set #ClaimDelay,gettimetick(2)+86400;
+		set #StreakDelay,gettimetick(2)+172800;
+
+		if(#LogStreak >= 4) {
+			for( set .@i, 0; .@i < 4; set .@i, .@i +1 ) {
+				getitem .@D_prize[.@i],.@D_Amt[.@i];
+			}
+			dispbottom "Congratulations! You've received all the daily rewards for logging in 5 consecutive days!";
+			set #LogStreak,0;
+		}
+
+	}
+end;
+}
+
+*/

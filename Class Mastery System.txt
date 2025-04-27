@@ -1,0 +1,330 @@
+//===== eAthena Script =======================================
+//= Class Mastery System
+//===== By: ==================================================
+//= Euphy
+//===== Current Version: =====================================
+//= 1.2
+//===== Description: =========================================
+//= An advanced job & build switcher.
+//== Classes either become available as they are mastered,
+//== or when purchased from an NPC.
+//============================================================
+
+prontera,98,131,5	script	Class Mastery::CMSys	459,{
+
+	set .@n$,"[Class Mastery]";
+	mes .@n$;
+	mes "How may I assist you?";
+	next;
+	switch(select(" ~ Purchase a Manual: ~ Purchase Classes: ~ ^777777Close^000000")) {
+		case 1:
+			mes .@n$;
+			if (!.Mode[3]) {
+				mes "It seems like we're out of stock";
+				mes "at the moment. My apologies.";
+				close; }
+			if (countitem(.ManualID)) {
+				mes "We only allow one manual per character. Orders, orders...";
+				close; }
+			mes "Manuals cost ^FF0000"+.Mode[3]+" Zeny^000000.";
+			mes "Would you like one?";
+			next;
+			switch(select(" ~ Sure!: ~ I'll think about it.")) {
+				case 1:
+					mes .@n$;
+					if (Zeny < .Mode[3]) {
+						mes "You don't appear to have";
+						mes "enough Zeny... These are very";
+						mes "valuable books, you know?";
+						close; }
+					set Zeny, Zeny-.Mode[3];
+					getitem .ManualID,1;
+					specialeffect2 441;
+					mes "Enjoy!";
+					close;
+				case 2:
+					mes .@n$;
+					mes "Okay. Take your time.";
+					close; }
+		case 2:
+			mes .@n$;
+			if (!.Mode[4]) {
+				mes "No classes are available for";
+				mes "purchase. You'll have to earn";
+				mes "them manually, I suppose...";
+				close; }
+			if (!countitem(.ManualID)) {
+				mes "You'll need a manual first!";
+				close; }
+			mes "Entries cost ^FF0000"+.Mode[4]+" Zeny^000000 each.";
+			if (Zeny < .Mode[4]) {
+				mes "Go earn some more!";
+				close; }
+			set .@menu$,"";
+			for(set .@i,1; .@i<getarraysize(.JobList); set .@i,.@i+1) {
+				if (!(Class_Mastery & pow(2,.@i)))
+					set .@menu$, .@menu$+" ~ "+jobname(.JobList[.@i]);
+				set .@menu$, .@menu$+":"; }
+			set .@menu$, .@menu$+" ~ ^777777Cancel^000000";
+			next;
+			set .@i, select(.@menu$);
+			if (.@i == getarraysize(.JobList)) close;
+			mes .@n$;
+			mes "Are you sure you want to purchase an entry for the ^0055FF"+jobname(.JobList[.@i])+" ^000000class?";
+			next;
+			if(select(" ~ I'm sure.: ~ No, wait...") == 2) {
+				mes .@n$;
+				mes "That's perfectly fine.";
+				mes "Come back whenever you'd like.";
+				close; }
+			mes .@n$;
+			set Zeny, Zeny-.Mode[4];
+			set Class_Mastery, Class_Mastery | pow(2,.@i);
+			specialeffect2 441;
+			mes "There you go, all done!";
+			message strcharinfo(0),jobname(.JobList[.@i])+" added to Class Manual.";
+			close;
+		case 3:
+			close; }
+
+OnPCJobLvUpEvent:
+	if (!.Mode[1]) end;
+	if (@JNull$ == jobname(Class)) end;
+	else set @JNull$,"";
+	if (!@JIndex || .JobList[@JIndex] != Class) {
+		set @JIndex,0;
+		for(set .@i,1; .@i<=getarraysize(.JobList); set .@i,.@i+1)
+			if (Class == .JobList[.@i]) { set @JIndex, .@i; break; }
+		if (!@JIndex) { set @JNull$, jobname(Class); end; } }
+	if ((JobLevel == .JLvlMax[@JIndex]) && !(Class_Mastery & pow(2,@JIndex))) {
+		set Class_Mastery, Class_Mastery | pow(2,@JIndex);
+		atcommand "@allskill";
+		message strcharinfo(0),jobname(Class)+" added to Class Manual.";
+		for(set .@i,0; .@i<4; set .@i, .@i+1) {
+			specialeffect2 441; sleep2 50; }
+	} end;
+
+OnPCLoginEvent:
+	if (.Mode[0] && !countitem(.ManualID)) getitem .ManualID,1;
+	end;
+
+OnTimer50:
+	stopnpctimer;
+	setnpctimer 0;
+	close;
+
+OnInit:
+// --------------------- Config ---------------------
+// Mode:
+//	[0] Manual received automatically upon login? (1: yes / 0: no)
+//	[1] Classes added automatically through leveling up? (1: yes / 0: no)
+//	[2] Enable NPC to purchase manual/classes? (1: yes / 0: no)
+//	[3] Price of manual, in Zeny (if NPC enabled; 0 to disable)
+//	[4] Price per class, in Zeny (if NPC enabled; 0 to disable)
+	setarray .Mode[0],0,1,1,0,0;
+
+// JobList: All the classes (ID) that are available.
+// JLvlMax: The max job level of classes in JobList.
+	setarray .JobList[1], 4008,4009,4010,4011,4012,4013,4015,4016,4017,4018,4019,4020,4021;
+	setarray .JLvlMax[1], 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70 ;
+
+	set .ManualID,501;	// Item ID of manual
+	set .CastTime,5;	// Seconds for class change
+	set .Interrupt,1;	// Class change is interruptable? (1: yes / 0: no)
+	set .BuildCount,5;	// Number of builds and Quick Change options (max 26)
+	set .MaxLevel,99;	// Maximum base level (to prevent stat overflow)
+
+// --------------------------------------------------
+	if (!.Mode[2]) hideonnpc "CMSys";
+	end;
+}
+
+function	script	Class_Mastery	{
+function Class_Change; function Get_Menu; function Save_Build; function Load_Build;
+
+	if (!Class_Mastery) { message strcharinfo(0),"The book does not respond."; end; }
+	while(1) {
+		message strcharinfo(0)," ~ Class Mastery System ~ ";
+		switch(select(" > Quick Change: > Set Quick Change Options: > Switch Classes: > Manage Builds: > ^777777Close^000000")) {
+			case 1:
+				message strcharinfo(0),"Quick Change:";
+				set .@index, Get_Menu(1,getvariableofnpc(.BuildCount,"CMSys"));
+				if (.@index == getvariableofnpc(.BuildCount,"CMSys")+1) break;
+				if (!@QC1[.@index] && (!@QC2[.@index] || BaseLevel < getvariableofnpc(.MaxLevel,"CMSys"))) {
+					message strcharinfo(0),"Class change failed."; close; }
+				if (@QC1[.@index]) Class_Change(@QC1[.@index]);
+				if (@QC2[.@index]) { 
+					if (BaseLevel < getvariableofnpc(.MaxLevel,"CMSys")) message strcharinfo(0),"Level requirement not met for build change.";
+					else Load_Build(getd("Build_"+@QC2[.@index]+"$")); }
+				close;
+			case 2:
+				setarray .@ar$[0],"*","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z";
+				while(1) {
+					message strcharinfo(0),"Set Quick Change Options:";
+					set .@index, Get_Menu(1,getvariableofnpc(.BuildCount,"CMSys"));
+					if (.@index == getvariableofnpc(.BuildCount,"CMSys")+1) break;
+					message strcharinfo(0),"Set Quick Change Options > Slot "+.@index+":";
+					switch(select(" > Edit job ("+((@QC1[.@index])?"^0055FF"+jobname(getvariableofnpc(.JobList[@QC1[.@index]],"CMSys")):"^777777none")+"^000000): > Edit build ("+((@QC2[.@index])?"^0055FF"+@QC2[.@index]:"^777777none")+"^000000): > ^777777Back^000000")) {
+						case 1:
+							message strcharinfo(0),"Set Quick Change Options > Slot "+.@index+" > Edit job:";
+							set .@i, Get_Menu(2,getarraysize(getvariableofnpc(.JobList,"CMSys")));
+							if (.@i == getarraysize(getvariableofnpc(.JobList,"CMSys"))) break;
+							set @QC1[.@index], .@i;
+							set QC1$,"_";
+							for(set .@i,1; .@i<=getvariableofnpc(.BuildCount,"CMSys"); set .@i,.@i+1)
+								set QC1$, QC1$+.@ar$[@QC1[.@i]];
+							message strcharinfo(0),"Changes saved.";
+							sleep2 250; break;
+						case 2:
+							message strcharinfo(0),"Set Quick Change Options > Slot "+.@index+" > Edit build:";
+							if (BaseLevel < getvariableofnpc(.MaxLevel,"CMSys")) {
+								message strcharinfo(0),"You must be level "+getvariableofnpc(.MaxLevel,"CMSys")+" to use this."; sleep2 250; break; }
+							set .@build, Get_Menu(3,getvariableofnpc(.BuildCount,"CMSys"),1);
+							if (.@build == getvariableofnpc(.BuildCount,"CMSys")+2) break;
+							if (getd("Build_"+.@build+"$")=="" && .@build != getvariableofnpc(.BuildCount,"CMSys")+1) {
+								message strcharinfo(0),"No build info found."; sleep2 250; break; }
+							else set @QC2[.@index], (((.@build == getvariableofnpc(.BuildCount,"CMSys")+1))?0:.@build);
+							set QC2$,"_";
+							for(set .@i,1; .@i<=getvariableofnpc(.BuildCount,"CMSys"); set .@i,.@i+1)
+								set QC2$, QC2$+.@ar$[@QC2[.@i]];
+							message strcharinfo(0),"Changes saved.";
+							sleep2 250; break;
+						case 3:
+							break; }
+				sleep2 250; }
+				break;
+			case 3:
+				message strcharinfo(0),"Switch Classes:";
+				set .@i, Get_Menu(2,getarraysize(getvariableofnpc(.JobList,"CMSys")));
+				if (.@i == getarraysize(getvariableofnpc(.JobList,"CMSys"))) break;
+				if (Class == getvariableofnpc(.JobList[.@i],"CMSys")) {
+					message strcharinfo(0),"Class change failed."; close; }
+				message strcharinfo(0),"Select '"+jobname(getvariableofnpc(.JobList[.@i],"CMSys"))+"'?";
+				if (select("Yes:No") == 2) break;
+				Class_Change(.@i);
+				close;
+			case 4:
+				if (BaseLevel < getvariableofnpc(.MaxLevel,"CMSys")) {
+					message strcharinfo(0),"You must be level "+getvariableofnpc(.MaxLevel,"CMSys")+" to use this."; sleep2 250; break; }
+				while(1) {
+					message strcharinfo(0),"Build Manager:";
+					switch(select(" > Save Build...: > Load Build...: > Rename Build...: > ^777777Back^000000")) {
+						case 1:
+							message strcharinfo(0),"Build Manager > Save Build:";
+							set .@build, Get_Menu(3,getvariableofnpc(.BuildCount,"CMSys"));
+							if (.@build == getvariableofnpc(.BuildCount,"CMSys")+1) break;
+							if (getd("Build_"+.@build+"$")!="") {
+								message strcharinfo(0),"Overwrite previous build #"+.@build+"?";
+								if(select("Save new build:Cancel")==2) break; }
+							Save_Build(.@build);
+							message strcharinfo(0),"Type a name for your build.";
+							input getd("Build_"+.@build+"n$");
+							message strcharinfo(0),"Build #"+.@build+" ("+getd("Build_"+.@build+"n$")+") saved.";
+							sleep2 250; break;
+						case 2:
+							message strcharinfo(0),"Build Manager > Load Build:";
+							set .@build, Get_Menu(3,getvariableofnpc(.BuildCount,"CMSys"));
+							if (.@build == getvariableofnpc(.BuildCount,"CMSys")+1) break;
+							if (getd("Build_"+.@build+"$")=="") {
+								message strcharinfo(0),"No build info found."; sleep2 250; break; }
+							Load_Build(getd("Build_"+.@build+"$"));
+							message strcharinfo(0),"Build #"+.@build+" loaded.";
+							sleep2 250; break;
+						case 3:
+							message strcharinfo(0),"Build Manager > Rename Build:";
+							set .@build, Get_Menu(3,getvariableofnpc(.BuildCount,"CMSys"));
+							if (.@build == getvariableofnpc(.BuildCount,"CMSys")+1) break;
+							if (getd("Build_"+.@build+"$")=="") {
+								message strcharinfo(0),"No build info found."; sleep2 250; break; }
+							message strcharinfo(0),"Type a new name for Build #"+.@build+" ("+getd("Build_"+.@build+"n$")+").";
+							input getd("Build_"+.@build+"n$");
+							message strcharinfo(0),"Build #"+.@build+" renamed.";
+							sleep2 250; break;
+						case 4:
+							set .@j,1; break; }
+				if (.@j) { set .@j,0; break; }
+				sleep2 250; }
+				break;
+			case 5:
+				close; }
+		sleep2 250; }
+
+	function Class_Change {
+		specialeffect2 348;
+		if (getvariableofnpc(.Interrupt,"CMSys")) {
+			message strcharinfo(0),"Casting...";
+			initnpctimer "CMSys",1;
+			progressbar "", getvariableofnpc(.CastTime,"CMSys"); }
+		else for(set .@i,0; .@i<getvariableofnpc(.CastTime,"CMSys"); set .@i,.@i+1) {
+			message strcharinfo(0),(getvariableofnpc(.CastTime,"CMSys")-.@i)+" seconds remaining...";
+			sleep2 1000; }
+		jobchange getvariableofnpc(.JobList[getarg(0)],"CMSys");
+		set JobLevel, getvariableofnpc(.JLvlMax[getarg(0)],"CMSys");
+		atcommand "@allskill";
+		set SkillPoint,0;
+		skilleffect 292,0;
+		return; }
+	function Get_Menu {
+		set .@menu$,"";
+		switch(getarg(0)) {
+			case 1:
+				deletearray @QC1[0],getarraysize(@QC1);
+				deletearray @QC2[0],getarraysize(@QC2);
+				setarray .@ar$[0],"*","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z";
+				set .@s$,"_";
+				for(set .@i,1; .@i<=getstrlen(QC1$); set .@i,.@i+1)
+					for(set .@j,0; .@j<27; set .@j,.@j+1)
+						if (compare(QC1$,.@s$+.@ar$[.@j])) {
+							set @QC1[.@i], .@j;
+							set .@s$, .@s$+.@ar$[.@j];
+							break; }
+				set .@s$,"_";
+				for(set .@i,1; .@i<=getstrlen(QC2$); set .@i,.@i+1)
+					for(set .@j,0; .@j<27; set .@j,.@j+1)
+						if (compare(QC2$,.@s$+.@ar$[.@j])) {
+							set @QC2[.@i], .@j;
+							set .@s$, .@s$+.@ar$[.@j];
+							break; }
+				for(set .@i,1; .@i<=getarg(1); set .@i,.@i+1)
+					set .@menu$, .@menu$+" > "+((@QC1[.@i])?"^0055FF"+jobname(getvariableofnpc(.JobList[@QC1[.@i]],"CMSys")):"^777777no job")+"^000000 / build "+((@QC2[.@i])?"^0055FF"+@QC2[.@i]:"^777777empty")+"^000000:";
+				set .@menu$, .@menu$+" > ^777777Back^000000";
+				break;
+			case 2:
+				for(set .@i,1; .@i<getarg(1); set .@i,.@i+1) {
+					if (Class_Mastery & pow(2,.@i))
+						set .@menu$, .@menu$+" > "+jobname(getvariableofnpc(.JobList[.@i],"CMSys"));
+					set .@menu$, .@menu$+":"; }
+				set .@menu$, .@menu$+" > ^777777Back^000000";
+				break;
+			case 3:
+				for(set .@i,1; .@i<=getarg(1); set .@i,.@i+1)
+					set .@menu$, .@menu$+" > Slot "+.@i+" ("+((getd("Build_"+.@i+"n$")=="")?"^777777empty":"^0055FF"+getd("Build_"+.@i+"n$"))+"^000000):";
+				if (getarg(2,0)) set .@menu$, .@menu$+" > No build:";
+				set .@menu$, .@menu$+" > ^777777Back^000000";
+				break; }
+		return select(.@menu$); }
+	function Save_Build {
+		setarray .@ar$[0],"a","b","c","d","e","f","g";
+		set .@s$,"";
+		for(set .@i,0; .@i<7; set .@i,.@i+1)
+			set .@s$,.@s$+.@ar$[.@i]+((.@i==6)?StatusPoint:readparam(.@i+13))+"|";
+		setd "Build_"+getarg(0)+"$", .@s$;
+		return; }
+	function Load_Build {
+		setarray .@num$[0],"0","1","2","3","4","5","6","7","8","9";
+		setarray .@ar$[0],"a","b","c","d","e","f","g";
+		ResetStatus;
+		for(set .@j,13; .@j<20; set .@j,.@j+1) {
+			set .@var$,"";
+			set .@s$,.@ar$[.@j-13];
+			while(1) {
+				for(set .@i,0; .@i<10; set .@i,.@i+1) {
+					if (compare(getarg(0),.@s$+.@num$[.@i])) {
+						set .@var$,.@var$+.@num$[.@i];
+						set .@s$,.@s$+.@num$[.@i];
+						break; }
+				} if (compare(getarg(0),.@s$+"|")) break; }
+		if (.@j==19) set StatusPoint, atoi(.@var$);
+		else statusup2 .@j, atoi(.@var$)-1; }
+		return; }
+}

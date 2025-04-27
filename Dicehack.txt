@@ -1,0 +1,15 @@
+-	script	dicehack	-1,{
+end;
+
+OnInit:
+	bindatcmd "dice",strnpcinfo(3)+"::OnAtcommand";
+	end;
+	
+OnAtcommand:
+	if (getgroupid() < 10) { end; }
+	.@dice = atoi(.@atcmd_parameters$[0]);
+	.@dice += 57; 
+	emotion .@dice,1;
+	end;
+
+}

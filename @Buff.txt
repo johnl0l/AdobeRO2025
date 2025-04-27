@@ -1,0 +1,188 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+-	script	buff	-1,{
+OnInit:
+	bindatcmd "buff",strnpcinfo(3)+"::OnBuff";
+	end;
+	OnBuff:	if ( getgmlevel() >= 99 || getgroupid() >= 5 ){
+	
+	sc_end sc_stone;
+	sc_end sc_freeze;
+	sc_end sc_sleep;
+	sc_end sc_curse;
+	sc_end sc_silence;
+	sc_end sc_confusion;
+	sc_end sc_blind;
+	sc_end sc_bleeding;
+	sc_end sc_decreaseagi;
+	sc_end sc_poison;
+	sc_end sc_hallucination;
+	sc_end sc_stripweapon;
+	sc_end sc_striparmor;
+	sc_end sc_striphelm;
+	sc_end sc_stripshield;
+	sc_end sc_changeundead;
+	sc_end sc_orcish;
+	sc_end sc_berserk;
+	sc_end sc_ske;
+	sc_end sc_swoo;
+	sc_end sc_ska;
+	sc_end sc_lexaeterna;
+	sc_end sc_venombleed;
+	sc_end sc_dpoison;
+	sc_end sc_burning;
+	sc_end sc_blooding;
+	sc_end sc_fear;
+	sc_end sc_cold;
+	sc_end sc_deep_sleep;
+	
+	percentheal 100,100;			// CURA HP & SP 100%
+	atcommand "@identifyall";		// Identificará automaticamente todos os itens não avaliados em seu inventário.
+	atcommand "@repairall";			// Conserta todos os itens quebrados em seu inventário.
+
+//skilleffect 384,0; sc_start SC_MELTDOWN,60000,5;		//Melt Down (Skill ID# 384) 60 sec
+skilleffect 383,0; sc_start SC_WINDWALK,400000,5;		//Wind Walk (Skill ID# 383) 400 sec
+//skilleffect 378,0; sc_start SC_EDP,60000,5;			//Enchant Deadly Poison (Skill ID# 378) 60 sec
+//skilleffect 465,0; sc_start SC_KAITE,600000,7;			//Kaite (Skill ID# 465) 600 sec
+//skilleffect 464,0; sc_start SC_KAUPE,600000,3;			//Kaupe (Skill ID# 464) 600 sec
+//skilleffect 463,0; sc_start SC_KAAHI,350000,7;			//Kaahi (Skill ID# 463) 350 sec
+//skilleffect 462,0; sc_start SC_KAIZEL,1800000,7;			//Kaizel (Skill ID# 462) 1800 sec
+//skilleffect 8,0; sc_start SC_ENDURE,37000,10;			//Endure (Skill ID# 8) 37 sec
+skilleffect 33,0; sc_start SC_ANGELUS,300000,10;			//Angelus (Skill ID# 33) 300 sec
+//skilleffect 45,0; sc_start SC_CONCENTRATE,240000,10;			//Attention Concentrate (Skill ID# 45) 240 sec
+skilleffect 74,0; sc_start SC_MAGNIFICAT,90000,5;			//Magnificat (Skill ID# 74) 90 sec
+skilleffect 75,0; sc_start SC_GLORIA,30000,5;			//Gloria (Skill ID# 75) 30 sec
+//skilleffect 459,0; sc_start SC_ADRENALINE2,150000,1;			//Full Adrenaline Rush [Spirit Skill (Must be Soul Linked)] (Skill ID# 459) 150 sec
+skilleffect 66,0; sc_start SC_IMPOSITIO,60000,5;			//Impositio Manus (Skill ID# 66) 60 sec
+//skilleffect 67,0; sc_start SC_SUFFRAGIUM,10000,3;			//Suffragium (Skill ID# 67) 10 sec
+skilleffect 34,0; sc_start SC_BLESSING,240000,10;			//Blessing (Skill ID# 34) 240 sec
+skilleffect 29,0; sc_start SC_INCREASEAGI,240000,10;			//Increase Agility (Skill ID# 29) 240 sec
+//skilleffect 112,0; sc_start SC_WEAPONPERFECTION,600000,5;			//Chemical Protection Weapon (Skill ID# 234) 600 sec
+//skilleffect 113,0; sc_start SC_OVERTHRUST,100000,5;			//Over Thrust (Skill ID# 113) 100 sec
+//skilleffect 114,0; sc_start SC_MAXIMIZEPOWER,5000,5;			//Maximize Power (Skill ID# 114) 5 sec
+//skilleffect 357,0; sc_start SC_CONCENTRATION,45000,5;			//Concentration (Skill ID# 357) 45 sec
+//skilleffect 355,0; sc_start SC_AURABLADE,120000,5;			//Aura Blade (Skill ID# 355) 120 sec
+//skilleffect 155,0; sc_start SC_LOUD,300000,1;			//Loud Exclamation [Quest Skill] (Skill ID# 155) 300 sec
+//skilleffect 157,0; sc_start SC_ENERGYCOAT,300000,1;			//Energy Coat [Quest Skill] (Skill ID# 157) 300 sec
+//skilleffect 380,0; sc_start SC_TRUESIGHT,30000,5;			//True Sight (Skill ID# 380) 30 sec
+//skilleffect 361,0; sc_start SC_ASSUMPTIO,100000,5;			//Assumptio (Skill ID# 361) 100 sec
+//skilleffect 111,0; sc_start SC_ADRENALINE,150000,5;			//Adrenaline Rush (Skill ID# 111) 150 sec
+//skilleffect 479,0; sc_start SC_FULLPROTECTION,600000,5;			//Full Chemical Protection (Skill ID# 479) 600 sec
+//skilleffect 69,0; sc_start SC_BENEDICTIO,200000,5;			//Benedictio Sanctissimi Sacramenti [Ensemble Skill] (Skill ID# 69) 200 sec
+//skilleffect 71,0; sc_start SC_SLOWPOISON,40000,4;			//Slow Poison (Skill ID# 71) 40 sec
+skilleffect 73,0; sc_start SC_KYRIE,120000,10;			//Kyrie Eleison (Skill ID# 73) 	120 sec
+//skilleffect 139,0; sc_start SC_POISONREACT,65000,10;			//Poison React (Skill ID# 139) 65 sec
+//skilleffect 256,0; sc_start SC_PROVIDENCE,180000,5;			//Providence (Skill ID# 256) 180 sec
+//skilleffect 482,0; sc_start SC_DOUBLECASTING,90000,5;			//Double Casting (Skill ID# 482 90 sec
+//skilleffect 486,0; sc_start SC_OVERTHRUSTMAX,180000,5;			//Maximum Over Thrust (Skill ID# 486) 180 sec
+//skilleffect 138,0; sc_start SC_ENCHANTPOISON,165000,10;			//Enchant Poison (Skill ID# 138) 165 sec
+//skilleffect 390,0; sc_start SC_REJECTSWORD,300000,5;			//Reject Sword (Skill ID# 390) 300 sec
+//skilleffect 431,0; sc_start SC_SUN_COMFORT,320000,4;			//Comfort of the Sun (Skill ID# 431) 320 sec
+//skilleffect 432,0; sc_start SC_MOON_COMFORT,320000,4;			//Comfort of the Moon (Skill ID# 432) 320 sec
+//skilleffect 433,0; sc_start SC_STAR_COMFORT,320000,4;			//Comfort of the Stars (Skill ID# 433 320 sec
+//skilleffect 425,0; sc_start SC_SEVENWIND,300000,7;			//Warm Wind (Skill ID# 425) 300 sec
+//skilleffect 139,0; sc_start SC_POISONREACT,65000,10;			//Poison React (Skill ID# 139) 65 sec
+//skilleffect 356,0; sc_start SC_PARRYING,60000,10;			//Parry (Skill ID# 8204) 60 sec
+//skilleffect 495,0; sc_start SC_ONEHAND,300000,1;			//One-Hand Quicken [Spirit Skill (Must be Soul Linked)] (Skill ID# 495) 300 sec
+//skilleffect 60,0; sc_start SC_TWOHANDQUICKEN,300000,10;			//Two-Hand Quicken (Skill ID# 60) 300 sec
+//skilleffect 258,0; sc_start SC_SPEARQUICKEN,300000,10;			//Spear Quicken (Skill ID# 258) 300 sec
+//skilleffect 359,0; sc_start SC_BERSERK,300000,1;			//Berserk (Skill ID# 359) 300 sec
+//skilleffect 360,0; sc_start SC_FURY,180000,1;			//Critical Explosion (Skill ID# 270) 180 sec
+//skilleffect 473,0; sc_start SC_SELFPROVOKE,300000,1;			//SM_SELFPROVOKE,Provoke Self (Skill ID# 473)
+//skilleffect 473,0; sc_start SM_PROVOKE,500,10;			//SM_SELFPROVOKE,Provoke Self (Skill ID# 473)
+//skilleffect 492,0; sc_start SC_ENCHANTARMS,180000,8;			//Weapon Enchantment 1-Neutral 2-Water 3-Earth 4-Fire 5-Wind 6-Poison 7-Holy 8-Dark 9-Ghost 10-Undead
+//skilleffect 531,0; sc_start SC_UTSUSEMI,60000,5;			//Cast-off Ciceda Shell (Skill ID# 531) 60 sec
+//skilleffect 543,0; sc_start SC_NEN,90000,5;			//Soul (Skill ID# 543) 90 sec
+//skilleffect 2310,0; sc_start SC_SHIELDPRESS,7500,5;			//Shield Press (Skill ID# 2310) 7.5 sec
+//skilleffect 2311,0; sc_start SC_REFLECTDAMAGE,300000,5;			//Reflect Damage (Skill ID# 2311) 300 sec
+//skilleffect 2318,0; sc_start SC_PRESTIGE,90000,5;			//Prestige (Skill ID# 2318) 90 sec
+//skilleffect 2325,0; sc_start SC_INSPIRATION,90000,5;			//Inspiration (Skill ID# 2325) 90 sec
+//skilleffect 5013,0; sc_start SC_KINGS_GRACE,60000,5;			//King's Grace (Skill ID# 5013) 60 sec
+//skilleffect 2234,0; sc_start SC_FEARBREEZE,180000,5;			//Fear Breeze (Skill ID# 2234) 180 sec
+//skilleffect 2247,0; sc_start SC_CAMOUFLAGE,10000,1;			//Camouflage (Skill ID# 2247) 10 sec
+//skilleffect 5002,0; sc_start SC_UNLIMIT,300000,5;			//No Limits (Skill ID# 5002) 300 sec (Aumente a taxa de ataque e defina Def/MDef para 1)
+//skilleffect 2028,0; sc_start SC_WEAPONBLOCKING,180000,5;			//Weapon Blocking (Skill ID# 2028) 180 sec
+//skilleffect 2035,0; sc_start SC_HALLUCINATIONWALK,25000,5;			//Hallucination Walk (Skill ID# 2035) 25 sec
+//skilleffect 2050,0; sc_start SC_RENOVATIO,90000,1;			//Renovatio (Skill ID# 2050) 90 sec
+//skilleffect 2053,0; sc_start SC_EXPIATIO,270000,5;			//Expiatio (Skill ID# 2053) 270 sec
+//skilleffect 2515,0; sc_start SC_SECRAMENT,180000,5;			//Sacrament (Skill ID# 2515) 180 sec
+//skilleffect 331,0; sc_start SC_INCMHPRATE,10000,100;			//Aumenta %HP.
+//skilleffect 332,0; sc_start SC_INCMSPRATE,10000,100;			//Aumenta %SP.
+//skilleffect 331,0; sc_start SC_INCMHP,500000,(2500+(10/3)*BaseLevel);			//Aumentar HP máximo - Se o jogador for nível 99, por exemplo: (10/3)*99 ≈ 330 - 2500 + 330 = 2830
+//skilleffect 332,0; sc_start SC_INCMSP,500000,(2500+(10/3)*BaseLevel);			//Aumentar SP máximo - Se o jogador for nível 99, por exemplo: (10/3)*99 ≈ 330 - 2500 + 330 = 2830
+
+//skilleffect 332,0; sc_start SC_COMMONSC_RESIST,500000,rand(20,40);			//Aumente a resistência de mudanças de status, apenas contra SC_STONE, SC_FREEZE, SC_STUN, SC_SLEEP, SC_POISON, SC_CURSE, SC_SILENCE, SC_CONFUSION, SC_BLIND, SC_BLEEDING e SC_DPOISON
+
+//skilleffect 300,0; sc_start SC_CP_WEAPON,600000,5;			//Chemical Protection Weapon (Skill ID# 234) 600 sec
+//skilleffect 300,0; sc_start SC_CP_SHIELD,600000,5;			//Chemical Protection Shield (Skill ID# 235) 600 sec
+//skilleffect 300,0; sc_start SC_CP_ARMOR,600000,5;			//Chemical Protection Armor (Skill ID# 236) 600 sec
+//skilleffect 300,0; sc_start SC_CP_HELM,600000,5;			//Chemical Protection Helm (Skill ID# 237) 600 sec
+
+specialeffect2 220; sc_start SC_ASPDPOTION2,1800000,9;			//Aumente o ASPD, não será empilhado com SC_ASPDPOTION0, SC_ASPDPOTION1, SC_ASPDPOTION3
+
+sc_start SC_STRFood,360000,10;			//STR + 10
+sc_start SC_AGIFood,360000,10;			//AGI + 10
+sc_start SC_VITFood,360000,10;			//VIT + 10
+sc_start SC_INTFood,360000,10;			//INT + 10
+sc_start SC_DEXFood,360000,10;			//DEX + 10
+sc_start SC_LUKFood,360000,10;			//LUK + 10
+sc_start SC_HitFood,1200000,30;			//HIT + 30
+sc_start SC_FleeFood,1200000,30;			//FLEE + 30
+//sc_start SC_FOOD_STR_CASH,360000,10;			//STR + 10
+//sc_start SC_FOOD_AGI_CASH,360000,10;			//AGI + 10
+//sc_start SC_FOOD_VIT_CASH,360000,10;			//VIT + 10
+//sc_start SC_FOOD_INT_CASH,360000,10;			//INT + 10
+//sc_start SC_FOOD_DEX_CASH,360000,10;			//DEX + 10
+//sc_start SC_FOOD_LUK_CASH,360000,10;			//LUK + 10
+//sc_start SC_BATKFood,1200000,10;			//ATK +10
+//sc_start SC_MATKFood,1200000,10;			//MATK +10
+//sc_start SC_MATKPOTION,1200000,10;			//MATK + 10
+//sc_start SC_ATKPOTION,1200000,10;			//ATK + 10
+//sc_start SC_ITEMBOOST,3600000,100;			//Drop + 100%
+//sc_start SC_EXPBOOST,3600000,100;			//Exp + 100%
+
+	switch ( basejob ) {
+		case Job_Alchemist:				set .@spirit, 445; break;
+		case Job_Monk:					set .@spirit, 447; break;
+		case Job_Star_Gladiator:		set .@spirit, 448; break;
+		case Job_Sage:					set .@spirit, 449; break;
+		case Job_Crusader:				set .@spirit, 450; break;
+		case Job_SuperNovice:			set .@spirit, 451; break;
+		case Job_Knight:				set .@spirit, 452; break;
+		case Job_Wizard:				set .@spirit, 453; break;
+		case Job_Priest:				set .@spirit, 454; break;
+		case Job_Bard: case Job_Dancer:	set .@spirit, 455; break;
+		case Job_Rogue:					set .@spirit, 456; break;
+		case Job_Assassin:				set .@spirit, 457; break;
+		case Job_Blacksmith:			set .@spirit, 458; break;
+		case Job_Hunter:				set .@spirit, 460; break;
+		case Job_Soul_Linker:			set .@spirit, 461; break;
+		default:
+			if ( upper == 1 && baselevel < 70 )
+				set .@spirit, 494;
+	}
+	if ( .@spirit ) {
+		sc_start4 sc_spirit,350000, 5, .@spirit,0,0;
+		skilleffect .@spirit, 5;
+
+//sc_start SC_SPIRIT,350000,5;
+dispbottom "You has been Soul Linked.";
+//specialeffect 424;
+//specialeffect2 503;
+end;
+}
+
+
+	end;
+	}	else	  {
+	dispbottom "You cannot use this command";
+	end;
+	}
+	}

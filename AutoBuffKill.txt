@@ -1,0 +1,17 @@
+-	script	AutoBuffKill	-1,{
+
+OnPCKillEvent:
+	if (getmapname() != "guild_vs1") {
+		end;
+	}
+
+	setarray .@buffs[20], 383, 33, 74, 75, 66, 34, 29, 73, 361, 118, 122, 124, 126, 128, 130, 145, 146, 147, 148, 425;
+	.@buffID = .@buffs[rand(getarraysize(.@buffs))];
+	.@buffName = getskillname(.@buffID);
+	.@buffDuration = rand(180, 600); // Duração aleatória entre 3 e 10 minutos
+
+	specialeffect EF_POTION1;
+	sc_start .@buffID, .@buffDuration * 1000, 1;
+
+	end;
+	}

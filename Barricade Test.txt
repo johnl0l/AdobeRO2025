@@ -1,0 +1,26 @@
+prontera,199,181,4	script	Barricade Test	123,{
+if(b_test){
+end;
+}
+getmapxy(.@m$,.@x,.@y,0);
+set b_test,1;
+monster .@m$,.@x,(.@y+1),"Barricade Dummy",1906,1,"Barricade Test::OnDummyKill";
+attachnpctimer;
+initnpctimer;
+end;
+OnTimer60000:
+set @min,@min+1;
+if(@min==60){
+set @hour,@hour+1; set @min,0;
+}
+setnpctimer 0;
+end;
+OnDummyKill:
+set b_test,0;
+stopnpctimer;
+set @sec,(getnpctimer(0)/1000);
+detachnpctimer;
+dispbottom "You broke the barricade in: "+@hour+" hours : "+@min+" minutes : "+@sec+" seconds.";
+@hour = @min = @sec = 0;
+end;
+}

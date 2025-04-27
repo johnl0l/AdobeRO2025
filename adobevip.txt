@@ -1,0 +1,43 @@
+function	script	getPremium	{
+	set .@ticks, getarg(0);
+	if (.@ticks <= 0) {
+		debugmes "getPremium - tried to set a timer in the past";
+		end;
+}
+	set #prmm, ((#prmm > gettimetick(2))? #prmm : gettimetick(2)) + .@ticks;
+	doevent "login::OnPCLoginEvent";
+	return;
+ }
+
+-	script	login	-1,{
+OnPCLoginEvent:
+	if (#prmm > gettimetick(2)) {
+	dispbottom "Your Premium Service will expire after " + callfunc("Time2Str",prmm);
+	//sc_start SC_EXPBOOST,(( prmm - gettimetick(2) ) * 1000 ),200;
+	//sc_start SC_JEXPBOOST,(( prmm - gettimetick(2) ) * 1000 ),200;
+	//sc_start SC_ITEMBOOST,(( prmm - gettimetick(2) ) * 1000 ),100;
+	atcommand "@adjgroup 1 "+strcharinfo(0);
+	deltimer strnpcinfo(3)+"::OnPCLoginEvent";
+	if ((prmm - gettimetick(2)) < 2147483) {
+		addtimer (prmm - gettimetick(2)) *1000, strnpcinfo(3)+"::OnPCLoginEvent";
+	} else {
+		addtimer 2147483000, strnpcinfo(3)+"::OnPCLoginEvent";
+	}
+} else if (prmm) {
+	atcommand "@adjgroup 0 "+strcharinfo(0);
+	sc_end SC_EXPBOOST;
+	sc_end SC_JEXPBOOST;
+	sc_end SC_ITEMBOOST;
+	set prmm, 0;
+	message strcharinfo(0),"[ VIP ]: -- Your account vip expired.";
+}
+end;
+}
+-	script	atcmd23	-1,{
+OnAtcommand:
+message strcharinfo(0),"[ VIP ]: -- You have more time vip > " + callfunc("Time2Str",prmm);
+end;
+
+OnInit:	bindatcmd "vip",strnpcinfo(3)+"::OnAtcommand"; end; 
+
+}

@@ -1,0 +1,77 @@
+//================================================Name======================================================
+									// Change Name (Official Release Name)
+//===============================================Version====================================================
+//												  1.0 
+//===============================================Author=====================================================
+//					 ____ _____  ______  __ __   __  _______    __   _____ __   __  _______
+//					|  __ \ _  \|  __  \|  |  \ |  |/  ___  \  |  | /  /  |  \ |  |/  ___  \
+//					| |__| | \  \ |__|  |  |   \|  |  |  _\_/  |  |/  /|  |   \|  |  |  _\_/
+//					|   __/   | |      /|  |       |  | |_  \  |     | |  |    |  |  | |_  \
+//					|  |\  \_/  /  |\  \|  |  |\   |   \_/  |  |  |\  \|  |  |\   |   \_/  |
+//					|__| \_____/|__| \__\__|__| \__|\______/   |__| \__\__|__| \__|\______/
+//----------------------------------------Script Last Update 2020-------------------------------------------
+//==============================================Changelog===================================================
+									// 1.0 *
+									//		- Initial Release
+									//		- Maximize Script
+									//		- Fix NPC Dialog
+									//		- Fix NPC Dialog behavior
+//==========================================================================================================
+sec_in02,163,180,2	script	Change Name	654,{
+	mes .NPC$;
+	mes "Hello there, ^7B68EE" + strcharinfo(0)+ "^000000. I can change your name! Would you like it?";
+	mes "The change name service will cost ^FF0000" +.AMOUNT+ "^000000x ^006400" +getitemname(.ID)+ "^000000.";
+	next;
+	if (select("Yes:No") - 1) close;
+	mes .NPC$;
+	mes "Let me first check if you comply with my requirements.";
+	next;
+	if (countitem(.ID) < .AMOUNT) {
+		mes .NPC$;
+		mes "You do not comply with my requirements.";
+		mes "My requirements : ";
+		mes "- ^006400" +getitemname(.ID)+ "^000000 ^FF0000" +.AMOUNT+ "^000000x";
+		close;
+	}
+	if (gettimetick(2) < #timer) {
+		mes .NPC$;
+		mes "You can only change your name once in a month " +strcharinfo(0);
+		close;
+	}
+	mes .NPC$;
+	mes "This is interesting! You have my requirements. Let's start the transaction.";
+	next;
+	mes .NPC$;
+	mes "Enter your desired new name";
+	next;
+	input .@new$;
+	mes .NPC$;
+	mes "So you want to do the following : ";
+	mes "Current Name : " +strcharinfo(0);
+	mes "New Name : " +.@new$;
+	next;
+	if (select("Yes:No") - 1) close;
+	mes .NPC$;
+	mes "Updating your name....";
+	query_sql "UPDATE `char` SET `name` = '"+escape_sql(.@new$)+"' WHERE `char_id` = '"+getcharid(0)+"'";
+	next;
+	mes .NPC$;
+	delitem .ID, .AMOUNT;
+	set #timer,gettimetick(2) + 2592000;
+	mes "This has been done for you. You must relog to see the effects. You want me to relog you?";
+	next;
+	if (select("Yes:No") - 1) {
+		mes .NPC$;
+		mes "Okay then bye!";
+		close;
+	}
+	atcommand "@kick " +strcharinfo(0);
+	end;
+
+	OnInit:
+		waitingroom "Change Name",0;
+		set .NPC$,"[ ^1E90FF" +strnpcinfo(1)+ "^000000 ]";
+		set .ID,7227;
+		set .AMOUNT,5;
+		end;
+}

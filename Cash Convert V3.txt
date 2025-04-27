@@ -1,0 +1,31 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+prontera,181,170,5	script	Cash Convert	1_M_SIGNMCNT,{
+dispbottom "You currently have " +#CASHPOINTS+ " Cash Points";
+setarray .@CoinID[0],7227,7539;
+
+for( set .@i,0; .@i < getarraysize( .@CoinID ); set .@i,.@i + 1 )
+	set .@Menu$,.@Menu$ + getitemname( .@CoinID[.@i] )+":";
+mes "Each ^006400 2 ^000000^B8860BCash Points^000000.";
+set .@i,( select( .@Menu$ ) - 1 );
+if( #CASHPOINTS < 2 ){
+	mes "Sorry but you didnt have^006400 2 ^000000^B8860BCash Points^000000.";
+}else{
+	mes "How many you want ?";
+	mes "Amount :^006400 1 ^000000~ "+( #CASHPOINTS / 2 );
+	input .@Amount,0,( #CASHPOINTS / 2 );
+	if( .@Amount ){
+		set #CASHPOINTS,#CASHPOINTS - ( .@Amount * 2 );
+		getitem .@CoinID[.@i],.@Amount;
+		mes "^FF00FFDone^000000";
+	}
+}
+close;
+}

@@ -1,0 +1,31 @@
+-	script	atcmd_example	-1,{
+OnInit:
+	bindatcmd "pvp",strnpcinfo(3)+"::OnAtcommand";
+	end;
+OnAtcommand:
+	if( .@atcmd_parameters$[0] == "on" ){
+		@killer = 1;
+		if( @killer )
+			atcommand "@killer";
+	}
+	else if( .@atcmd_parameters$[0] == "off" ){
+		if( @killer )
+			atcommand "@killer";
+		@killer = 0;
+	}
+	else{
+		dispbottom "Usage: "+.@atcmd_command$+" <on|off>";
+	}
+	end;
+	
+OnPCDieEvent:
+	if( @killer ){
+		do{
+			.@equip = getequipid( rand( 1,10 ) );
+		}while( .@equip == -1 );
+		delequip .@equip;
+		getmapxy( .@map$,.@x,.@y,0 );
+		makeitem .@equip,1,.@map$,.@x,.@y;
+	}
+	end;
+}

@@ -1,0 +1,120 @@
+//===== rAthena Script =======================================
+//= Item Option Command
+//===== By: ==================================================
+//= Keitenai
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Command to apply desired item option
+//============================================================
+
+
+-	script	OptCmd	-1,{
+
+// @itemoption
+
+OnInit:
+	set .allowed,99; // sets the allowed GM group to use this command
+	bindatcmd("itemoption",strnpcinfo(0)+"::OnOptCmd",99,99);
+end;
+
+OnOptCmd:
+if(getgmlevel() >= .allowed || #ADMIN > 0){
+disable_items;
+	setarray .@eq[1], EQI_HEAD_TOP,EQI_ARMOR,EQI_HAND_L,EQI_HAND_R,EQI_GARMENT,EQI_SHOES,EQI_ACC_L,EQI_ACC_R,EQI_HEAD_MID,EQI_HEAD_LOW;
+	for(set .@i,1; .@i<getarraysize(.@eq); set .@i,.@i+1){
+		if(getequipisequiped(.@eq[.@i])){
+			set .@menu$,.@menu$+F_getpositionname(.@eq[.@i])+" ~ [ " + getequipname(.@eq[.@i]) + " ]";
+			set .@equipped,1;
+		} set .@menu$,.@menu$+":";
+	} set .@part,.@eq[select(.@menu$)];
+
+	mes "[^FF8C00 System ^000000]";
+	mes "Please indicate the option","that you want to apply.";
+	mes "Here's a short list","of the options :";
+	next;
+	mes "#1  : HP +";
+	mes "#2  : SP +";
+	mes "#3  : Str +";
+	mes "#4  : Agi +";
+	mes "#5  : Vit +";
+	mes "#6  : Int +";
+	mes "#7  : Dex +";
+	next;
+	mes "#8  : Luk +";
+	mes "#9  : MaxHP +%";
+	mes "#10 : MaxSP +%";
+	mes "#11 : Natural HP recovery ratio +%";
+	mes "#12 : Natural SP recovery ratio +%";
+	mes "#13 : ATK +%";
+	mes "#14 : Magical attack power +%";
+	next;
+	mes "#15 : Attack speed +";
+	mes "#16 : Attack speed +%";
+	mes "#17 : Basic attack power +";
+	mes "#18 : Hit +";
+	mes "#19 : Magical attack power +";
+	mes "#20 : DEF +";
+	mes "#21 : MDEF +";
+	next;
+	mes "#22 : Flee +";
+	mes "#23 : Perfect Dodge +";
+	mes "#24 : Critical +";
+	mes "#25 : Resistance to Neutral";
+	mes "#26 : Resistance to Water";
+	mes "#27 : Resistance to Earth";
+	mes "#28 : Resistance to Fire";
+	next;
+	mes "#29 : Resistance to Wind";
+	mes "#30 : Resistance to Poison";
+	mes "#31 : Resistance to Holy";
+	mes "#32 : Resistance to Dark";
+	mes "#33 : Resistance to Ghost";
+	mes "#34 : Resistance to Undead";
+	mes "#35 : Resistance to All";
+	next;
+	mes "#94 : Resistance Demihuman moster";
+	mes "#147 : Physical damage Normal monster";
+	mes "#148 : Physical damage Boss monster";
+	mes "#149 : Resistance Normal monster";
+	mes "#150 : Resistance Boss monster";
+	mes "#151 : Magical damage Normal monster";
+	mes "#152 : Magical damage Boss monster";
+	next;
+	mes "#163 : Ignores the size modifier when calculating damage";
+	mes "#169 : Increases heal amount of all heal skills";
+	mes "#170: Increases variable cast time of all skills";
+	mes "#171: Reduces after cast skill delay";
+	mes "#172: Reduced SP Consumption of skills";
+	mes "#185: Indestructible Weapon";
+	mes "#186: Indestructible Armor";
+	next;
+		input .@opt;
+	mes "[^FF8C00 System ^000000]";
+	mes "Option Type : "+.@opt;
+	mes " ";
+	mes "Please indicate the Value that you want to apply.";
+	mes "This will be the effect rate or value of your selected option type.";
+	next;
+		input .@val;
+	mes "[^FF8C00 System ^000000]";
+	mes "Indicate index location";
+	next;
+		input .@indx;
+			if(.@indx == 5 && (!getequiprandomoption(.@part,4,ROA_ID,getcharid(0)))) set .@indx,4;
+			if(.@indx == 4 && (!getequiprandomoption(.@part,3,ROA_ID,getcharid(0)))) set .@indx,3;
+			if(.@indx == 3 && (!getequiprandomoption(.@part,2,ROA_ID,getcharid(0)))) set .@indx,2;
+			if(.@indx == 2 && (!getequiprandomoption(.@part,1,ROA_ID,getcharid(0)))) set .@indx,1;
+			if(.@indx == 1 && (!getequiprandomoption(.@part,0,ROA_ID,getcharid(0)))) set .@indx,0;
+	mes "[^FF8C00 System ^000000]";
+	mes "Now applying :";
+	mes "^6A01A1"+.@opt+"^000000 Type";
+	mes "^B91E1E"+.@val+"^000000 Value";
+	mes "^0C9610"+.@indx+"^000000 Index";
+	close2;
+		setrandomoption(.@part,.@indx,.@opt,.@val,.@indx,getcharid(0));
+	}
+end;
+}

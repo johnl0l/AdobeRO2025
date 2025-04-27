@@ -1,0 +1,17 @@
+prontera,150,160,5	script	clone	74,{
+	mes "want to clone someone?";
+	mes "the player to clone must be online";
+	next;
+	if ( select( "No", "yes" ) == 1 ) close;
+	mes "select a player";
+	.@total = query_sql( "select name, char_id from `char` where online = 1 order by name asc limit 128", .@name$, .@char_id );
+	.@s = select( implode( .@name$, ":" ) ) -1;
+	if ( getcharid( 0,.@name$[.@s] ) == 0 ) {
+		mes "this player is not online anymore";
+		close;
+	}
+	getmapxy .@map$, .@x, .@y, 0;
+	clone .@map$, .@x, .@y,strnpcinfo(0)+"::OnMobDead",.@char_id[.@s];
+	close;
+OnMobDead:
+}

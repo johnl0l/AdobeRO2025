@@ -1,0 +1,21 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+sec_in02.gat,157,161,4	script	All Skill	550,{
+
+	mes "[ All Skill Npc ]";
+	if (JobLevel < 70) {
+		mes "Come back where you're job level is 70.";
+	end;
+	}
+	
+	mes "Okay.. I got you here you go...";
+	atcommand "@skillall "+strcharinfo(0);
+	end;
+}

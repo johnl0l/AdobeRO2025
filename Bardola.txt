@@ -1,0 +1,89 @@
+/*
+prontera,156,182,4	script	Bardola	647,3,3,{
+	
+	OnInit:
+		//setunitdata getnpcid(0),UNPC_INT,170;	// set NPC INT 170
+		//setunitdata getnpcid(0),UNPC_DEX,170;	// set NPC DEX 170
+		//setunitdata getnpcid(0),UNPC_AGI,170;	// set NPC AGI 170
+		setunitdata(getnpcid(0),UNPC_PLUSALLSTAT,150);
+		end;
+
+	OnTouch:
+		if( .sbragi < gettimetick(2) ){			// triggered within area 7x7, start bragi if not on delay
+			unitskilluse getnpcid(0), 313,5, 321,10, 320,10, 322,10, 319,10;	// Launch all skills simultaneously
+			set .sbragi,gettimetick(2) + 0;	// delay 3 minutes (180,000 ms) for NPC to cast songs again
+		}
+		end;
+}
+*/
+/*
+prontera,156,182,4	script	Bardola	647,3,3,{
+
+	OnInit:
+		setunitdata getnpcid(0),UNPC_INT,170;	// set NPC INT 170
+		setunitdata getnpcid(0),UNPC_DEX,170;	// set NPC DEX 170
+		setunitdata getnpcid(0),UNPC_AGI,170;	// set NPC AGI 170
+		end;
+
+	OnTouch:
+		if( .sbragi < gettimetick(2) ){	// triggered within area 7x7, start bragi if not on delay
+			unitskilluse getnpcid(0), 313,5, getnpcid(0), 321,10, getnpcid(0), 320,10, getnpcid(0), 322,10, getnpcid(0), 319,10;	// Launch all skills simultaneously
+			set .sbragi, gettimetick(2) + 180;	// delay 3 minutes (180,000 ms) for NPC to cast songs again
+		}
+		end;
+}
+*/
+prontera,156,182,4	script	Bardola	647,3,3,{
+
+	OnInit:
+		setunitdata getnpcid(0),UNPC_INT,170;	// set NPC INT 170
+		setunitdata getnpcid(0),UNPC_DEX,170;	// set NPC DEX 170
+		setunitdata getnpcid(0),UNPC_AGI,170;	// set NPC AGI 170
+		end;
+
+	OnTouch:
+		if( .sbragi < gettimetick(2) ){	// triggered within area 7x7, start bragi if not on delay
+			unitskilluseid getnpcid(0), 313,5;
+			unitskilluseid getnpcid(0), 321,10;
+			unitskilluseid getnpcid(0), 320,10;
+			unitskilluseid getnpcid(0), 322,10;
+			unitskilluseid getnpcid(0), 319,10;
+			set .sbragi, gettimetick(2) + 180;	// delay 3 minutes (180,000 ms) for NPC to cast songs again
+		}
+		end;
+}
+
+/*
+
+prontera,156,182,4	script	Bardola	647,3,3,{
+
+	OnInit:
+		// Ajusta os atributos do NPC para melhorar os efeitos das músicas
+		setunitdata getnpcid(0), UNPC_INT, 170;
+		setunitdata getnpcid(0), UNPC_DEX, 170;
+		setunitdata getnpcid(0), UNPC_AGI, 170;
+		end;
+
+	OnTouch:
+		// Verifica se já se passaram 3 minutos desde a última ativação
+		if (gettimetick(2) < .nextCastTime) {
+			end;
+		}
+
+		// Lança as habilidades de bardo no nível máximo
+		unitskilluseid getnpcid(0), 313, 5;  // Poema de Bragi
+		unitskilluseid getnpcid(0), 321, 10; // Canção de Batalha
+		unitskilluseid getnpcid(0), 320, 10; // Canção da Ilusão
+		unitskilluseid getnpcid(0), 322, 10; // Canção do Serviço
+		unitskilluseid getnpcid(0), 319, 10; // Dança da Fortuna
+
+		// Define o próximo tempo de ativação (3 minutos)
+		set .nextCastTime, gettimetick(2) + 180000;
+
+		// Efeito visual para indicar que a música foi ativada
+		specialeffect2 EF_SONGOF_BRAGI;
+		end;
+}
+
+
+*/

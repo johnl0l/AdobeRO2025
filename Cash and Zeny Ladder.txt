@@ -1,0 +1,596 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+/*
+prontera,147,168,4	script	Dumbledore	735,{
+	mes "What do you want to know?";
+	menu "Most Cashpoint Holders",L_CP,"Most Zeny Holders",L_Zeny;
+	
+L_CP:
+	next;
+	set .@nb, query_sql("SELECT account_id, value FROM `global_reg_value` WHERE str = '#CASHPOINTS' ORDER BY value DESC LIMIT 5;", .@accid, .@value);
+	mes "Most Cashpoint holders: TOP 5";
+	for(set .@i,0; .@i <= .@nb; set .@i,.@i+1)
+		mes .@i+1+". "+.@accid[.@i]+" ("+.@value[.@i]+")";
+	end;
+	
+L_Zeny:
+	next;
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	mes "Most Zeny holders: TOP 5";
+	for(set .@i,0; .@i <= .@nb; set .@i,.@i+1)
+		mes .@i+1+". "+.@name$[.@i]+" ("+.@zeny[.@i]+")";
+	end;
+}
+*/
+
+/*
+
+CREATE TABLE IF NOT EXISTS `acc_reg_num` (
+  `account_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `key` varchar(32) NOT NULL DEFAULT '',
+  `index` int(11) unsigned NOT NULL DEFAULT '0',
+  `value` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`account_id`,`key`,`index`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+*/
+
+/*
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"LEFT JOIN `char` c ON ar.account_id = c.account_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + .@value[.@i] + " Cash)^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + .@zeny[.@i] + " zeny)^000000";
+	end;
+}
+*/
+
+/*
+//Ela formata um número com vírgulas (ex: 2051345662 → "2,051,345,662")
+function	script	commas	{
+	.@val$ = getarg(0);
+	.@len = getstrlen(.@val$);
+	.@out$ = "";
+	while (.@len > 3) {
+		.@out$ = "," + substr(.@val$, .@len - 3, 3) + .@out$;
+		.@val$ = substr(.@val$, 0, .@len - 3);
+		.@len = getstrlen(.@val$);
+	}
+	return .@val$ + .@out$;
+}
+*/
+
+/*
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + .@value[.@i] + " Cash)^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + .@zeny[.@i] + " zeny)^000000";
+	end;
+}
+*/
+
+/*
+sec_in02,145,166,2	script	Dumbledore	735,{
+
+function	script	commas	{
+	.@val$ = getarg(0);
+	.@len = getstrlen(.@val$);
+	.@out$ = "";
+	while (.@len > 3) {
+		.@out$ = "," + substr(.@val$, .@len - 3, 3) + .@out$;
+		.@val$ = substr(.@val$, 0, .@len - 3);
+		.@len = getstrlen(.@val$);
+	}
+	return .@val$ + .@out$;
+}
+
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@value[.@i]) + " Cash)^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@zeny[.@i]) + " zeny)^000000";
+	end;
+}
+*/
+
+/*
+function	script	commas	{
+	.@val$ = getarg(0);
+	.@len = getstrlen(.@val$);
+	.@out$ = "";
+	while (.@len > 3) {
+		.@out$ = "," + substr(.@val$, .@len - 3, 3) + .@out$;
+		.@val$ = substr(.@val$, 0, .@len - 3);
+		.@len = getstrlen(.@val$);
+	}
+	return .@val$ + .@out$;
+}
+*/
+
+/*
+function	script	commas	{
+	.@val$ = "" + getarg(0); // força conversão para string
+	.@len = getstrlen(.@val$);
+	.@out$ = "";
+	while (.@len > 3) {
+		.@out$ = "," + substr(.@val$, .@len - 3, 3) + .@out$;
+		.@val$ = substr(.@val$, 0, .@len - 3);
+		.@len = getstrlen(.@val$);
+	}
+	return .@val$ + .@out$;
+}
+
+
+
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@value[.@i]) + " Cash)^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@zeny[.@i]) + " zeny)^000000";
+	end;
+}
+*/
+
+/*
+function	script	shorten	{
+	.@val = getarg(0);
+	if (.@val >= 1000000000)
+		return ( .@val / 1000000 ) + "B";
+	else if (.@val >= 1000000)
+		return ( .@val / 1000 ) + "kk";
+	else if (.@val >= 1000)
+		return .@val + "k";
+	else
+		return .@val + "z";
+}
+
+
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@value[.@i]) + " Cash)^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@zeny[.@i]) + " zeny)^000000";
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("shorten", .@zeny[.@i]) + ")^000000";
+	end;
+}
+*/
+
+/*
+function	script	short_commas	{
+	.@val = getarg(0);
+	.@raw$ = "" + .@val;
+
+	function f_commas {
+		.@in$ = getarg(0);
+		.@len = getstrlen(.@in$);
+		.@out$ = "";
+		while (.@len > 3) {
+			.@out$ = "," + substr(.@in$, .@len - 3, 3) + .@out$;
+			.@in$ = substr(.@in$, 0, .@len - 3);
+			.@len = getstrlen(.@in$);
+		}
+		return .@in$ + .@out$;
+	}
+
+	if (.@val >= 1000000000)
+		return f_commas(""+(.@val / 1000000)) + "B";
+	else if (.@val >= 1000000)
+		return f_commas(""+(.@val / 1000)) + "kk";
+	else if (.@val >= 1000)
+		return f_commas(.@raw$) + "k";
+	else
+		return .@val + "z";
+}
+
+
+
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@value[.@i]) + " Cash)^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@zeny[.@i]) + " zeny)^000000";
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("shorten", .@zeny[.@i]) + ")^000000";
+	end;
+}
+*/
+
+/*
+function	script	split_format	{
+	.@val = getarg(0);
+
+	.@b = .@val / 1000000000;
+	.@kk = (.@val % 1000000000) / 1000000;
+	.@k = (.@val % 1000000) / 1000;
+	.@z = .@val % 1000;
+
+	.@result$ = "";
+	if (.@b)  .@result$ += .@b + "B ";
+	if (.@kk) .@result$ += .@kk + "kk ";
+	if (.@k)  .@result$ += .@k + "k ";
+	if (.@z || .@val == 0) .@result$ += .@z + "z";
+
+	return .@result$;
+}
+
+
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@value[.@i]) + " Cash)^000000";
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("split_format", .@value[.@i]) + ")^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@zeny[.@i]) + " zeny)^000000";
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("shorten", .@zeny[.@i]) + ")^000000";
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("split_format", .@zeny[.@i]) + ")^000000";
+
+	end;
+}
+*/
+
+/*
+function	script	format_cashzeny	{
+	.@value = getarg(0);
+	.@type = getarg(1); // 0 = zeny, 1 = cash
+
+	if (.@value >= 1000000000)
+		.@suf$ = (.@value / 1000000000) + ( .@type ? "B Cash" : "Bz" );
+	else if (.@value >= 1000000)
+		.@suf$ = (.@value / 1000000) + ( .@type ? "kk Cash" : "kkz" );
+	else if (.@value >= 1000)
+		.@suf$ = (.@value / 1000) + ( .@type ? "k Cash" : "kz" );
+	else
+		.@suf$ = .@value + ( .@type ? " Cash" : "z" );
+
+	return .@suf$;
+}
+
+
+
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+	
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@value[.@i]) + " Cash)^000000";
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("split_format", .@value[.@i]) + ")^000000";
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("format_cashzeny", .@value[.@i], 1) + ")^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("commas", .@zeny[.@i]) + " zeny)^000000";
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("shorten", .@zeny[.@i]) + ")^000000";
+		//mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("split_format", .@zeny[.@i]) + ")^000000";
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " ^777777(" + callfunc("format_cashzeny", .@zeny[.@i], 0) + ")^000000";
+
+	end;
+}
+*/
+
+
+
+// ====================
+// Função format_cashzeny
+// ====================
+function	script	format_cashzeny	{
+	.@value = getarg(0);
+	.@type = getarg(1); // 0 = zeny, 1 = cash
+
+	if (.@value >= 1000000000)
+		.@suf$ = (.@value / 1000000000) + ( .@type ? "^FF0000B^000000 ^FFD700Cash^000000" : "^FF0000B^000000" );
+	else if (.@value >= 1000000)
+		.@suf$ = (.@value / 1000000) + ( .@type ? "^FF6347kk^000000 ^FFD700Cash^000000" : "^FF6347kk^000000" );
+	else if (.@value >= 1000)
+		.@suf$ = (.@value / 1000) + ( .@type ? "^FF7F50k^000000 ^FFD700Cash^000000" : "^FF7F50k^000000" );
+	else
+		.@suf$ = .@value + ( .@type ? " ^FFD700Cash^000000" : "^FFA500z^000000" );
+
+	return .@suf$;
+}
+
+// ====================
+// NPC Dumbledore
+// ====================
+sec_in02,145,166,2	script	Dumbledore	735,{
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "What do you want to know?";
+	menu "Ranking Cashpoints",L_CP,"Ranking Zeny",L_Zeny;
+	
+L_CP:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Cashpoint Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql(
+		"SELECT c.name, ar.value FROM acc_reg_num ar " +
+		"JOIN (SELECT account_id, MIN(char_id) AS char_id FROM `char` GROUP BY account_id) AS sub " +
+		"ON ar.account_id = sub.account_id " +
+		"JOIN `char` c ON sub.char_id = c.char_id " +
+		"WHERE ar.key = '#CASHPOINTS' " +
+		"ORDER BY CAST(ar.value AS UNSIGNED) DESC LIMIT 5;",
+		.@name$, .@value
+	);
+
+	if (.@nb == 0) {
+		mes "^FF0000No data found.^000000";
+		end;
+	}
+
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " (^777777" + callfunc("format_cashzeny", .@value[.@i], 1) + ")^000000";
+	end;
+
+L_Zeny:
+	next;
+	mes "[ ^0066FFDumbledore^000000 ]";
+	mes "Zeny Owner Ranking (TOP 5):";
+
+	set .@nb, query_sql("SELECT name, zeny FROM `char` ORDER BY zeny DESC LIMIT 5", .@name$, .@zeny);
+	
+	for (set .@i, 0; .@i < .@nb; set .@i, .@i + 1)
+		mes "^00FF00" + (.@i + 1) + "^000000. " + .@name$[.@i] + " (^777777" + callfunc("format_cashzeny", .@zeny[.@i], 0) + ")^000000";
+	end;
+}

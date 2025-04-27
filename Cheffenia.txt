@@ -1,0 +1,503 @@
+//===== rAthena Script =======================================
+//= Cheffênia
+//===== Description: =========================================
+//= bRO Official Script
+//===== Changelogs: ==========================================
+//= 1.0 First version. [Pokye]
+//============================================================
+
+// Viajante - Riss
+//============================================================
+dewata,206,180,4	script	Viajante#1	4_M_PHILMAN,{
+	mes "[Riss]";
+	mes "Existe um lugar cheio de MVPs.";
+	mes "Chama-se ^DE3163Cheffênia^000000 e";
+	mes "Você pode acessá-la se tiver";
+	mes "1 <ITEM>Passe para Cheffênia<INFO>7227</INFO></ITEM>.";
+	next;
+	if (!countitem(7227)) {
+		mes "[Riss]";
+		mes "O Passe é adquirido na Loja de Cash.";
+		mes "1 Passe dá direito a entrar 1 vez no mapa.";
+		mes "Depois, será necessário comprar outro passe para retornar.";
+		close;
+	}
+	mes "[Riss]";
+	mes "Vai encarar o desafio?";
+	mes "Faça sua escolha.";
+	next;
+	switch(select("Sala 1:Sala 2:Sala 3:Sala 4:Comprar equipamentos")){
+	case 1:
+		switch(select("Entrada A:Entrada B:Entrada C:Entrada D")){
+		case 1:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_01",202,204;
+			end;
+		case 2:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_01",40,204;
+			end;
+		case 3:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_01",34,35;
+			end;
+		case 4:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_01",202,35;
+			end;
+		}
+	case 2:
+		switch(select("Entrada A:Entrada B:Entrada C:Entrada D")){
+		case 1:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_02",202,204;
+			end;
+		case 2:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_02",40,204;
+			end;
+		case 3:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_02",34,35;
+			end;
+		case 4:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_02",202,35;
+			end;
+		}
+	case 3:
+		switch(select("Entrada A:Entrada B:Entrada C:Entrada D")){
+		case 1:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_03",202,204;
+			end;
+		case 2:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_03",40,204;
+			end;
+		case 3:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_03",34,35;
+			end;
+		case 4:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_03",202,35;
+			end;
+		}
+	case 4:
+		switch(select("Entrada A:Entrada B:Entrada C:Entrada D")){
+		case 1:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_04",202,204;
+			end;
+		case 2:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_04",40,204;
+			end;
+		case 3:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_04",34,35;
+			end;
+		case 4:
+			mes "[Riss]";
+			mes "Cuide-se, jovem.";
+			close2;
+			delitem 7227,1;
+			warp "bossnia_04",202,35;
+			end;
+		}
+	case 5:
+		close2;
+		callshop "Cheffênia", 1;
+		end;
+	}
+
+//OnInit:
+//	questinfo QTYPE_EVENT,QMARK_GREEN,"cheffenia == 0";
+//	end;
+}
+
+// Duplicates
+//============================================================
+rachel,132,144,4	duplicate(Viajante#1)	Viajante#2	4_M_PHILMAN
+lighthalzen,146,96,4	duplicate(Viajante#1)	Viajante#3	4_M_PHILMAN
+yuno,159,180,4	duplicate(Viajante#1)	Viajante#4	4_M_PHILMAN
+prontera,201,176,4	duplicate(Viajante#1)	Viajante#5	4_M_PHILMAN
+
+// Lista de MVPs
+//============================================================
+dewata,209,180,4	script	Lista de MVPs#1	4_BOARD3,{
+	mes "[^9B59B6Exclusivos da Sala 1^000000]";
+	mes "High Wizard Katrinn, Mestre-Ferreiro Howard, Sniper Shecil, Champion Chen Liu, Paladin Randel Lawrence, Professor Celia Alde, Warlock Katrinn, Mecânico Howard, Sura Chen, Royal Guard Randel e Sorcerer Celia.";
+	next;
+	mes "[^E74C3CExclusivos da Sala 2^000000]";
+	mes "Clown Alphoccio, Assassin Cross Eremes, High Priest Magaleta, Wanderer Trentini, Genetic Flamel, Acerbispa Margaretha.";
+	next;
+	mes "[^7D3C98Exclusivos da Sala 3^000000]";
+	mes "Stalker Gertie Wie, Criador Flamel Emul, Lord Knight Seyren, High Priest Magaleta, Rune Knight Seyrenn e Shadow Chaser Gertie.";
+	next;
+	mes "[^D35400Exclusivos da Sala 4^000000]";
+	mes "Assassin Cross Eremes, Atiradora de Elite Cecil, Gypsy Trentini, Guillotine Cross Eremes, Ranger Shecil e Minstrel Alphoccio.";
+	close;
+}
+
+// Duplicates
+//============================================================
+rachel,135,144,4	duplicate(Lista de MVPs#1)	Lista de MVPs#2	4_BOARD3
+lighthalzen,148,96,4	duplicate(Lista de MVPs#1)	Lista de MVPs#3	4_BOARD3
+yuno,157,180,4	duplicate(Lista de MVPs#1)	Lista de MVPs#4	4_BOARD3
+prontera,204,176,4	duplicate(Lista de MVPs#1)	Lista de MVPs#5	4_BOARD3
+
+// Monstros
+//============================================================
+//----------------------------------------------------------------------------
+// Cheffênia - Sala 1
+//----------------------------------------------------------------------------
+bossnia_01,0,0	monster	Mistress	1059,5,120000
+bossnia_01,0,0	monster	Amon Ra	1511,5,120000
+bossnia_01,0,0	monster	Nightmare Amon Ra	2362,5,120000
+bossnia_01,0,0	monster	Atroce	1785,5,120000
+bossnia_01,0,0	monster	Baphomet	1039,5,120000
+bossnia_01,0,0	monster	Beelzebub	1873,5,120000
+bossnia_01,0,0	monster	Golden Thief Bug	1086,1,15000000
+bossnia_01,0,0	monster	Falling Bishop	1871,5,120000
+bossnia_01,0,0	monster	Boitata	2068,5,120000
+bossnia_01,0,0	monster	Stormy Knight	1251,5,120000
+bossnia_01,0,0	monster	Dark Coelacanth	2187,3,120000
+bossnia_01,0,0	monster	Grotesque Coelacanth	2188,3,120000
+bossnia_01,0,0	monster	Mutant Coelacanth	2189,3,120000
+bossnia_01,0,0	monster	Ferocious Coelacanth	2190,3,120000
+bossnia_01,0,0	monster	Detale	1719,3,120000
+bossnia_01,0,0	monster	Doppelganger	1046,5,120000
+bossnia_01,0,0	monster	Drake	1112,5,120000
+bossnia_01,0,0	monster	Dracula	1389,5,120000
+bossnia_01,0,0	monster	Eddga	1115,3,120000
+bossnia_01,0,0	monster	Ygnizem	1658,5,120000
+bossnia_01,0,0	monster	Pharaoh	1157,5,120000
+bossnia_01,0,0	monster	Moonlight Flower	1150,5,120000
+bossnia_01,0,0	monster	Phreeoni	1159,5,120000
+bossnia_01,0,0	monster	Daehyon	2253,5,120000
+bossnia_01,0,0	monster	Turtle General	1312,5,120000
+bossnia_01,0,0	monster	Gioia	2251,2,120000
+bossnia_01,0,0	monster	Gopinich	1885,5,120000
+bossnia_01,0,0	monster	Kades	2255,7,120000
+bossnia_01,0,0	monster	Garm	1252,5,120000
+bossnia_01,0,0	monster	Ifrit	1832,5,120000
+bossnia_01,0,0	monster	Kiel D-01	1734,7,120000
+bossnia_01,0,0	monster	Kraken	2202,5,120000
+bossnia_01,0,0	monster	Ktullanux	1779,5,120000
+bossnia_01,0,0	monster	Armaia	1660,5,120000
+bossnia_01,0,0	monster	Lady Tanee	1688,5,120000
+bossnia_01,0,0	monster	Leak	2156,5,120000
+bossnia_01,0,0	monster	Maya	1147,5,120000
+bossnia_01,0,0	monster	Thanatos	1708,5,120000
+bossnia_01,0,0	monster	Wounded Morroc	1917,3,120000
+bossnia_01,0,0	monster	Orc Hero	1087,3,120000
+bossnia_01,0,0	monster	Osiris	1038,5,120000
+bossnia_01,0,0	monster	Gloom Under Night	1768,5,120000
+bossnia_01,0,0	monster	Pyuriel	2249,5,120000
+//bossnia_01,0,0	monster	Quimera Venenosa	3633,5,120000
+bossnia_01,0,0	monster	Queen Scaraba	2087,5,120000
+bossnia_01,0,0	monster	Gold Queen Scaraba	2165,5,120000
+bossnia_01,0,0	monster	RSX 0806	1623,5,120000
+bossnia_01,0,0	monster	Incantation Samurai	1492,5,120000
+bossnia_01,0,0	monster	Dark Lord	1272,5,120000
+bossnia_01,0,0	monster	Lord of Death	1373,5,120000
+bossnia_01,0,0	monster	Orc Lord	1190,5,120000
+bossnia_01,0,0	monster	Evil Snake Lord	1418,5,120000
+bossnia_01,0,0	monster	Tao Gunka	1583,5,120000
+bossnia_01,0,0	monster	Valkyrie Randgris	1751,5,120000
+bossnia_01,0,0	monster	Vesper	1685,7,120000
+bossnia_01,0,0	monster	Time Holder	3074,5,120000
+// Exclusivos
+bossnia_01,0,0	monster	High Wizard Katrinn	1651,3,120000
+bossnia_01,0,0	monster	Whitesmith Harword	1648,7,120000
+bossnia_01,0,0	monster	Sniper Shecil	1650,1,120000
+bossnia_01,0,0	monster	Champion Chen	2238,1,120000
+bossnia_01,0,0	monster	Paladin Randel	2235,3,120000
+bossnia_01,0,0	monster	Professor Celia	2237,3,120000
+bossnia_01,0,0	monster	Warlock Katrinn	3224,1,900000
+bossnia_01,0,0	monster	Mechanic Harword	3223,1,120000
+bossnia_01,0,0	monster	Sura Chen	3243,1,900000
+bossnia_01,0,0	monster	Royal Guard Randel	3240,1,900000
+bossnia_01,0,0	monster	Sorcerer Celia	3242,1,900000
+
+//----------------------------------------------------------------------------
+// Cheffênia - Sala 2
+//----------------------------------------------------------------------------
+bossnia_02,0,0	monster	Mistress	1059,5,120000
+bossnia_02,0,0	monster	Amon Ra	1511,5,120000
+bossnia_02,0,0	monster	Nightmare Amon Ra	2362,5,120000
+bossnia_02,0,0	monster	Atroce	1785,5,120000
+bossnia_02,0,0	monster	Baphomet	1039,5,120000
+bossnia_02,0,0	monster	Beelzebub	1873,5,120000
+bossnia_02,0,0	monster	Golden Thief Bug	1086,1,15000000
+bossnia_02,0,0	monster	Falling Bishop	1871,5,120000
+bossnia_02,0,0	monster	Boitata	2068,5,120000
+bossnia_02,0,0	monster	Stormy Knight	1251,5,120000
+bossnia_02,0,0	monster	Dark Coelacanth	2187,3,120000
+bossnia_02,0,0	monster	Grotesque Coelacanth	2188,3,120000
+bossnia_02,0,0	monster	Mutant Coelacanth	2189,3,120000
+bossnia_02,0,0	monster	Ferocious Coelacanth	2190,3,120000
+bossnia_02,0,0	monster	Detale	1719,3,120000
+bossnia_02,0,0	monster	Doppelganger	1046,5,120000
+bossnia_02,0,0	monster	Drake	1112,5,120000
+bossnia_02,0,0	monster	Dracula	1389,5,120000
+bossnia_02,0,0	monster	Eddga	1115,3,120000
+bossnia_02,0,0	monster	Ygnizem	1658,5,120000
+bossnia_02,0,0	monster	Pharaoh	1157,5,120000
+bossnia_02,0,0	monster	Moonlight Flower	1150,5,120000
+bossnia_02,0,0	monster	Phreeoni	1159,5,120000
+bossnia_02,0,0	monster	Daehyon	2253,5,120000
+bossnia_02,0,0	monster	Turtle General	1312,5,120000
+bossnia_02,0,0	monster	Gioia	2251,2,120000
+bossnia_02,0,0	monster	Gopinich	1885,5,120000
+bossnia_02,0,0	monster	Kades	2255,7,120000
+bossnia_02,0,0	monster	Garm	1252,5,120000
+bossnia_02,0,0	monster	Ifrit	1832,5,120000
+bossnia_02,0,0	monster	Kiel D-01	1734,7,120000
+bossnia_02,0,0	monster	Kraken	2202,5,120000
+bossnia_02,0,0	monster	Ktullanux	1779,5,120000
+bossnia_02,0,0	monster	Armaia	1660,5,120000
+bossnia_02,0,0	monster	Lady Tanee	1688,5,120000
+bossnia_02,0,0	monster	Leak	2156,5,120000
+bossnia_02,0,0	monster	Maya	1147,5,120000
+bossnia_02,0,0	monster	Thanatos	1708,5,120000
+bossnia_02,0,0	monster	Wounded Morroc	1917,3,120000
+bossnia_02,0,0	monster	Orc Hero	1087,3,120000
+bossnia_02,0,0	monster	Osiris	1038,5,120000
+bossnia_02,0,0	monster	Gloom Under Night	1768,5,120000
+bossnia_02,0,0	monster	Pyuriel	2249,5,120000
+//bossnia_02,0,0	monster	Quimera Venenosa	3633,5,120000
+bossnia_02,0,0	monster	Queen Scaraba	2087,5,120000
+bossnia_02,0,0	monster	Gold Queen Scaraba	2165,5,120000
+bossnia_02,0,0	monster	RSX 0806	1623,5,120000
+bossnia_02,0,0	monster	Incantation Samurai	1492,5,120000
+bossnia_02,0,0	monster	Dark Lord	1272,5,120000
+bossnia_02,0,0	monster	Lord of Death	1373,5,120000
+bossnia_02,0,0	monster	Orc Lord	1190,5,120000
+bossnia_02,0,0	monster	Evil Snake Lord	1418,5,120000
+bossnia_02,0,0	monster	Tao Gunka	1583,5,120000
+bossnia_02,0,0	monster	Valkyrie Randgris	1751,5,120000
+bossnia_02,0,0	monster	Vesper	1685,7,120000
+bossnia_02,0,0	monster	Time Holder	3074,5,120000
+// Exclusivos
+bossnia_02,0,0	monster	Clown Alphoccio	2240,7,120000
+bossnia_02,0,0	monster	Assassin Cross Eremes	1647,1,120000
+bossnia_02,0,0	monster	High Priest Magaleta	1649,1,120000
+bossnia_02,0,0	monster	Wanderer Trentini	3246,1,900000
+bossnia_02,0,0	monster	Genetic Flamel	3241,1,900000
+bossnia_02,0,0	monster	Arch Bishop Margaretha	3221,1,900000
+
+//----------------------------------------------------------------------------
+// Cheffênia - Sala 3
+//----------------------------------------------------------------------------
+bossnia_03,0,0	monster	Mistress	1059,5,120000
+bossnia_03,0,0	monster	Amon Ra	1511,5,120000
+bossnia_03,0,0	monster	Nightmare Amon Ra	2362,5,120000
+bossnia_03,0,0	monster	Atroce	1785,5,120000
+bossnia_03,0,0	monster	Baphomet	1039,5,120000
+bossnia_03,0,0	monster	Beelzebub	1873,5,120000
+bossnia_03,0,0	monster	Golden Thief Bug	1086,1,15000000
+bossnia_03,0,0	monster	Falling Bishop	1871,5,120000
+bossnia_03,0,0	monster	Boitata	2068,5,120000
+bossnia_03,0,0	monster	Stormy Knight	1251,5,120000
+bossnia_03,0,0	monster	Dark Coelacanth	2187,3,120000
+bossnia_03,0,0	monster	Grotesque Coelacanth	2188,3,120000
+bossnia_03,0,0	monster	Mutant Coelacanth	2189,3,120000
+bossnia_03,0,0	monster	Ferocious Coelacanth	2190,3,120000
+bossnia_03,0,0	monster	Detale	1719,3,120000
+bossnia_03,0,0	monster	Doppelganger	1046,5,120000
+bossnia_03,0,0	monster	Drake	1112,5,120000
+bossnia_03,0,0	monster	Dracula	1389,5,120000
+bossnia_03,0,0	monster	Eddga	1115,3,120000
+bossnia_03,0,0	monster	Ygnizem	1658,5,120000
+bossnia_03,0,0	monster	Pharaoh	1157,5,120000
+bossnia_03,0,0	monster	Moonlight Flower	1150,5,120000
+bossnia_03,0,0	monster	Phreeoni	1159,5,120000
+bossnia_03,0,0	monster	Daehyon	2253,5,120000
+bossnia_03,0,0	monster	Turtle General	1312,5,120000
+bossnia_03,0,0	monster	Gioia	2251,2,120000
+bossnia_03,0,0	monster	Gopinich	1885,5,120000
+bossnia_03,0,0	monster	Kades	2255,7,120000
+bossnia_03,0,0	monster	Garm	1252,5,120000
+bossnia_03,0,0	monster	Ifrit	1832,5,120000
+bossnia_03,0,0	monster	Kiel D-01	1734,7,120000
+bossnia_03,0,0	monster	Kraken	2202,5,120000
+bossnia_03,0,0	monster	Ktullanux	1779,5,120000
+bossnia_03,0,0	monster	Armaia	1660,5,120000
+bossnia_03,0,0	monster	Lady Tanee	1688,5,120000
+bossnia_03,0,0	monster	Leak	2156,5,120000
+bossnia_03,0,0	monster	Maya	1147,5,120000
+bossnia_03,0,0	monster	Thanatos	1708,5,120000
+bossnia_03,0,0	monster	Wounded Morroc	1917,3,120000
+bossnia_03,0,0	monster	Orc Hero	1087,3,120000
+bossnia_03,0,0	monster	Osiris	1038,5,120000
+bossnia_03,0,0	monster	Gloom Under Night	1768,5,120000
+bossnia_03,0,0	monster	Pyuriel	2249,5,120000
+//bossnia_03,0,0	monster	Quimera Venenosa	3633,5,120000
+bossnia_03,0,0	monster	Queen Scaraba	2087,5,120000
+bossnia_03,0,0	monster	Gold Queen Scaraba	2165,5,120000
+bossnia_03,0,0	monster	RSX 0806	1623,5,120000
+bossnia_03,0,0	monster	Incantation Samurai	1492,5,120000
+bossnia_03,0,0	monster	Dark Lord	1272,5,120000
+bossnia_03,0,0	monster	Lord of Death	1373,5,120000
+bossnia_03,0,0	monster	Orc Lord	1190,5,120000
+bossnia_03,0,0	monster	Evil Snake Lord	1418,5,120000
+bossnia_03,0,0	monster	Tao Gunka	1583,5,120000
+bossnia_03,0,0	monster	Valkyrie Randgris	1751,5,120000
+bossnia_03,0,0	monster	Vesper	1685,7,120000
+bossnia_03,0,0	monster	Time Holder	3074,5,120000
+// Exclusivos
+bossnia_03,0,0	monster	Stalker Gertie	2239,2,120000
+bossnia_03,0,0	monster	Creator Flamel	2236,2,120000
+bossnia_03,0,0	monster	Lord Knight Seyren	1646,1,120000
+bossnia_03,0,0	monster	High Priest Magaleta	1649,3,120000
+bossnia_03,0,0	monster	Rune Knight Seyrenn	3225,1,900000
+bossnia_03,0,0	monster	Shadow Chaser Gertie	3244,1,900000
+
+//----------------------------------------------------------------------------
+// Cheffênia - Sala 4
+//----------------------------------------------------------------------------
+bossnia_04,0,0	monster	Mistress	1059,5,120000
+bossnia_04,0,0	monster	Amon Ra	1511,5,120000
+//bossnia_04,0,0	monster	Nightmare Amon Ra	2362,5,120000
+bossnia_04,0,0	monster	Atroce	1785,5,120000
+bossnia_04,0,0	monster	Baphomet	1039,5,120000
+bossnia_04,0,0	monster	Beelzebub	1873,5,120000
+bossnia_04,0,0	monster	Golden Thief Bug	1086,1,15000000
+bossnia_04,0,0	monster	Falling Bishop	1871,5,120000
+bossnia_04,0,0	monster	Boitata	2068,5,120000
+bossnia_04,0,0	monster	Stormy Knight	1251,5,120000
+bossnia_04,0,0	monster	Dark Coelacanth	2187,3,120000
+bossnia_04,0,0	monster	Grotesque Coelacanth	2188,3,120000
+bossnia_04,0,0	monster	Mutant Coelacanth	2189,3,120000
+bossnia_04,0,0	monster	Ferocious Coelacanth	2190,3,120000
+bossnia_04,0,0	monster	Detale	1719,3,120000
+bossnia_04,0,0	monster	Doppelganger	1046,5,120000
+bossnia_04,0,0	monster	Drake	1112,5,120000
+bossnia_04,0,0	monster	Dracula	1389,5,120000
+bossnia_04,0,0	monster	Eddga	1115,3,120000
+bossnia_04,0,0	monster	Ygnizem	1658,5,120000
+bossnia_04,0,0	monster	Pharaoh	1157,5,120000
+bossnia_04,0,0	monster	Moonlight Flower	1150,5,120000
+bossnia_04,0,0	monster	Phreeoni	1159,5,120000
+bossnia_04,0,0	monster	Daehyon	2253,5,120000
+bossnia_04,0,0	monster	Turtle General	1312,5,120000
+bossnia_04,0,0	monster	Gioia	2251,2,120000
+bossnia_04,0,0	monster	Gopinich	1885,5,120000
+bossnia_04,0,0	monster	Kades	2255,7,120000
+bossnia_04,0,0	monster	Garm	1252,5,120000
+bossnia_04,0,0	monster	Ifrit	1832,5,120000
+bossnia_04,0,0	monster	Kiel D-01	1734,7,120000
+bossnia_04,0,0	monster	Kraken	2202,5,120000
+bossnia_04,0,0	monster	Ktullanux	1779,5,120000
+bossnia_04,0,0	monster	Armaia	1660,5,120000
+bossnia_04,0,0	monster	Lady Tanee	1688,5,120000
+bossnia_04,0,0	monster	Leak	2156,5,120000
+bossnia_04,0,0	monster	Maya	1147,5,120000
+bossnia_04,0,0	monster	Thanatos	1708,5,120000
+bossnia_04,0,0	monster	Wounded Morroc	1917,3,120000
+bossnia_04,0,0	monster	Orc Hero	1087,3,120000
+bossnia_04,0,0	monster	Osiris	1038,5,120000
+bossnia_04,0,0	monster	Gloom Under Night	1768,5,120000
+bossnia_04,0,0	monster	Pyuriel	2249,5,120000
+//bossnia_04,0,0	monster	Quimera Venenosa	3633,5,120000
+bossnia_04,0,0	monster	Queen Scaraba	2087,5,120000
+bossnia_04,0,0	monster	Gold Queen Scaraba	2165,5,120000
+bossnia_04,0,0	monster	RSX 0806	1623,5,120000
+bossnia_04,0,0	monster	Incantation Samurai	1492,5,120000
+bossnia_04,0,0	monster	Dark Lord	1272,5,120000
+bossnia_04,0,0	monster	Lord of Death	1373,5,120000
+bossnia_04,0,0	monster	Orc Lord	1190,5,120000
+bossnia_04,0,0	monster	Evil Snake Lord	1418,5,120000
+bossnia_04,0,0	monster	Tao Gunka	1583,5,120000
+bossnia_04,0,0	monster	Valkyrie Randgris	1751,5,120000
+bossnia_04,0,0	monster	Vesper	1685,7,120000
+bossnia_04,0,0	monster	Time Holder	3074,5,120000
+// Exclusivos
+bossnia_04,0,0	monster	Assassin Cross Eremes	1647,1,120000
+bossnia_04,0,0	monster	Sniper Shecil	1650,1,120000
+bossnia_04,0,0	monster	Gypsy Trentini	2241,7,120000
+bossnia_04,0,0	monster	Guillotine Cross Eremes	3220,1,900000
+bossnia_04,0,0	monster	Ranger Shecil	3222,1,900000
+bossnia_04,0,0	monster	Minstrel Alphoccio	3245,1,900000
+
+// Mapflags
+//============================================================
+//Sala 1
+bossnia_01	mapflag	nomemo
+bossnia_01	mapflag	nosave	SavePoint
+bossnia_01	mapflag	noreturn
+bossnia_01	mapflag	restricted	16384
+bossnia_01	mapflag	nopenalty
+bossnia_01	mapflag	noteleport
+
+//Sala 2
+bossnia_02	mapflag	nomemo
+bossnia_02	mapflag	nosave	SavePoint
+bossnia_02	mapflag	noreturn
+bossnia_02	mapflag	restricted	16384
+bossnia_02	mapflag	nopenalty
+bossnia_02	mapflag	noteleport
+
+//Sala 3
+bossnia_03	mapflag	nomemo
+bossnia_03	mapflag	nosave	SavePoint
+bossnia_03	mapflag	noreturn
+bossnia_03	mapflag	restricted	16384
+bossnia_03	mapflag	nopenalty
+bossnia_03	mapflag	noteleport
+
+//Sala 4
+bossnia_04	mapflag	nomemo
+bossnia_04	mapflag	nosave	SavePoint
+bossnia_04	mapflag	noreturn
+bossnia_04	mapflag	restricted	16384
+bossnia_04	mapflag	nopenalty
+bossnia_04	mapflag	noteleport

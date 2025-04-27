@@ -1,0 +1,201 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+/*
+prontera,164,165,3	script	Bag Zeny	757,{
+function int__;
+
+do{
+	callsub exchange_rate;
+	.@menu = select( "^DAA520Zeny^000000 to ^8B4513Bag^000000","^8B4513Bag^000000 to ^DAA520Zeny^000000","^DC143CClose^000000" );
+	switch( .@menu ){
+		Case 1:
+			mes "Convert ^FFD700Zeny^000000 to which ^4169E1Bag^000000 ?";
+			.@coin = select( implode( .coin_name$,":" ) ) - 1;
+			if( Zeny <  .value[.@coin] ){
+				mes "^FF0000[ERROR]^000000 You didnt have enough ^FFD700Zeny^000000.";
+			}else{
+				.@maximum = Zeny / .value[.@coin];
+				mes "You can get maximum of ^FF0000"+int__( .@maximum )+" x "+getitemname( .coin_id[.@coin] )+"^000000";
+				input .@amount,0,.@maximum;
+				if( .@maximum )
+					if( checkweight( .coin_id[.@coin],.@amount ) ){
+						.@total = ( .@amount * .value[.@coin] );
+						Zeny -= .@total;
+						getitem .coin_id[.@coin],.@amount;
+						message strcharinfo(0),"Exchanged "+int__( .@total )+" Zeny to "+int__( .@amount )+" "+getitemname( .coin_id[.@coin] )+"";
+					}else{
+						mes "^FF0000[ERROR]^000000 You cant take this much.";
+					}
+			}
+			break;
+		Case 2:
+			mes "Convert which ^4169E1Bag^000000 to ^FFD700Zeny^000000 ?";
+			.@coin = select( implode( .coin_name$,":" ) ) - 1;
+			if( !countitem( .coin_id[.@coin] ) ){
+				mes "^FF0000[ERROR]^000000 You didnt have any "+getitemname( .coin_id[.@coin] )+".";
+			}else if( ( .max_zeny - Zeny ) < .value[.@coin] ){
+				mes "^FF0000[ERROR]^000000 You cant exchange this ^4169E1Bag^000000 as it will exceed the ^FFD700Zeny^000000 limit.";
+			}else{
+				.@maximum = (( .max_zeny - Zeny ) / .value[.@coin] );
+				if( .@maximum > countitem( .coin_id[.@coin] ) ) .@maximum = countitem( .coin_id[.@coin] );
+				mes "You can exchange maximum of ^FF0000"+int__( .@maximum )+" x "+getitemname( .coin_id[.@coin] )+"^000000 to ^FFD700Zeny^000000";
+				input .@amount,0,.@maximum;
+				if( .@maximum ){
+					.@total = ( .@amount * .value[.@coin] );
+					Zeny += .@total;
+					delitem .coin_id[.@coin],.@amount;
+					message strcharinfo(0),"Exchanged "+int__( .@amount )+" "+getitemname( .coin_id[.@coin] )+" to "+int__( .@total )+" Zeny";
+				}
+			}
+			break;
+		default: break;
+	}
+	next;
+}while( .@menu != 3 );
+mes "Thank you.";
+close;
+
+exchange_rate:
+	mes "Exchange Rate :";
+	for( .@i = 0; .@i < .coin_size; .@i++ )
+		mes "^008000 > ^000000"+.coin_name$[.@i]+" - "+int__( .value[.@i] )+"^FF0000 z^000000";
+	return;
+	
+OnInit:
+// server max zeny
+.max_zeny = 1000000000;
+// coin list + name + value
+setarray .coin_name$,"^8B4513Bag of Bronze^000000","^C0C0C0Bag of Silver^000000","^FFD700Bag of Gold^000000";
+setarray .coin_id,672,676,670;
+setarray .value,100000,1000000,10000000;
+
+.coin_size = getarraysize( .coin_name$ );
+end;
+
+
+// credits to annieruru
+function	int__	{
+	set .@num, atoi(""+getarg(0));
+	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
+	set .@l, getstrlen(""+.@num);
+	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
+		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
+			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
+	}
+	return .@num$;
+}
+
+}
+*/
+
+
+prontera,164,165,3	script	Bag Zeny	757,{
+
+function int__;
+
+while (true) {
+	callsub exchange_rate;
+	.@menu = select("^DAA520Zeny^000000 to ^8B4513Bag^000000", "^8B4513Bag^000000 to ^DAA520Zeny^000000", "^DC143CClose^000000");
+	switch (.@menu) {
+		Case 1:
+			mes "Convert ^FFD700Zeny^000000 to which ^4169E1Bag^000000?";
+			.@coin = select(implode(.coin_name$, ":")) - 1;
+			.@name$ = getitemname(.coin_id[.@coin]);
+
+			if (Zeny < .value[.@coin]) {
+				mes "^FF0000[ERROR]^000000 You didn't have enough ^FFD700Zeny^000000.";
+			} else {
+				.@maximum = Zeny / .value[.@coin];
+				mes "You can get maximum of ^FF0000" + int__(.@maximum) + " x " + .@name$ + "^000000.";
+				input .@amount, 0, .@maximum;
+
+				if (.@amount == 0) {
+					mes "^FF0000[INFO]^000000 You chose not to convert anything.";
+					close;
+				}
+
+				if (checkweight(.coin_id[.@coin], .@amount)) {
+					.@total = .@amount * .value[.@coin];
+					Zeny -= .@total;
+					getitem .coin_id[.@coin], .@amount;
+					message strcharinfo(0), "Exchanged " + int__(.@total) + " Zeny to " + int__(.@amount) + " " + .@name$;
+				} else {
+					mes "^FF0000[ERROR]^000000 You can't take this much.";
+				}
+			}
+			break;
+
+		Case 2:
+			mes "Convert which ^4169E1Bag^000000 to ^FFD700Zeny^000000?";
+			.@coin = select(implode(.coin_name$, ":")) - 1;
+			.@name$ = getitemname(.coin_id[.@coin]);
+
+			if (!countitem(.coin_id[.@coin])) {
+				mes "^FF0000[ERROR]^000000 You didn't have any " + .@name$ + ".";
+			} else if ((.max_zeny - Zeny) < .value[.@coin]) {
+				mes "^FF0000[ERROR]^000000 You can't exchange this ^4169E1Bag^000000 as it will exceed the ^FFD700Zeny^000000 limit.";
+			} else {
+				.@maximum = (.max_zeny - Zeny) / .value[.@coin];
+				if (.@maximum > countitem(.coin_id[.@coin])) .@maximum = countitem(.coin_id[.@coin]);
+
+				mes "You can exchange maximum of ^FF0000" + int__(.@maximum) + " x " + .@name$ + "^000000 to ^FFD700Zeny^000000.";
+				input .@amount, 0, .@maximum;
+
+				if (.@amount == 0) {
+					mes "^FF0000[INFO]^000000 You chose not to convert anything.";
+					close;
+				}
+
+				.@total = .@amount * .value[.@coin];
+				Zeny += .@total;
+				delitem .coin_id[.@coin], .@amount;
+				message strcharinfo(0), "Exchanged " + int__(.@amount) + " " + .@name$ + " to " + int__(.@total) + " Zeny";
+			}
+			break;
+
+		default:
+			break;
+	}
+	next;
+	if (.@menu == 3) break;
+}
+
+mes "Thank you.";
+close;
+
+exchange_rate:
+	mes "Exchange Rate:";
+	mes "^8B4513Bag^000000        |^DAA520        Zeny^000000";
+	mes "---------------------------";
+	for (.@i = 0; .@i < .coin_size; .@i++)
+		mes .coin_name$[.@i] + " ^000000| " + int__(.value[.@i]) + " ^DAA520z^000000";
+	return;
+
+OnInit:
+	.max_zeny = 2147483647; // Corrigido para o limite real
+	setarray .coin_name$, "^8B4513Bag of Bronze^000000", "^C0C0C0Bag of Silver^000000", "^FFD700Bag of Gold^000000";
+	setarray .coin_id, 672, 676, 670;
+	setarray .value, 100000, 1000000, 10000000;
+	.coin_size = getarraysize(.coin_name$);
+	end;
+
+// credits to annieruru
+function int__ {
+	set .@num, atoi("" + getarg(0));
+	if (.@num == 0 || .@num >= 2147483647) return getarg(0);
+	set .@l, getstrlen("" + .@num);
+	for (set .@i, 0; .@i < .@l; set .@i, .@i + 1) {
+		set .@num$, .@num % pow(10, .@i + 1) / pow(10, .@i) + .@num$;
+		if ((.@i + 1) % 3 == 0 && .@i + 1 != .@l) set .@num$, "," + .@num$;
+	}
+	return .@num$;
+}
+
+}

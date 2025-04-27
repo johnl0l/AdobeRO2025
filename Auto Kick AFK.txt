@@ -1,0 +1,170 @@
+/*
+-	script	IdleKickAllMaps	-1,{
+
+// Configuração
+OnInit:
+	.interval = 1; // Intervalo de verificação em segundos
+	.max_idle = 120; // Tempo parado antes de kick/warp
+	end;
+
+OnPCLoginEvent:
+	initnpctimer;
+	end;
+
+OnTimer1000:
+	// Coleta posição atual
+	getmapxy(.@map$, .@x, .@y, 0);
+
+	// Compara com a última posição salva
+	if (.@map$ == #afk_last_map$ && .@x == #afk_last_x && .@y == #afk_last_y) {
+		#afk_idle_time += .interval;
+	} else {
+		#afk_idle_time = 0;
+	}
+
+	// Atualiza últimas posições
+	#afk_last_map$ = .@map$;
+	#afk_last_x = .@x;
+	#afk_last_y = .@y;
+
+	// Ação ao atingir limite
+	if (#afk_idle_time >= .max_idle) {
+		dispbottom "Você ficou parado demais. Voltando ao ponto de salvamento!";
+		//warp "SavePoint", 0, 0;
+		atcommand "@kick "+strcharinfo(0); // or kick
+		#afk_idle_time = 0;
+	}
+
+	initnpctimer;
+	end;
+}
+*/
+
+/*
+-	script	IdleKickAllMaps	-1,{
+
+OnInit:
+	.interval = 1;         // Intervalo de checagem (segundos)
+	.max_idle = 120;       // Tempo máximo ocioso antes do kick
+	.warn_time = 60;       // Tempo para exibir o aviso (segundos)
+	.debug_mode = 0;       // Ativar debug? (1 = sim, 0 = não)
+	end;
+
+OnPCLoginEvent:
+	getmapxy(@last_map$, @last_x, @last_y, 0);
+	@idle_seconds = 0;
+	@warned_afk = 0; // Controla se o aviso já foi enviado
+	addtimer .interval * 1000, strnpcinfo(3) + "::OnCheckIdle";
+	end;
+
+OnCheckIdle:
+	getmapxy(.@map$, .@x, .@y, 0);
+
+	if (.@map$ == @last_map$ && .@x == @last_x && .@y == @last_y) {
+		@idle_seconds += .interval;
+	} else {
+		@idle_seconds = 0;
+		@warned_afk = 0;
+	}
+
+	@last_map$ = .@map$;
+	@last_x = .@x;
+	@last_y = .@y;
+
+	// DEBUG
+	if (.debug_mode) {
+		dispbottom "[AFK Debug] Tempo ocioso: " + @idle_seconds + "s";
+		dispbottom "[AFK Debug] Mapa: " + @last_map$ + " | X: " + @last_x + " | Y: " + @last_y;
+	}
+
+	// Aviso prévio
+	if (@idle_seconds == (.max_idle - .warn_time) && !@warned_afk) {
+		dispbottom "Atenção! Você será desconectado em 1 minuto se continuar parado.";
+		@warned_afk = 1;
+	}
+
+	// Kick/warp se passar do limite
+	if (@idle_seconds >= .max_idle) {
+		dispbottom "Disconnected from Server!";
+		//warp "SavePoint", 0, 0;
+		atcommand "@kick "+strcharinfo(0); // or kick
+		end;
+	}
+
+	// Reagendar verificação
+	addtimer .interval * 1000, strnpcinfo(3) + "::OnCheckIdle";
+	end;
+}
+*/
+
+-	script	IdleKickAllMaps	-1,{
+
+OnInit:
+	.interval = 1;         // Intervalo de checagem (segundos)
+	.max_idle = 300;       // Tempo máximo ocioso antes do kick
+	.warn_time = 60;       // Tempo para exibir o aviso (segundos)
+	.debug_mode = 0;       // Ativar debug? (1 = sim, 0 = não)
+	end;
+
+OnPCLoginEvent:
+	// Ignora GMs
+	if (getgmlevel() >= 99) end;
+
+	getmapxy(@last_map$, @last_x, @last_y, 0);
+	@idle_seconds = 0;
+	@warned_afk = 0;
+	addtimer .interval * 1000, strnpcinfo(3) + "::OnCheckIdle";
+	end;
+
+OnCheckIdle:
+	getmapxy(.@map$, .@x, .@y, 0);
+
+	// Exceção para mapa 1@def01
+	if (.@map$ == "1@def01") {
+		if (.debug_mode) dispbottom "[AFK Debug] Mapa isento (1@def01).";
+		addtimer .interval * 1000, strnpcinfo(3) + "::OnCheckIdle";
+		end;
+	}
+
+	// Exceção para vendedores
+	if (checkvending() > 0) {
+		if (.debug_mode) dispbottom "[AFK Debug] Loja ativa detectada. AFK Check pausado.";
+		addtimer .interval * 1000, strnpcinfo(3) + "::OnCheckIdle";
+		end;
+	}
+
+	if (.@map$ == @last_map$ && .@x == @last_x && .@y == @last_y) {
+		@idle_seconds += .interval;
+	} else {
+		@idle_seconds = 0;
+		@warned_afk = 0;
+	}
+
+	@last_map$ = .@map$;
+	@last_x = .@x;
+	@last_y = .@y;
+
+	// DEBUG
+	if (.debug_mode) {
+		dispbottom "[AFK Debug] Tempo ocioso: " + @idle_seconds + "s";
+		dispbottom "[AFK Debug] Mapa: " + @last_map$ + " | X: " + @last_x + " | Y: " + @last_y;
+	}
+
+	// Aviso prévio
+	if (@idle_seconds == (.max_idle - .warn_time) && !@warned_afk) {
+		dispbottom "Atenção! Você será desconectado em 1 minuto se continuar parado.";
+		@warned_afk = 1;
+	}
+
+	// Kick se atingir limite
+	if (@idle_seconds >= .max_idle) {
+		dispbottom "Disconnected from Server!";
+		sc_end SC_ALL; // Remove todos os buffs antes de kickar
+		atcommand "@kick " + strcharinfo(0);
+		end;
+	}
+
+	// Reagendar
+	addtimer .interval * 1000, strnpcinfo(3) + "::OnCheckIdle";
+	end;
+}

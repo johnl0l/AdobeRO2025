@@ -1,0 +1,167 @@
+//===== By: ==================================================
+//= EL Dragon
+//===== Current Version: =====================================
+//= 1.00
+//===== Compatible With: =====================================
+//= rAthena SVN
+//============================================================
+-	script	restock	-1,{
+ 
+OnInit:
+ 
+    bindatcmd "restock", strnpcinfo(3) +"::OnRestock";
+        // ========== Max. Restock  ==========
+        // HP Recovery
+    .Siege_White_Potion = 500; //Woe White Potion
+    .Light_White_Pot = 500; //Light White Potion
+        .Fruit_Of_Mastela = 500; // Fruit Of Mastela
+        // SP Recovery
+        .Siege_Blue_Potion = 500; //Woe Blue Potion
+        .Light_Blue_Pot = 500; //Light Blue Potion
+        // ========== Restock Zeny Prize ==========
+        // HP Recovery
+        .Siege_White_Potion_Zeny = 3500; //Woe White Potion
+    .Light_White_Pot_Zeny = 600; //Light White Potion
+        .Fruit_Of_Mastela_Zeny = 5270; // Fruit Of Mastela
+        // SP Recovery
+        .Siege_Blue_Potion_Zeny = 5000; //Woe Blue Potion
+        .Light_Blue_Pot_Zeny = 2500; //Light Blue Potion
+        // ========== Restock Count ==========
+        // ea. Count increases oneself the Zeny Costs 1~10 Zeny ea. Item
+        .RestockCount = 0; // 1 = yes, 0 = no
+        // ========== Restock Delay ==========
+        .RestockDelay = 0; // 1 = yes, 0 = no
+        // ========== Restock Delay Time ==========
+        // ========== 60 = 1 minutes ==========
+    // ========== 120 = 2 minutes usw. ==========
+        .RestockDelayTime = 60;
+        end;
+ 
+        OnRestock:
+                if(.@atcmd_parameters$[0]==""){
+                dispbottom "Use @restock ";
+                dispbottom "====================================";
+                dispbottom "List: HP Recovery";
+                dispbottom "hp1 = WoE White Potion";
+                dispbottom "hp2 = Light White Potion";
+                dispbottom "hp3 = Mastela Fruit";
+                dispbottom "====================================";
+                dispbottom "List: SP Recovery";
+                dispbottom "sp1 = WoE Blue Potion";
+                dispbottom "sp2 = Light Blue Potion";
+                end;
+        }
+       
+ 
+ 
+// ========== @restock Delay ==========
+    if(.RestockDelay == 1)
+    {
+    if ( ##restock_delay + .RestockDelayTime > gettimetick(2) ) {
+        message strcharinfo(0), "You can only use this command every "+.RestockDelayTime+" Seconds!";
+        end;
+        }
+        ##restock_delay = gettimetick(2);
+    }
+// ========== HP Recovery ==========   
+// #################################   
+// ========== WoE White Potion ==========      
+        if(.@atcmd_parameters$[0]=="hp1"){
+    if ( ( .@count = .Siege_White_Potion - countitem( "Siege_White_Potion" ) ) > 0 ) {
+                if(Zeny<.@count*.Siege_White_Potion_Zeny+#Restock_Count) {
+                dispbottom "Your have not "+ ((.@count*.Siege_White_Potion_Zeny)+#Restock_Count) +" Zeny.";
+                end;
+        }  
+   
+                if( Weight > ( MaxWeight / 2 ) ){
+            dispbottom "Please make sure you are not OverWeight.";
+            end;
+            }
+                        set Zeny,Zeny - ((.@count*.Siege_White_Potion_Zeny)+#Restock_Count);
+            getitem "Siege_White_Potion", .@count;
+                        dispbottom "Restock: "+.@count+"x Siege White Potion, your lose "+ ((.@count*.Siege_White_Potion_Zeny)+#Restock_Count) +" Zeny.";
+    }
+        set #Restock_Count, #Restock_Count + rand(1,10);
+        end;
+}
+       
+// ========== Light White Potion ==========
+        if(.@atcmd_parameters$[0]=="hp2"){
+    if ( ( .@count = .Light_White_Pot - countitem( "Light_White_Pot" ) ) > 0 ) {
+                if(Zeny<.@count*.Light_White_Pot_Zeny+#Restock_Count) {
+                dispbottom "Your have not "+ ((.@count*.Light_White_Pot_Zeny)+#Restock_Count) +" Zeny.";
+                end;
+        }
+       
+                if( Weight > ( MaxWeight / 2 ) ){
+            dispbottom "Please make sure you are not OverWeight.";
+            end;
+            }
+                        set Zeny,Zeny - ((.@count*.Light_White_Pot_Zeny)+#Restock_Count);      
+            getitem "Light_White_Pot", .@count;
+                        dispbottom "Restock: "+.@count+"x Light White Potion, your lose "+ ((.@count*.Light_White_Pot_Zeny)+#Restock_Count) +" Zeny.";
+    }
+        set #Restock_Count, #Restock_Count + rand(1,10);
+        end;
+}
+// ========== Mastela Fruit ========== 
+        if(.@atcmd_parameters$[0]=="hp3"){
+    if ( ( .@count = .Fruit_Of_Mastela - countitem( "Fruit_Of_Mastela" ) ) > 0 ) {
+                if(Zeny<.@count*.Fruit_Of_Mastela_Zeny+#Restock_Count) {
+                dispbottom "Your have not "+ ((.@count*.Fruit_Of_Mastela_Zeny)+#Restock_Count) +" Zeny.";
+                end;
+        }
+       
+                if( Weight > ( MaxWeight / 2 ) ){
+            dispbottom "Please make sure you are not OverWeight.";
+            end;
+            }
+                        set Zeny,Zeny - ((.@count*.Fruit_Of_Mastela_Zeny)+#Restock_Count);     
+            getitem "Fruit_Of_Mastela", .@count;
+                        dispbottom "Restock: "+.@count+"x Mastela Fruit, your lose "+ ((.@count*.Fruit_Of_Mastela_Zeny)+#Restock_Count) +" Zeny.";
+}
+        set #Restock_Count, #Restock_Count + rand(1,10);
+        end;
+}
+ 
+// ========== SP Recovery ==========   
+// #################################
+// ========== WoE Blue Potion ==========
+        if(.@atcmd_parameters$[0]=="sp1"){
+    if ( ( .@count = .Siege_Blue_Potion - countitem( "Siege_Blue_Potion" ) ) > 0 ) {
+                if(Zeny<.@count*.Siege_Blue_Potion_Zeny+#Restock_Count) {
+                dispbottom "Your have not "+ ((.@count*.Siege_Blue_Potion_Zeny)+#Restock_Count) +" Zeny.";
+                end;
+        }
+       
+                if( Weight > ( MaxWeight / 2 ) ){
+            dispbottom "Please make sure you are not OverWeight.";
+            end;
+            }
+            set Zeny,Zeny - ((.@count*.Siege_Blue_Potion_Zeny)+#Restock_Count);                
+            getitem "Siege_Blue_Potion", .@count;
+                        dispbottom "Restock: "+.@count+"x WoE Blue Potion, your lose "+ ((.@count*.Siege_Blue_Potion_Zeny)+#Restock_Count) +" Zeny.";
+    }
+        set #Restock_Count, #Restock_Count + rand(1,10);
+        end;
+}
+// ========== Light Blue Potion ==========     
+        if(.@atcmd_parameters$[0]=="sp2"){
+    if ( ( .@count = .Light_Blue_Pot - countitem( "Light_Blue_Pot" ) ) > 0 ) {
+                if(Zeny<.@count*.Light_Blue_Pot_Zeny+#Restock_Count) {
+                dispbottom "Your have not "+ ((.@count*.Light_Blue_Pot_Zeny)+#Restock_Count) +" Zeny.";
+                end;
+        }
+       
+                if( Weight > ( MaxWeight / 2 ) ){
+            dispbottom "Please make sure you are not OverWeight.";
+            end;
+            }
+            set Zeny,Zeny - ((.@count*.Light_Blue_Pot_Zeny)+#Restock_Count);                           
+            getitem "Light_Blue_Pot", .@count;
+                        dispbottom "Restock: "+.@count+"x Light Blue Potion, your lose "+ ((.@count*.Light_Blue_Pot_Zeny)+#Restock_Count) +" Zeny.";
+    }
+        set #Restock_Count, #Restock_Count + rand(1,10);
+        end;
+}
+}

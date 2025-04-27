@@ -1,0 +1,43 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+/*
+Exemplo:
+prontera,155,185,5    script    sfsdfsdf    1_F_MARIA,{
+    mes F_MesItemInfo(Knife);
+    close;
+}
+*/
+
+function	script	F_MesItemInfo	{
+    .@item = getarg(0);
+    .@itemname$ = getitemname(.@item);
+    if (.@itemname$ == "null")
+        .@itemname$ = "Unknown Item";
+    if (PACKETVER >= 20150729)
+        return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+    else if (PACKETVER >= 20130130)
+        return sprintf("<ITEMLINK>%s<INFO>%d</INFO></ITEMLINK>", .@itemname$, .@item);
+    else
+        return .@itemname$;
+}
+
+/*
+function	script	F_MesItemInfo	{
+	.@item = getarg(0);
+	.@itemname$ = getitemname(.@item);
+	if (.@itemname$ != "null") {
+		.@itemslot = getitemslots(.@item);
+		if (.@itemslot)
+			.@itemname$ = sprintf("%s [%d]", .@itemname$, .@itemslot);
+	}
+	else
+		.@itemname$ = "Unknown Item";
+	return sprintf("<ITEM>%s<INFO>%d</INFO></ITEM>", .@itemname$, .@item);
+}
+*/

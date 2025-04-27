@@ -1,0 +1,211 @@
+//==============Made by DoomSlayer=============
+//Ferreiro Custom - Quanto mais materiais maior
+//a chance de sucesso!
+//=============================================
+//==============Adaptation by JPontes=============
+//Melhoria no script
+//Adicionado chance por material especifico,
+//weapon leave.
+//http://www.vikingsro.com.br
+//=============================================
+
+sec_in02,178,157,3	script	Blacksmith VIP	63,{
+	disable_items;
+	mes "^0000FF"+.name$+"^000000";
+	mes "Eu sou o melhor Ferreiro da sala ^FFD700VIP^000000!";
+	mes "Eu utilizo matéria-prima para realizar refinamentos em itens.";
+	next;
+	mes "^0000FF"+.name$+"^000000";
+	mes "Para fazer este serviço, eu preciso de um valor simbólico de ^32CD32"+.price+"^000000z, assim ofereço ^A020F0"+.chance+"^000000% de sucesso no refinamento!";
+	mes "Caso você tenha os materiais necessarios, podemos chegar em ^A020F0"+(.chance + (.maxmat * .matchance))+"^000000%.";
+	next;
+	mes "^0000FF"+.name$+"^000000";
+	mes "Cada material, aumentamos em ^A020F0"+.matchance+"^000000% a chance de sucesso!";
+	mes "Quanto mais materiais você me der, mais chances de sucesso teremos!";
+	next;
+	if (.break == 1){
+	mes "^0000FF"+.name$+"^000000";
+	mes "                    ^996600!!!^000000^ff0000ATENÇÃO^000000^996600!!!^000000";
+	mes "Caso não obtenhamos sucesso, você poderá perder o item!";
+	mes "Aconselho tirar todas as Card's do equipamento!";
+	next;
+	}
+	switch(select("^006400Vamos refinar^000000:^0000FFInformações^000000:^ff0000Não^000000, ^ff0000obrigado^000000!")){
+		case 1:
+			mes "^0000FF"+.name$+"^000000";
+			mes "Qual equipamento que você quer refinar?";
+			next;
+			goto OnRefine;
+			end;
+		case 2:
+			mes "^0000FF"+.name$+"^000000";
+			mes "Os itens necessários para o refinamento são:";
+			
+			for( .@i = 0; .@i < getarraysize(.material); .@i++ )
+			mes "{"+.material[.@i]+"} - "+.namemat$[.@i];
+		
+			next;
+			switch(select("Escolher equipamento:Vou buscar os materiais")){
+			case 1:
+			goto OnRefine;
+			case 2:
+			mes "^0000FF"+.name$+"^000000";
+			mes "Volte quando precisar de meus serviços!";
+			close;
+			end;
+			}
+		case 3:
+			mes "^0000FF"+.name$+"^000000";
+			mes "Volte quando precisar de meus serviços!";
+			close;
+			end;
+	}
+OnRefine:
+	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+	for(.@i = 1; .@i<getarraysize(.@indices); ++.@i) {			
+		if(getequipisequiped(.@indices[.@i])) {
+			.@menu$ = .@menu$ + F_getpositionname(.@indices[.@i]) + "-[" + getequipname(.@indices[.@i]) + "]";
+			.@equipped = 1;
+		}
+		.@menu$ = .@menu$ + ":";
+	}
+	if (.@equipped == 0) {
+		mes "^0000FF"+.name$+"^000000";
+		mes "Você não está equipando nada!";
+		close;
+	}
+	
+	set .@part, .@indices[ select(.@menu$) ];
+	
+
+	if (!getequipisenableref(.@part)) {
+		mes "^0000FF"+.name$+"^000000";
+		mes "Este equipamento não pode ser refinado!";
+		close;
+	}
+	.@equip_id = getequipid(.@part);
+	.@equip_refine = getequiprefinerycnt(.@part);
+	setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
+	// +10 não refinar
+	if (.@equip_refine >= 20) { // max refine
+		mes "^0000FF"+.name$+"^000000";
+		mes "Este equipamento já está ^7B68EE+20^000000!";
+		mes "Escolha outro equipamento:";
+			next;
+			goto OnRefine;
+			end;
+		
+	// 0 a 4
+	} else if((.@equip_refine >= 0) && (.@equip_refine <= 4)){
+	if (getequipweaponlv(.@part) == 0){
+		set .@matuse,1;
+	} else {
+		set .@matuse,0;
+	}
+	goto OnRefineOk;
+		
+	// 5 a 6
+	} else if((.@equip_refine >= 5) && (.@equip_refine <= 6)){
+	if (getequipweaponlv(.@part) == 0){
+		set .@matuse,3;
+	} else {
+		set .@matuse,2;
+	}
+	goto OnRefineOk;
+		
+	// 7 a 9	
+	} else if((.@equip_refine >= 7) && (.@equip_refine <= 9)){
+	if (getequipweaponlv(.@part) == 0){
+		set .@matuse,5;
+	} else {
+		set .@matuse,4;
+	}
+	goto OnRefineOk;
+		
+	// 10 + (tirar os comentarios abaixo caso seja refine > 10
+	} else if(.@equip_refine = 9){
+	if (getequipweaponlv(.@part) == 0){
+		set .@matuse,7;
+	} else {
+		set .@matuse,6;
+	}
+	goto OnRefineOk;
+	}	
+	
+	OnRefineOk:
+	mes "^0000FF"+.name$+"^000000";
+	mes "Quantos {^1E90FF"+.material[.@matuse]+"^000000} - ^32CD32"+.namemat$[.@matuse]+"^000000 Você quer usar?";
+	mes "Lembrando que cada material sua chance aumenta por ^A020F0"+.matchance+"^000000%.";
+	next;
+	input .@amount;
+	if (.@amount == 0) {
+		mes "^0000FF"+.name$+"^000000";
+		mes "Nenhum material? Não consigo garantir o sucesso se você não me ajudar também!";
+		close;
+		end;
+	}
+	if (countitem(.material[.@matuse]) < .@amount){
+		mes "^0000FF"+.name$+"^000000";
+		mes "Você não tem essa quantidade de materiais";
+		close;
+		end;
+	}
+	if (.@amount > .maxmat){
+		mes "^0000FF"+.name$+"^000000";
+		mes "Você so pode ultilizar um maximo de ^FF8C00"+.maxmat+"^000000 materiais!";
+		close;
+		end;
+	}
+	mes "^0000FF"+.name$+"^000000";
+	mes "Entao vamos la!";
+		set .@percent, .@amount + .chance;
+	mes "Você acumulou um percentual de ^FF4500"+.@percent+"^000000%!";
+	next;
+	
+	delitem .material[.@matuse],.@amount;
+	set .@failchance,rand(1,100);
+	set .@schance, (.chance + (.@amount * .matchance));
+	if (.@failchance > .@schance){
+		specialeffect2 EF_SUI_EXPLOSION;
+		if (.break == 1){ failedrefitem .@part; }
+		if (.break == 2){ downrefitem .@part; }
+		mes "^0000FF"+.name$+"^000000";
+		mes "Não foi desta vez...";
+		close;
+		end;
+	}
+	successrefitem .@part;
+	mes "^0000FF"+.name$+"^000000";
+	mes "Muito fácil!";
+	close;
+	end;
+	
+OnInit:
+	set .name$,"Ferreiro Viking";				//Nome do NPC
+	set .chance,10;								//Chance de refinar 10 = 10% (sem material)
+	set .matchance,1;							//Quantos % sobem por material
+	set .maxmat,90;								//Maximo de materiais que se pode usar (90 x 1 = 90%)
+	setarray .namemat$,							//Lista dos itens utilizados para o refine
+	"Oridecon",
+	"Elunium",
+	"Oridecon Enriquecido",
+	"Elunium Enriquecido",
+	"Oridecon Perfeito",
+	"Elunium Perfeito",
+	"Bradium Perfeito",
+	"Carnium Perfeito"
+	;
+	setarray .material[0],						//Lista dos id
+	984,
+	985,
+	7620,
+	7619,
+	6240,
+	6241,
+	6226,
+	6225
+	;
+	set .break,1;								//1 - Errar quebra / 2 - Errar desce refinamento / 3 - Nada acontece ao errar
+	set .price,400000;							//Preco para refinar
+	end;
+}

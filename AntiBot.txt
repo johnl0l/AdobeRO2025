@@ -1,0 +1,61 @@
+-	script	Sample	-1,{
+function GetString;
+
+OnPCLoginEvent:
+switch( rand(2) ){
+	Case 0:
+		set .@String$,GetString( 15,rand(5,10) );
+		mes "Input the ^FF0000RED COLOUR^000000 part";
+		mes "^0000FF"+GetString( 15,rand(5,10) )+"^FF0000"+.@String$+"^0000FF"+GetString( 15,rand(3,10) )+"^000000";
+		input .@Input$;
+		if( .@Input$ != .@String$ ){
+			mes "Wrong..";
+			atcommand "@kick "+strcharinfo(0);
+		}
+		break;
+		
+	Case 1:
+		set .@A,rand(1000);
+		set .@B,rand(1000);
+		mes "If A = "+.@A+"   B = "+.@B;
+		switch( rand(4) ){
+			Case 0:
+				set .@Answer,.@A + .@B;
+				mes "How many is A + B ?";
+				break;
+			Case 1:
+				set .@Answer,.@A - .@B;
+				mes "How many is A - B ?";
+				break;
+			Case 2:
+				set .@Answer,.@A * .@B;
+				mes "How many is A * B ?";
+				break;
+			Case 3:
+				set .@Answer,.@A / .@B;
+				mes "How many is A / B ?";
+				break;
+		}
+		input .@Input;
+		if( .@Input != .@Answer ){
+			mes "Wrong";
+			atcommand "@kick "+strcharinfo(0);
+		}
+		break;
+}
+close;
+
+function	GetString	{
+if( getarg(0) & 1 ) setarray .@List$[ getarraysize( .@List$ ) ],"1","2","3","4","5","6","7","8","9";
+//if( getarg(0) & 2 ) setarray .@List$[ getarraysize( .@List$ ) ],"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z";
+if( getarg(0) & 4 ) setarray .@List$[ getarraysize( .@List$ ) ],"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z";
+//if( getarg(0) & 8 ) setarray .@List$[ getarraysize( .@List$ ) ],"!","@","#","$","%","^","&","*","(",")","-","=","/","+";
+
+set .@Str$,"";
+while( getstrlen( .@Str$ ) < getarg(1) )
+	set .@Str$,.@Str$ + .@List$[ rand( getarraysize( .@List$ ) ) ];
+return .@Str$;
+
+}
+
+}

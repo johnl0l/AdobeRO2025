@@ -1,0 +1,64 @@
+//PremiumNPC IDRO Version
+//Made by Dhika Pramantya
+
+-	shop	Premium Item	-1,17229:35000,12591:35000,12274:25000,12275:25000
+
+-	script	PremiumFUNC	-1,{
+
+mes "[Premium Agent]";
+mes "Hallo.";
+mes "Hanya untuk pemain yang menggunakan Premium Service,";
+mes "Kami menawarkan beberapa layanan.";
+mes "Saya akan periksa";
+mes "Jika kamu adalah pemain yang menggunakan Premium Service.";
+next;
+if(vip_status(1) < 1) goto l_raktjatdjelata;
+else if(vip_status(1) > 0) goto l_premium;
+
+l_raktjatdjelata:
+mes "[Premium Agent]";
+mes "Kamu tidak bisa mendapatkan";
+mes "premium service.";
+mes "datang lagi setelah";
+mes "mendapatkan premium account.";
+end;
+
+l_premium:
+mes "[Premium Agent]";
+mes "Kamu adalah orang yang tepat";
+mes "Premium accountmu Expired : "+vip_status(2);	//Checking Expired Time VIP Account
+if (vip_status(VIP_STATUS_REMAINING) <= 0) {
+	mes " ";
+	mes "Premium telah expire, Layanan tidak dapat di gunakan";
+	close;
+}
+next;
+menu
+	"Membeli barang.",buyitem,
+	"Dapatkan Special Buff.",buffp,
+	"Batal",-;
+mes "[Premium Agent]";
+mes "Kapan saja kamu membutuhkan layanan,";
+mes "kamu dapat datang kembali.";
+end;
+
+buyitem:
+close2;
+callshop "Premium Item",1;
+end;
+
+buffp:
+specialeffect2 EF_HEAL2;
+percentheal 100,100;
+		sc_start SC_STRFood,-1,5;
+		sc_start SC_AGIFood,-1,5;
+		sc_start SC_VITFood,-1,5;
+		sc_start SC_INTFood,-1,5;
+		sc_start SC_DEXFood,-1,5;
+		sc_start SC_LUKFood,-1,5;
+mes "[Premium Agent]";
+mes "saya harap buff ini";
+mes "berguna untukmu.";
+end;
+
+}

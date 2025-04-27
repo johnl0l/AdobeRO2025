@@ -1,0 +1,293 @@
+//------------------------------------------------
+
+/*
+-	script	Auto_Resu_PVP	-1,{
+
+OnPCDieEvent:
+	if(strcharinfo(3) == "guild_vs1" || strcharinfo(3) == "guild_vs3" || strcharinfo(3) == "guild_vs4"){
+    dispbottom "You will be revived in 3 Seconds.";
+    sleep2 3000;
+	//progressbar "0xFF0000",3;
+	recovery 0;
+	//atcommand "@alive "+strcharinfo(0);
+    //atcommand "@alive";
+    //atcommand "@heal";
+}
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	Auto_Resu_PVP_Infi	-1,{
+OnInit:
+	setarray .map$,"guild_vs1","guild_vs3","guild_vs4";
+	end;
+OnPCDieEvent:
+	if(strcharinfo(3) != .map$) end;
+	if( !killerrid )// suicide
+		warp "prontera",0,0;
+	else
+	dispbottom "You will respawn in 3 Seconds.";
+    sleep2 3000;
+		warp strcharinfo(3),0,0;
+	percentheal 100,100; 
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	Auto_Resu_PVP_vs1	-1,{
+OnPCDieEvent:
+if(strcharinfo(3) == "guild_vs1") {
+    dispbottom "You will respawn in 3 Seconds.";
+    sleep2 3000;
+    atcommand "@alive";
+    //atcommand "@heal";
+    warp "guild_vs1",0,0;
+}
+end;
+}
+
+-	script	Auto_Resu_PVP_vs3	-1,{
+OnPCDieEvent:
+if(strcharinfo(3) == "guild_vs3") {
+    dispbottom "You will respawn in 3 Seconds.";
+    sleep2 3000;
+    atcommand "@alive";
+    //atcommand "@heal";
+    warp "guild_vs3",0,0;
+}
+end;
+}
+
+-	script	Auto_Resu_PVP_vs4	-1,{
+OnPCDieEvent:
+if(strcharinfo(3) == "guild_vs4") {
+    dispbottom "You will respawn in 3 Seconds.";
+    sleep2 3000;
+    atcommand "@alive";
+    //atcommand "@heal";
+    warp "guild_vs4",0,0;
+}
+end;
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	Auto_Resu_PVP_vs1_Infi	-1,{
+OnPCDieEvent:
+if(strcharinfo(3) == "guild_vs1"){
+dispbottom "You will respawn in 5 Seconds.";
+sleep2 5000;
+warp "guild_vs1",0,0;
+atcommand "@revive "+strcharinfo(0);
+//specialeffect2 37; sc_start SC_INCREASEAGI,240000,10;
+//specialeffect2 42; sc_start SC_BLESSING,240000,10;
+//end;
+}
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	F_PVPRecovery	-1,{
+	end;
+OnPCDieEvent:
+	.@map$ = strcharinfo(3);
+	.@nme$ = strcharinfo(0);
+	if( .@map$ == "guild_vs1" ) {
+		for( .@s = 5; .@s >= 0; .@s-- ) {
+			message .@nme$ ,"You will respawn in  "+.@s+" second"+ ( .@s > 1 ? "s" : "") +".";
+			sleep2 1000;
+		}
+		recovery 0;
+		warp .@map$,0,0;
+	}
+	end;
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	F_PVPRecovery	-1,{
+OnPCDieEvent:
+	.@map$ = strcharinfo(3);
+	if(inarray(.map$,.@map$) != -1){
+		for(.@y = 5; .@y; .@y--){
+			message strcharinfo(0),"You will respawn in "+.@y+" second"+((.@y > 1)?"s":"")+".";
+			sleep2 1000;
+		}
+		recovery 0;
+		repairall;
+		if(.size_buffs) {
+			for(;.@i < .size_buffs;.@i+= 3)
+				sc_start .buffs[.@i],.buffs[.@i + 1],.buffs[.@i + 2];
+		}
+		warp .@map$,0,0;
+	}
+end;
+
+OnInit:
+	setarray .map$, "guild_vs1","guild_vs3","guild_vs4";
+			 // Buff         Duration(ms) Lvl
+	setarray .buffs, SC_INCREASEAGI, 5*60*1000,   10,
+			 SC_BLESSING,    5*60*1000,   10;
+	.size_buffs = getarraysize(.buffs);
+end;
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	SpawnOnDeath	FAKE_NPC,{
+OnPCDieEvent:
+	setarray .@pvpmap$, "guild_vs1", "guild_vs3", "guild_vs4"; // add your pvp maps here
+	for(.@i=0; .@i<getarraysize(.@pvpmap$);.@i++)
+	if (strcharinfo(PC_MAP)==.@pvpmap$[.@i]) {
+		sleep2 5000; // give 5 sec to respawn
+		warp .@pvpmap$[.@i], 0, 0; // respawn on same map(randomly) where player died
+	}
+	end;
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	AutoRes::alaure	HIDDEN_WARP_NPC,{
+	end;
+	
+OnPCDieEvent:
+	.@found = 0;
+	for( .@i = 0; .@i < getarraysize(.autoresMap$) && .@found == 0; .@i++ )
+	{
+		if(strcharinfo(3) == .autoresMap$[.@i])
+		{
+			.@found = 1;
+			addtimer .secondsDelay * 1000, strnpcinfo(3) + "::OnAutoRes";
+		}
+	}
+	end;
+	
+OnAutoRes:
+	charcommand "#alive " + strcharinfo(0);
+	//recovery 0;
+	for( .@i = 0; .@i < getarraysize(.buffList); .@i++ )
+	{
+		sc_start .buffList[.@i], .buffDuration[.@i] * 60000, .buffLevel[.@i];
+	}
+	end;
+	
+OnInit:
+	initnpctimer;
+	setarray .autoresMap$, "guild_vs1", "guild_vs3", "guild_vs4";
+	.secondsDelay = 5;
+	setarray .buffList, SC_INCREASEAGI, SC_BLESSING, SC_ENDURE;
+	setarray .buffLevel, 10, 10, 10;
+	setarray .buffDuration, 2, 1; //in minutes
+	end;
+}
+*/
+
+//--------------Esta Com Erro!---------------------
+
+/*
+-	script	PvP_Resu	-1,{
+
+OnInit:
+	set .map$,"guild_vs1","guild_vs3","guild_vs4";
+	end;
+OnPCDieEvent:
+	if(getmapflag(strcharinfo(3),mf_pvp) == 0) 
+	end;
+	if(strcharinfo(3) != .map$) 
+	end;
+	dispbottom "You'll be revived in 3 seconds";
+	sleep2 3000;
+	warp strcharinfo(3),0,0;
+	if(HP == 0) atcommand "@alive";
+	percentheal 100,100;
+	end;
+}
+*/
+
+//------------------------------------------------
+
+/*
+-	script	PvP_Resu_Death	-1,{
+
+OnPCDieEvent:
+if(strcharinfo(3) == "guild_vs1" || strcharinfo(3) == "guild_vs3" || strcharinfo(3) == "guild_vs4"){
+set .death,.death+1;
+if(.death<3) {
+announce "You have died "+.death+" times",bc_map;
+dispbottom "You'll be revived in 3 seconds";
+sleep2 3000;
+if(HP == 0) atcommand "@alive";
+percentheal 100,100;
+}
+else {
+dispbottom "Died more than 3 times" ;
+end;
+}
+}
+}
+
+*/
+
+//------------------------------------------------
+
+
+-	script	Auto_Resu_PVP	-1,{
+
+OnPCDieEvent:
+	if(strcharinfo(3) == "guild_vs1" || strcharinfo(3) == "guild_vs3"){
+		// Garante que a opção de reviver aparece uma vez por morte
+		if (!.@dbguild_vs_dead) {
+			.@dbguild_vs_dead = 1; // Marca que o menu já foi mostrado nesta morte
+			dispbottom "Escolha uma opção para reviver:";
+			mes "Opções de Ressurreição:";
+			mes "1. Pagar 30.000 zenys para reviver com HP e SP cheios.";
+			mes "2. Usar uma Folha de Yggdrasil (Item ID 610) para reviver com 10% de HP.";
+			switch(select("Pagar 30k","Usar Folha de Yggdrasil")){
+				case 1:
+					if(Zeny >= 30000){
+						Zeny -= 30000;
+						dispbottom "Você pagou 30.000 zenys e foi revivido imediatamente.";
+						recovery 0;
+						percentheal 100,100; // Revive com HP e SP cheios
+						skilleffect 34,0; sc_start SC_BLESSING,240000,10;
+						skilleffect 29,0; sc_start SC_INCREASEAGI,240000,10;
+					} else {
+						mes "Você não tem zenys suficientes.";
+						close;
+					}
+					break;
+				case 2:
+					if(countitem(610) > 0){
+						delitem 610,1;
+						dispbottom "Você usou uma Folha de Yggdrasil e será revivido com 10% do HP em 6 segundos.";
+						progressbar "0xFF0000",6;
+						recovery 0;
+						//atcommand "@alive " + strcharinfo(0);
+						//skill "ALL_RESURRECTION", 1, getcharid(0);
+						//atcommand "@revive "+strcharinfo(0);
+						//atcommand "@alive";
+						percentheal -90,0; // Revive com 10% do HP corretamente
+					} else {
+						mes "Você não tem uma Folha de Yggdrasil.";
+						close;
+					}
+					break;
+			}
+		}
+	}
+}
+
