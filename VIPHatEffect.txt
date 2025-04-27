@@ -1,0 +1,17 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+-	script	VIPHatEffect	-1,{
+    OnPCLoginEvent:
+        if (getgroupid() == 1) {  // Verifica se o jogador é VIP
+            //hateffect 19109, true;   // Aplica o efeito de chapéu com ID 19109
+			hateffect(HAT_EF_GREEN_FLOOR, true);
+        }
+        end;
+}

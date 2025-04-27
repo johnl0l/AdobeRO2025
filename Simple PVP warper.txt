@@ -1,0 +1,11 @@
+prontera,139,173,5	script	PVP Warper	757,{
+mes "Go in PVP Room ?";
+if( select("PVP Room [ "+getmapusers("guild_vs1")+" Users ]:Cancel") == 1 ){
+    delwaitingroom;
+    warp "guild_vs1",0,0;
+    waitingroom " PVP [ "+getmapusers("guild_vs1")+" Users ]",0;
+    npctalk strcharinfo(0)+" has entered PVP Room.";
+}
+close;
+ 
+}

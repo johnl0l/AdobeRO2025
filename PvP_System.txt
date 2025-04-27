@@ -1,0 +1,36 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+-	script	PVPPOINTS	-1,{
+OnPCKillEvent:
+getmapxy.@map$,.@x,.@y,0;
+if(getcharid(3)==killedrid) end;
+if(.@map$ != "pvp_y_1-2") end;
+
+set .@player1, getcharid(3);
+set .@player2, killedrid;
+
+attachrid(.@player2);
+set .@player2points, #CASHPOINTS;
+if(.@player2points) {
+ set #CASHPOINTS, #CASHPOINTS - 1;
+ dispbottom "You Lost 1 Cash Point from "+rid2name(killerrid);
+}
+ emotion e_sob,1;
+
+attachrid(.@player1);
+if(.@player2points) {
+ set #CASHPOINTS, #CASHPOINTS + 1;
+ dispbottom "You Gained 1 Cash Points from "+rid2name(killedrid);
+}
+else
+ dispbottom "Sorry no cash points on the "+rid2name(killedrid);
+ emotion e_meh,1;
+end;
+}

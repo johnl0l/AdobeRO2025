@@ -1,0 +1,23 @@
+
+
+-	script	PVP_Skull_Inventory	-1,{
+OnPCKillEvent:
+if (killedrid != getcharid(3)) getnameditem(7420,rid2name(killedrid)); 
+end;
+}
+
+
+/*
+-	script	PVP_Skull_Inventory	-1,{
+OnPCKillEvent:
+   //if ( ( !getmapflag( strcharinfo(3), mf_pvp ) && !getmapflag( strcharinfo(3), mf_gvg ) ) || killedrid == getcharid(3) ) end;
+   if ( getmapflag( strcharinfo(3), mf_pvp ) == 0 || killedrid == getcharid(3) ) end;
+   attachrid killedrid;
+   .@charid = getcharid(0);
+   attachrid killerrid;
+   if(getcharip(killedrid) == getcharip(getcharid(3))) end;
+   getitem2 8966, 1,1,0,0, 254, 0, .@charid % pow(2,16), .@charid / pow(2,16);
+//   getnameditem 7420, rid2name( killedrid ); // <-- EDITED, this command doesn't drop item on floor
+   end;
+}
+*/

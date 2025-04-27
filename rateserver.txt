@@ -1,0 +1,80 @@
+/*
+? O NPC exibe as taxas de experiência e de drop do servidor.
+? Usa getbattleflag() para obter os valores atuais das taxas.
+? Mantém uma waiting room para exibição contínua.
+? Atualiza automaticamente as informações a cada segundo.
+
+Este NPC é útil para que os jogadores saibam as configurações do servidor sem precisar perguntar para a staff. 
+*/
+/*
+sec_in02,161,162,3	script	Server Rates	4_M_MANAGER,{
+	mes .npc$;
+	mes "- Base: ^ff0000"+getbattleflag("base_exp_rate")/100+""+((getbattleflag("base_exp_rate")%100)?"."+getbattleflag("base_exp_rate")%100:"")+"%^000000";
+	mes "- Job: ^ff0000"+getbattleflag("job_exp_rate")/100+""+((getbattleflag("job_exp_rate")%100)?"."+getbattleflag("job_exp_rate")%100:"")+"%^000000";
+	mes "- Quest: ^ff0000"+getbattleflag("quest_exp_rate")/100+""+((getbattleflag("quest_exp_rate")%100)?"."+getbattleflag("quest_exp_rate")%100:"")+"%^000000";
+	mes "- Drop Common: ^ff0000"+getbattleflag("item_rate_common")/100+""+((getbattleflag("item_rate_common")%100)?"."+getbattleflag("item_rate_common")%100:"")+"%^000000";
+	mes "- Drop Heal: ^ff0000"+getbattleflag("item_rate_heal")/100+""+((getbattleflag("item_rate_heal")%100)?"."+getbattleflag("item_rate_heal")%100:"")+"%^000000";
+	mes "- Drop Use: ^ff0000"+getbattleflag("item_rate_use")/100+""+((getbattleflag("item_rate_use")%100)?"."+getbattleflag("item_rate_use")%100:"")+"%^000000";
+	mes "- Drop Equip: ^ff0000"+getbattleflag("item_rate_equip")/100+""+((getbattleflag("item_rate_equip")%100)?"."+getbattleflag("item_rate_equip")%100:"")+"%^000000";
+	mes "- Drop Card: ^ff0000"+getbattleflag("item_rate_card")/100+""+((getbattleflag("item_rate_card")%100)?"."+getbattleflag("item_rate_card")%100:"")+"%^000000";
+	mes "- Drop MVP: ^ff0000"+getbattleflag("item_rate_mvp")/100+""+((getbattleflag("item_rate_mvp")%100)?"."+getbattleflag("item_rate_mvp")%100:"")+"%^000000";
+	mes "- Drop Treasure: ^ff0000"+getbattleflag("item_rate_treasure")/100+""+((getbattleflag("item_rate_treasure")%100)?"."+getbattleflag("item_rate_treasure")%100:"")+"%^000000";
+	close;
+
+OnInit:
+//============================================================
+//=================== Configuration ==========================
+//============================================================
+	set      .npc$  ,	"[ ^008affServer Rates^000000 ]"; // NPC Name
+
+	while(1) {
+		//showscript "[Server Rates]", getnpcid(0);
+		waitingroom "[Server Rates]",0;
+		sleep 1000; //= 1 Second Refresh
+		delwaitingroom;
+	}
+//============================================================
+	end;
+}
+*/
+
+sec_in02,161,162,3	script	Server Rates	2_BULLETIN_BOARD,{
+	mes .npc$;
+	mes "Deseja ver as taxas do servidor?";
+	next;
+	menu "Sim", ShowRates, "Não", Nada;
+
+	ShowRates:
+		mes "^808080=============================^000000";
+		mes "^00FF00- Base Exp: " + callfunc("FormatRate", getbattleflag("base_exp_rate"));
+		mes "^FF4500- Job Exp: " + callfunc("FormatRate", getbattleflag("job_exp_rate"));
+		mes "^1E90FF- Quest Exp: " + callfunc("FormatRate", getbattleflag("quest_exp_rate"));
+		mes "^808080=============================^000000";
+		mes "^FFFF00- Drop Equip: " + callfunc("FormatRate", getbattleflag("item_rate_equip"));
+		mes "^FF0000- Drop Card: " + callfunc("FormatRate", getbattleflag("item_rate_card"));
+		mes "^00CED1- Drop MVP: " + callfunc("FormatRate", getbattleflag("item_rate_mvp"));
+		mes "^008000- Drop Treasure: " + callfunc("FormatRate", getbattleflag("item_rate_treasure"));
+		mes "^808080=============================^000000";
+		close;
+
+	Nada:
+		close;
+
+	
+	OnMinute00:
+		waitingroom "[Server Rates]", 0;
+		sleep 60000; // Atualiza a cada 1 minuto
+		delwaitingroom;
+		end;
+	
+	OnInit:
+		set .npc$, "[ ^008AFFServer Rates^000000 ]";
+		end;
+}
+
+// Função para formatar as taxas corretamente
+function	script	FormatRate	{
+	//return "^ff0000" + getarg(0) / 100.0 + "%^000000";
+	//return "^ff0000" + (getarg(0) / 100.0) + "%^000000";
+	return "^ff0000" + (getarg(0) / 100) + "." + (getarg(0) % 100) + "%^000000";
+}

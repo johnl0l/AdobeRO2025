@@ -1,0 +1,22 @@
+-	script	PrtBuffs	-1,{
+OnPCLoadMapEvent:
+ 
+.@GID = getcharid(2);
+.CasID = getcastledata("prtg_cas01",1);
+.@GName$ = getguildname(.CasID);
+.PrtMaps$ = ",prontera,prt_fild00,prt_fild01,prt_fild02,prt_fild03,prt_monk,prt_fild04,prt_fild05,prt_fild06,prt_fild07,prt_fild08,prt_fild09,prt_fild10,prt_fild11,";
+ 
+    if(compare(","+.PrtMaps$+"," , ","+strcharinfo(3)+",")){
+        if(.@GID == 0)
+        dispbottom "[AdobeRO] This area is owned by "+.@GName$+".";
+        if(.@GID == .CasID){
+                sc_start SC_SPEEDUP1,3600000,50;
+                sc_start SC_EXPBOOST,3600000,50;
+                sc_start SC_ITEMBOOST,3600000,100;
+                dispbottom "[AdobeRO] You are receiving Territory Buffs.";
+                end;
+            } else {
+                dispbottom "[AdobeRO] This area is owned by "+.@GName$+".";
+                end;}
+    } end;
+}

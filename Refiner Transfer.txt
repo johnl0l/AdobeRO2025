@@ -1,0 +1,172 @@
+/*
+      ___           ___           ___                         ___           ___     
+     /\  \         /\__\         /\  \         _____         /\__\         /\  \    
+    _\:\  \       /:/ _/_        \:\  \       /::\  \       /:/ _/_        \:\  \   
+   /\ \:\  \     /:/ /\__\        \:\  \     /:/\:\  \     /:/ /\__\        \:\  \  
+  _\:\ \:\  \   /:/ /:/ _/_   _____\:\  \   /:/  \:\__\   /:/ /:/ _/_   _____\:\  \ 
+ /\ \:\ \:\__\ /:/_/:/ /\__\ /::::::::\__\ /:/__/ \:|__| /:/_/:/ /\__\ /::::::::\__\
+ \:\ \:\/:/  / \:\/:/ /:/  / \:\~~\~~\/__/ \:\  \ /:/  / \:\/:/ /:/  / \:\~~\~~\/__/
+  \:\ \::/  /   \::/_/:/  /   \:\  \        \:\  /:/  /   \::/_/:/  /   \:\  \      
+   \:\/:/  /     \:\/:/  /     \:\  \        \:\/:/  /     \:\/:/  /     \:\  \     
+    \::/  /       \::/  /       \:\__\        \::/  /       \::/  /       \:\__\    
+     \/__/         \/__/         \/__/         \/__/         \/__/         \/__/    
+	 
+
+
+	Nome do NPC: Transferência de Refinamentos
+	Autor: Wenden Carvalho
+	Versão: 1.0
+	
+*/
+
+
+prontera,147,163,5	script	Refiner Transfer	86,{
+
+
+/*	----------------------------------------	
+				CONFIGURAÇÕES
+	---------------------------------------- */
+		setarray .transfer$[0],
+			"[^008000Transferências^000000]",		//	-	Nome que será mostrado a iniciar o diálogo.
+				70,									//	-	Level necessário para usar o NPC. [0: todos poderão usar].
+				1,									//	-	Cobrar pelo serviço. [0: desabilitado / 1: habilitado].
+				3,									//	-	Tipo de moeda que será exigida pelo serviço. [se aopção acima estiver desabilitada não precisa mexer aqui / 1: zeny / 2: rops / 3: item].
+				6226,								//	-	Preço que será cobrado pelo serviço [se a opção acima estiver 3, coloque o id do item].
+				10,									//	-	Quantidade do item que será exigido pelo serviço [somente se o tipo de moeda for 3, caso não seja não precisa mexer aqui].
+				10;									//	-	Nível de refinamento máximo. [não deixar aqui 0].
+/*	----------------------------------------	
+			INÍCIO DO SCRIPT
+	---------------------------------------- */
+	while(1){
+					mes .transfer$[0];
+					mes "Olá ^FF0000"+strcharinfo(0)+"^000000, realizo transferência de refinamentos de um equipamento para outro.";
+					mes "Se interessa pelo meu serviço?";
+					next;
+						switch(select("Sim, quero fazer a transferência:Não, obrigado")){
+							
+							case 2: close;
+							case 1:
+								mes .transfer$[0];
+								if(getgroupid() < atoi(.transfer$[1])){
+									mes "Desculpe, mas meus serviços não estão disponíveis para você.";
+									close;
+									}
+								mes "Selecione o equipamento que deseja transferir o refinamento.";
+								next;
+									set .@menu$,"";
+									for( set .@i,1; .@i <= 10; set .@i,.@i+1 ){
+									if( getequipisequiped(.@i) )
+									set .@menu$, .@menu$ + " [" + getequipname(.@i) + "]";
+									set .@menu$, .@menu$ + ":";
+									}
+										set .@s,select(.@menu$);
+										set .@r,getequiprefinerycnt(.@s);
+										set .@id,getequipid(.@s);
+										
+										mes .transfer$[0];
+										if(!getequipisequiped(.@s)){
+											mes "Você não está usando nada aí.";
+											next;
+											break;
+											}
+											if(.@r == 0){
+												mes "Este equipamento não está refinado.";
+												next;
+												break;
+												}
+												
+												mes "O equipamento escolhido foi:";
+												mes "^FF0000"+getitemname(.@id)+"^000000";
+												mes "Refinamento: +^FF0000"+.@r+"^000000.";
+												mes "Agora selecione o equipamento que você deseja passar o refinamento.";
+												next;
+													set .@menu2$,"";
+													for( set .@a,1; .@a <= 10; set .@a,.@a+1 ){
+													if( getequipisequiped(.@a) )
+													set .@menu2$, .@menu2$ + " [" + getequipname(.@a) + "]";
+													set .@menu2$, .@menu2$ + ":";
+													}
+														set .@s2,select(.@menu2$);
+														set .@r2,getequiprefinerycnt(.@s2);
+														set .@id2,getequipid(.@s2);
+														
+														mes .transfer$[0];
+														if(!getequipisequiped(.@s2)){
+															mes "Você não está usando nada aí.";
+															next;
+															break;
+															}
+													if(.@id == .@id2){
+														mes "Não é possível transferir o refinamento de um equipamento para ele mesmo.";
+														next;
+														break;
+														}
+															if(.@r2 >= atoi(.transfer$[6])){
+																mes "Este equipamento já chegou ao nível de refinamento máximo.";
+																next;
+																break;
+																}
+																mes "O equipamento escolhido foi:";
+																mes "^FF0000"+getitemname(.@id2)+"^000000";
+																mes "Refinamento: +^FF0000"+.@r2+"^000000.";
+																next;
+																mes .transfer$[0];
+																if(atoi(.transfer$[2])){
+																mes "O preço para realizar a tranferência é:";
+																if(atoi(.transfer$[3]) == 1) mes "^FF0000"+atoi(.transfer$[4])+"^000000 Zenys.";
+																if(atoi(.transfer$[3]) == 2) mes "^FF0000"+atoi(.transfer$[4])+"^000000 ROPs.";
+																if(atoi(.transfer$[3]) == 3) mes " ^FF0000"+atoi(.transfer$[5])+"^000000x ^FF0000"+getitemname(atoi(.transfer$[4]))+"^000000.";
+																mes "Deseja prosseguir com a tranferência?";
+																next;
+																	if(select("Sim:Não") == 2) break;
+																		callfunc("Transfer",atoi(.transfer$[3]),atoi(.transfer$[4]),atoi(.transfer$[5]));
+																		
+																		if(.@erro == 1){
+																			mes .transfer$[0];
+																			mes "Você não tem os requisitos necessários.";
+																			next;
+																			break;
+																			}
+																		}
+															
+															mes .transfer$[0];
+															mes "Operação realizada com sucesso.";
+															close2;
+															emotion 51;
+															atcommand "@refine "+.@s+" -"+.@r;
+															atcommand "@refine "+.@s2+" +"+.@r;
+															end;
+																
+							}
+				
+	}
+}
+function	script	Transfer	{
+
+	if(getarg(0) == 1){
+		if(Zeny < getarg(1)){
+			set .@erro,1;
+			return .@erro;
+			}
+		set Zeny,Zeny-getarg(1);
+		return;
+		}
+		
+		if(getarg(0) == 2){
+			if(#CASHPOINTS < getarg(1)){
+				set .@erro,1;
+				return .@erro;
+				}
+			set #CASHPOINTS,#CASHPOINTS-getarg(1);
+			return;
+			}
+			
+			if(getarg(0) == 3){
+				if(countitem(getarg(1)) < getarg(2)){
+					set .@erro,1;
+					return .@erro;
+					}
+				delitem getarg(1),getarg(2);
+				return;
+				}
+}

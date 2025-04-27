@@ -1,0 +1,71 @@
+prontera,180,191,3	script	One Click Spirit::SLSpirit	438,{
+    set .@SpiritLevel,  5; //Level dari Skill Spirit
+    set .@SpiritTime, 360; //Waktu dari Skillnya (Dalam detik, 360 = 360 detik / 6 menit)
+ 
+    switch (BaseJob) {
+        case Job_Knight:
+            set .@id, 452;
+            break;
+        case Job_Crusader:
+            set .@id, 450;
+            break;
+        case Job_Priest:
+            set .@id, 454;
+            break;
+        case Job_Monk:
+            set .@id, 447;
+            break;
+        case Job_Wizard:
+            set .@id, 453;
+            break;
+        case Job_Sage:
+            set .@id, 449;
+            break;
+        case Job_Hunter:
+            set .@id, 460;
+            break;
+        case Job_Bard:
+        case Job_Dancer:
+            set .@id, 455;
+            break;
+        case Job_Blacksmith:
+            set .@id, 458;
+            break;
+        case Job_Alchemist:
+            set .@id, 445;
+            break;
+        case Job_Rogue:
+            set .@id, 456;
+            break;
+        case Job_Assassin:
+            set .@id, 457;
+            break;
+        case Job_Soul_Linker:
+            set .@id, 461;
+            break;
+        case Job_SuperNovice:
+            set .@id, 451;
+            break;
+        case Job_Star_Gladiator:
+            set .@id, 448;
+            break;
+        case Job_Ninja:
+            set .@id, 574;
+            break;
+        case Job_Gunslinger:
+            set .@id, 575;
+            break;
+    }
+ 
+    if (Class == Job_Novice_High) // Pengecualian
+        set .@id, 494;
+ 
+    if (.@id) {
+        skilleffect .@id,0;
+        sc_start4 SC_SPIRIT,.@SpiritTime*1000,.@SpiritLevel,.@id,0,0;
+    } end;
+}
+// for testing purpose
+prontera,183,194,3	script	End SL Spirit	100,{
+    sc_end sc_spirit;
+}

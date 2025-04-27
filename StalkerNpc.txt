@@ -1,0 +1,75 @@
+prontera,147,155,5	script	StalkerNpc	648,{
+set .@skill_level,getskilllv( "RG_PLAGIARISM" );
+
+    mes "[ ^FF7F00Plagiador De Skill^000000 ]";
+    mes (gettime(3)>= 6&&gettime(3)<= 12?"Bom-dia":(gettime(3)>=13&&gettime(3)<=18?"Boa-tarde":"Boa-noite"))+", ^008aff"+strcharinfo(0)+"^000000 !";
+    mes "Bem-vindo ao Plagiador de Skill.";
+    next;
+    mes "[ ^FF7F00Plagiador De Skill^000000 ]";
+    mes "^008aff"+strcharinfo(0)+"^000000, Sou Responsavel por Providenciar Copia da Skill para classe Stalker!!";
+    next;
+    mes "[ ^FF7F00Plagiador De Skill^000000 ]";
+    mes "Lembre-se Depois que Tudo Acabar,^FF0000RELOGUE PARA SALVAR A SKILL!!!!^000000";
+    mes "Do Contrario, Não Funcionará";
+    next;
+    mes "[ ^FF7F00Plagiador De Skill^000000 ]";
+    mes "^008aff"+strcharinfo(0)+"^000000, Em que posso ajudar?";
+
+if( !.@skill_level ){
+    mes "Apenas a Classe Stalker com a Habilidade ^FF0000Plagiar^000000 Pode Utilizar deste Serviço.";
+}else{
+    if( select( ( CLONE_SKILL && CLONE_SKILL_LV )?"^008aff[»]^000000 Desaprender a Skill":"^008aff[»]^000000 Aprender a Skill","^ff0000[»]^000000Cancelar" ) == 1 ){
+        if( CLONE_SKILL && CLONE_SKILL_LV ){
+            mes "Skill Copiada Desaprendida";
+            set CLONE_SKILL_LV,0;
+            skill CLONE_SKILL,CLONE_SKILL_LV,0;
+            set CLONE_SKILL,0;
+        }else{
+            mes "Por-favor Selecione as Skills";
+            next;
+            set .@i,select( .menu$ ) - 1;
+            if( .@skill_level > .skill_max_level[.@i] )
+                set .@skill_level,.skill_max_level[.@i];
+            mes "Skill : ^0055FF"+.skill_name$[.@i]+"^000000";
+            mes "Level : ^0055FF"+.@skill_level+"^000000";
+            mes "Cost : ^0055FF"+( ( .skill_cost[.@i] )? .skill_cost[.@i]+" Zeny":"Free" )+"^000000";
+            mes " ";
+            mes "^777777( Skill de Efeito do Plagiar )^000000";
+            if( select( "^008aff[»]^000000Confirmar","^ff0000[»]^000000Cancelar" ) == 1 ){
+                if( .skill_cost[.@i] ){
+                    if( Zeny >= .skill_cost[.@i] ){
+                        set Zeny,Zeny - .skill_cost[.@i];
+                    }else{
+                        mes "Zeny Insuficiente.";
+                        close;
+                    }
+                }
+                set CLONE_SKILL,.skill_id[.@i];
+                set CLONE_SKILL_LV,.@skill_level;
+                mes "Skill Aprendida ^0055FFLv"+CLONE_SKILL_LV+" "+.skill_name$[.@i]+"^000000";
+                skill CLONE_SKILL,CLONE_SKILL_LV,0;
+            }
+        }
+    }
+}
+dispbottom "Skill ID "+CLONE_SKILL+" | Level : "+CLONE_SKILL_LV;
+close;
+
+OnInit:
+// Skill Display Names
+setarray .skill_name$,"Adrenaline Rush","Exceed Break","Inspiration","Over Thrust","True Sight","Charge Arrow","Frost Diver","Storm Gust","Lex Divina","Melt Down","Wind Walk","Heal","Arrow Shower","Heaven's Drive","Holy Cross","Lord of Vermillion","Magnum Break";
+// Skill ID
+setarray .skill_id,111,2316,2325,113,380,148,15,89,76,384,383,28,47,91,253,85,7;
+// Skill Max Learn-able Level
+setarray .skill_max_level,5,5,5,5,10,1,10,10,10,10,10,10,10,5,10,10,10;
+// Skill Cost in Zeny
+setarray .skill_cost,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000;
+
+set .skill_size,getarraysize( .skill_name$ );
+while( .@i < .skill_size ){
+    set .menu$,.menu$ + "[ ^0055FFLv "+.skill_max_level[.@i]+"^000000 ] "+ .skill_name$[.@i] +":";
+    set .@i,.@i + 1;
+}
+
+end;
+}

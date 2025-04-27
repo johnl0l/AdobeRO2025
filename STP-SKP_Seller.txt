@@ -1,0 +1,93 @@
+//===== eAthena Script ======================================= 
+//= Stats Seller
+//===== By: ================================================== 
+//= DeadChild
+//===== Current Version: ===================================== 
+//= 1.0
+//= 2.0 - Fixed an bug with warp and optimized it[llchrisll]
+//===== Compatible With: ===================================== 
+//= Any eAthena Version 
+//===== Description: ========================================= 
+//= Stats Seller
+//===== Additional Comments: =================================
+//= Have fun with it ^^
+//============================================================
+prt_in,276,127,2	script	STP/SKP Seller	86,{
+
+mes .n$;
+mes "Hi, I'm the ^FF0000STP^000000/^0000FFSKP^000000 Seller";
+mes "It cost ^FFD700"+.price+"^000000z each point";
+mes "which one you wanna buy?";
+next;
+switch(select("- ^FF0000Status^000000 Points:- ^0000FFSkill^000000 Point:- ^FFD700No thanks I'm fine^000000")) {
+	
+	case 1:
+	mes .n$;;
+	mes "What do you want to buy?";
+	next;
+	set .@stat,select("Str:Agi:Vit:Int:Dex:Luk");
+	mes .n$;
+	mes "Hold on...";
+	next;
+	mes .n$;
+	mes "So how many?";
+	input .@quantity;
+	next;
+	mes .n$;
+	if (.@quantity == 0) {
+		mes "Please don't waste my time";
+		close;
+	}
+	if (.@quantity > 120) {
+		mes "Sorry but you can only get ^FF6347120^000000 Status Point";
+		close;
+	}
+	if (zeny < (.@quantity*.price)) {
+		mes "Sorry but you do not have enough ^FFD700zeny^000000.";
+		close;
+	}
+	set Zeny,Zeny - (.@quantity*.price);
+	switch(.@stat) {
+		case 1: statusup2 bStr,.@quantity; break;
+		case 2: statusup2 bAgi,.@quantity; break;
+		case 3: statusup2 bVit,.@quantity; break;
+		case 4: statusup2 bInt,.@quantity; break;
+		case 5: statusup2 bDex,.@quantity; break;
+		case 6: statusup2 bLuk,.@quantity; break;
+	}
+	getmapxy(.@mapname$,.@mapx,.@mapy,0,strcharinfo(0));
+	mes "Done";
+	next;
+	warp .@mapname$,.@mapx,.@mapy;
+	close;
+	
+	case 2:
+	mes .n$;
+	mes "So how many?";
+	input .@quantity;
+	next;
+	mes .n$;
+	if (.@quantity == 0) {
+		mes "Please don't waste my time";
+		close;
+	}
+	if (zeny < (.@quantity*.price)) {
+		mes "Sorry but you do not have enough ^FFD700zeny^000000.";
+		close;
+	}
+	mes "Done";
+	set zeny, zeny - (.@quantity * .price);
+	set SkillPoint,SkillPoint + .@quantity;
+	break;
+	
+	case 3:
+	mes .n$;
+	mes "Okay then...";
+	close;
+}
+
+OnInit:
+set .n$,"["+strnpcinfo(0)+"]";
+set .price,10000000;
+end;
+}

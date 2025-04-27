@@ -1,0 +1,144 @@
+//===== rAthena Script =======================================
+//= PVP Warper
+//===== By: ==================================================
+//= HaARiZz
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Basic PVP Warper script.
+//= Free for ALL
+//= PVP for 2nd Job
+//= Guild Arena
+//===== Additional Comments: =================================
+//= 1.0 Initial script.
+//============================================================
+/*
+ALTER TABLE `char` ADD `pvp_kill` INT(11) UNSIGNED NOT NULL DEFAULT '0'  AFTER `fame`;
+*/
+prontera,139,173,5	script	PVP	801,{
+//	doevent "pvp_rank_main::OnTalk";
+//}
+//-	script	pvp_rank_main	-1,{
+//
+//	OnTalk:
+//Locked PVP During Woe
+if ( agitcheck() || agitcheck2() ) {
+mes "Sorry, ^800000PVP^000000 Rooms are ^FF0000Locked^000000 During WOE.";
+emotion e_no;
+close;
+}
+
+	emotion e_com;
+	mes "[ ^FF0000" + strnpcinfo(0) + "^000000 ]";
+	mes "What would you like me to do?";
+	switch( select("^006400Free^000000 ^008000for^000000 ^228B22ALL^000000 [^696969 "+getmapusers("guild_vs3")+" ^000000^A9A9A9Users^000000 ]","^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000 [^696969 "+getmapusers("guild_vs1")+" ^000000^A9A9A9Users^000000 ]","^0000FFGuild^000000 ^4169E1Arena^000000 [^696969 "+getmapusers("guild_vs4")+" ^000000^A9A9A9Users^000000 ]",
+			"^6A5ACDPVP^000000 ^836FFFRanking^000000",
+			( getgmlevel() >= 99 ) ? "[^FF0000GM^000000] ^483D8BReset^000000 ^6A5ACDPVP^000000 ^836FFFRanking^000000":""
+		)) {
+
+		case 1:
+			warp "guild_vs3",0,0;
+			announce ""+strcharinfo(0)+" Has Enter PVP! Free for All",bc,0x006400;
+			end;
+			
+		case 2:
+			if ( Class == .thirdJob[1] ){
+				mes "You are not ^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000, so you cant enter.";
+			}else{
+				warp "guild_vs1",0,0;
+				announce ""+strcharinfo(0)+" Has Enter PVP for Trans. 2nd Job",bc,0xFF4500;
+
+			}
+			end;
+
+		case 3:
+		if( !getcharid(2) ){
+			mes "You dont have a ^0000FFGuild^000000"; close;
+			}else{
+			warp "guild_vs4",0,0;
+			announce ""+strcharinfo(0)+" Has Enter PVP! Guild Arena",bc,0x0000FF;
+
+			}
+			end;
+			default:
+				mes "^6A5ACDPVP^000000 ^836FFFRanking^000000";
+				query_sql( "SELECT `name`,`pvp_kill` FROM `char` WHERE `pvp_kill` > 0 ORDER BY `pvp_kill` DESC LIMIT 10", .@name$, .@pvp_kill );
+				.@size = getarraysize( .@name$ );
+				for ( .@i = 0; .@i < .@size; .@i++ ) {
+					mes "[^FF0000"+(.@i + 1 )+"^000000] ^FF6347"+.@name$[.@i]+"^000000 - ^FF7F50"+.@pvp_kill[.@i]+"^000000 ^FFA07Akill^000000(^E9967As^000000)";
+				}
+				break;
+			case 5:
+				mes "^483D8BReset^000000 ^836FFFRanking^000000? Action cant be undo. Confirm your action.";
+				if ( select( "^006400Confirm^000000","^FFA500Cancel^000000" ) == 1 ) {
+					query_sql( "UPDATE `char` SET `pvp_kill` = 0 WHERE `pvp_kill` > 0" );
+					mes "^FF0000Done^000000.";
+				}
+				break;
+		}
+		close;
+		
+		OnPCKillEvent:
+		if ( getcharid(3) != killedrid ) {
+			query_sql( "UPDATE `char` SET `pvp_kill` = `pvp_kill` + 1 WHERE `char_id` = "+getcharid(0)+" LIMIT 1" );
+		}
+		end;
+		
+		OnInit:
+	setarray	.thirdJob[1],0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,4001,4002,4003,4004,4005,4006,4007,4054,4055,4056,4057,4058,4059,4060,4061,4062,4063,4064,4065,4066,4067,4068,4069,4070,4071,4072,4073,4074,4075,4076,4077,4078,4079,4190,4191,4096,4097,4098,4099,4100,4101,4102,4103,4104,4105,4106,4107,4108,4223,4224,4229,4239,4240,4241,4242;
+	setmapflag	"guild_vs3",mf_nosave;
+	setmapflag	"guild_vs3",mf_nogo;
+	setmapflag	"guild_vs3",mf_nomemo;
+	setmapflag	"guild_vs3",mf_nobranch;
+	setmapflag	"guild_vs3",mf_nowarp;
+	setmapflag	"guild_vs3",mf_nowarpto;
+	setmapflag	"guild_vs3",mf_noteleport;
+	setmapflag	"guild_vs3",mf_noreturn;
+	setmapflag	"guild_vs3",mf_pvp;
+	
+	setmapflag	"guild_vs1",mf_nosave;
+	setmapflag	"guild_vs1",mf_nogo;
+	setmapflag	"guild_vs1",mf_nomemo;
+	setmapflag	"guild_vs1",mf_nobranch;
+	setmapflag	"guild_vs1",mf_nowarp;
+	setmapflag	"guild_vs1",mf_nowarpto;
+	setmapflag	"guild_vs1",mf_noteleport;
+	setmapflag	"guild_vs1",mf_noreturn;
+	setmapflag	"guild_vs1",mf_pvp;
+
+	setmapflag	"guild_vs4",mf_nosave;
+	setmapflag	"guild_vs4",mf_nogo;
+	setmapflag	"guild_vs4",mf_nomemo;
+	setmapflag	"guild_vs4",mf_nobranch;
+	setmapflag	"guild_vs4",mf_nocostume;
+	setmapflag	"guild_vs4",mf_nowarp;
+	setmapflag	"guild_vs4",mf_nowarpto;
+	setmapflag	"guild_vs4",mf_noteleport;
+	setmapflag	"guild_vs4",mf_noreturn;
+	setmapflag	"guild_vs4",mf_gvg;
+	setmapflag	"guild_vs4",mf_pvp;
+/*
+while (1) {
+		delwaitingroom;
+		set .@count, getmapusers("guild_vs3") + getmapusers("guild_vs1") + getmapusers("guild_vs4");
+		waitingroom "PvP Room ["+ .@count + ((.@count==1) ? " User" : " Users") +"]",0;
+		sleep 1000;
+	}
+*/
+	//waitingroom "PvP Warper ",0;
+	//end;
+	}
+//Hide NPC On Woe
+/*
+OnAgitEnd:
+OnAgitEnd2:
+	hideoffnpc strnpcinfo(0);
+	end;
+
+OnAgitStart:
+OnAgitStart2:
+	hideonnpc strnpcinfo(0);
+	end;
+*/

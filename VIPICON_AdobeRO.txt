@@ -1,0 +1,739 @@
+
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+		if (vip_status(1)){
+		// Aplica os bônus e o ícone de VIP
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+		sc_start SC_VIPSTATE,-1,0;
+		//sc_start EFST_VIPSTATE,-1,0;
+		//bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,EFST_VIPSTATE;
+		//hateffect 16,true;
+		//bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",86400,0,1,SI_VIPSTATE;
+		// Mensagens de boas-vindas para o VIP
+		dispbottom " ";
+		dispbottom "Server Time: "+gettimestr("%H:%M:%S", 10)+"";
+		dispbottom " ";
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -",0xFFD700;
+		dispbottom "==========================",0xFFFFFF;
+		dispbottom "Teleport enabled to VIP area. Password: foN",0xDCDCDC;
+		dispbottom "@Element: Allows VIP users to enchant a weapon with any element",0xD3D3D3;
+		dispbottom "@Restock free for VIP",0xC0C0C0;
+		dispbottom "@Whobuy: List who is buying the item (amount, price, and location).",0xA9A9A9;
+		dispbottom "@Whosell: List who is vending the item (amount, price, and location).",0x808080;
+		dispbottom "@Jumptowhosell: Warps to the cheapest shop.",0x808080;
+		dispbottom "@ii2 or @itemdesc: Item Descriptions.",0x808080;
+		dispbottom "@Buy or @Sell: Open the basic shop to buy/sell items",0x808080;
+		dispbottom "Account Status: Exp & Job Increase 50%",0xA9A9A9;
+		dispbottom "Account Status: Drop Increase 50%",0xC0C0C0;
+		dispbottom "Expire Date: "+vip_status(2),0xD3D3D3; // Data de expiração do VIP
+        dispbottom "Time left: "+vip_status(3),0xDCDCDC;   // Tempo restante de VIP
+		dispbottom "==========================",0xFFFFFF;
+		} else {
+		// Remove o bônus e o ícone de VIP se o tempo expirou
+		sc_end SC_VIPSTATE;
+		bonus_script_clear SI_BLANK;
+		//sc_end EFST_VIPSTATE;
+		//hateffect 16,false;
+		//sc_end SI_BLANK;
+		//bonus_script_clear SI_VIPSTATE;
+		//bonus_script_clear EFST_VIPSTATE;
+		//sc_end SI_VIPSTATE;
+	}
+}
+
+
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+	mes "[ ^FFD700VIP^000000 NPC ]";
+	mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+	close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+	case 1:
+		if (#CASHPOINTS < .@day) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000s not enough,";
+			mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@day;
+		atcommand "@vip +24h " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 24 horas (86400 segundos)
+		addtimer(86400, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",86400,1024,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 2:
+		if (#CASHPOINTS < .@week) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@week;
+		atcommand "@vip +7d " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 7 dias (604800 segundos)
+		addtimer(604800, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",604800,1024,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 3:
+		if (#CASHPOINTS < .@month) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@month;
+		atcommand "@vip +1m " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 30 dias (2592000 segundos)
+		addtimer(2592000, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",2592000,1024,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 4:
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+		close;
+}
+
+OnEndVIP:
+	// Remove o bônus e o ícone VIP quando o tempo acabar
+	bonus_script_clear;
+	sc_end SC_VIPSTATE;
+	end;
+
+OnInit:
+	waitingroom "VIP System",0;
+	end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, 86400; // 24 horas em segundos
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, 604800; // 7 dias em segundos
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, 2592000; // 30 dias em segundos
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Verifica o tempo restante de VIP e soma o novo tempo
+set .@timeLeft, vip_status(3);
+if (.@timeLeft > 0) {
+    set .@totalTime, .@timeLeft + .@addTime;
+} else {
+    set .@totalTime, .@addTime;
+}
+
+// Estende o tempo de VIP
+atcommand "@vip + " + (.@totalTime - .@timeLeft) + "s " + strcharinfo(0) + "";
+
+// Aplica o bônus de VIP com base no tempo total acumulado
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 1024, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    callsub CheckVIPStatus;
+    addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; // Executa a cada 1 hora
+
+OnHourCheck:
+    callsub CheckVIPStatus;
+    addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; // Reaplica a verificação para a próxima hora
+    end;
+
+CheckVIPStatus:
+    if (vip_status(1)){
+        // Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+        sc_start SC_VIPSTATE,-1,0;
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: "+vip_status(2);
+        dispbottom "Time left: "+vip_status(3);
+        dispbottom "==========================";
+    } else {
+        // Remove o bônus e o ícone de VIP se o tempo expirou
+        sc_end SC_VIPSTATE;
+        bonus_script_clear SI_BLANK;
+        sc_end SI_BLANK;
+        dispbottom "Your VIP has expired. Please renew to regain benefits.";
+        atcommand "@kick "+strcharinfo(0); // Desloga o jogador
+    }
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    callsub CheckVIPStatus;
+    addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; // Checa a cada 1 hora
+
+OnHourCheck:
+    callsub CheckVIPStatus;
+    if (vip_status(1)) {
+        // Se ainda tem VIP, continua a checagem a cada 1 hora
+        addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; 
+    }
+    end;
+
+CheckVIPStatus:
+    if (vip_status(1)){
+        // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+        sc_start SC_VIPSTATE,-1,0;
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: "+vip_status(2);
+        dispbottom "Time left: "+vip_status(3);
+        dispbottom "==========================";
+    } else {
+        // Remove os bônus e o ícone de VIP quando o VIP expira
+        sc_end SC_VIPSTATE;
+        bonus_script_clear SI_BLANK;
+        sc_end SI_BLANK;
+        dispbottom "Your VIP has expired. You will be logged out shortly.";
+        // Força o jogador a deslogar quando o VIP expira
+        addtimer 5000, strnpcinfo(3) + "::ForceLogout"; // Adiciona um delay de 5 segundos antes de deslogar
+    }
+    end;
+
+ForceLogout:
+    atcommand "@kick "+strcharinfo(0); // Desloga o jogador
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    callsub CheckVIPStatus;
+    addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; // Checa a cada 1 hora
+
+OnHourCheck:
+    callsub CheckVIPStatus;
+    if (vip_status(1)) {
+        // Se ainda tem VIP, continua a checagem a cada 1 hora
+        addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; 
+    }
+    end;
+
+CheckVIPStatus:
+    if (vip_status(1)){
+        // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+        sc_start SC_VIPSTATE,-1,0;
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: "+vip_status(2);
+        dispbottom "Time left: "+vip_status(3);
+        dispbottom "==========================";
+    } else {
+        // Remove os bônus e o ícone de VIP quando o VIP expira
+        sc_end SC_VIPSTATE;
+        bonus_script_clear SI_BLANK;
+        sc_end SI_BLANK;
+        dispbottom "Your VIP has expired. You will be logged out shortly.";
+        // Força o jogador a deslogar quando o VIP expira
+        addtimer 5000, strnpcinfo(3) + "::OnForceLogout"; // Corrigido o nome do evento
+    }
+    end;
+
+OnForceLogout:
+    atcommand "@kick "+strcharinfo(0); // Desloga o jogador
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    callsub CheckVIPStatus;
+    addtimer 3600000, strnpcinfo(3) + "::OnHourCheck"; // Checa a cada 1 hora
+
+OnHourCheck:
+    callsub CheckVIPStatus;
+    if (vip_status(1)) {
+        // Se o VIP ainda está ativo, continua a checagem a cada 1 hora
+        addtimer 3600000, strnpcinfo(3) + "::OnHourCheck";
+    }
+    end;
+
+CheckVIPStatus:
+    if (vip_status(1)){
+        // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+        sc_start SC_VIPSTATE,-1,0;
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: "+vip_status(2); // Data de expiração do VIP
+        dispbottom "Time left: "+vip_status(3);   // Tempo restante de VIP
+        dispbottom "==========================";
+    } else {
+        // Remove os bônus e o ícone de VIP quando o VIP expira
+        sc_end SC_VIPSTATE;
+        bonus_script_clear SI_BLANK;
+        sc_end SI_BLANK;
+        dispbottom "Your VIP has expired. You will be logged out shortly.";
+        addtimer 5000, strnpcinfo(3) + "::OnForceLogout"; // Adiciona um delay de 5 segundos antes de deslogar
+    }
+    end;
+
+OnForceLogout:
+    // Aqui, verifica se o VIP ainda está ativo ou expirou
+    if (!vip_status(1)) {
+        atcommand "@kick "+strcharinfo(0); // Desloga o jogador se o VIP expirou
+    }
+    end;
+}
+*/
+/*
+prontera,159,170,3	script	Moça do VIP	4_F_KAFRA1,{
+	mes "[" + strnpcinfo(1) + "]";
+	if (vip_status(VIP_STATUS_ACTIVE))
+		mes "Olá, você já é VIP.";
+	else {
+		mes "Olá, quer se tornar VIP? São vários benefícios!";
+		mes "Escolha quanto tempo você quer contratar.";
+		next;
+		for( .@i = 0; .@i < getarraysize( .day ); .@i++ )
+			.@menu$ += (.day[.@i] + " dia(s):");
+		.@i = select(.@menu$) - 1;
+		mes "[" + strnpcinfo(1) + "]";
+		mes "O custo de "+.day[.@i]+" dia(s) de VIP é:";
+		if (.cash_cost[.@i])
+			mes "- " + callfunc("F_InsertComma",.cash_cost[.@i]) + " CASH";
+		if (.cash_cost[.@i] && .item_qtd[.@i])
+			mes "ou";
+		if (.item_qtd[.@i])
+			mes "- " + .item_qtd[.@i]+"x <ITEM>" + getitemname( .item_id ) + "<INFO>" + .item_id + "</INFO></ITEM>";
+		if (.zeny_cost[.@i] && .item_qtd[.@i] || .cash_cost[.@i] && .zeny_cost[.@i])
+			mes "ou";
+		if (.zeny_cost[.@i])
+			mes "- " + callfunc("F_InsertComma",.zeny_cost[.@i]) + "z";
+		next;
+		.@menu$ = "";
+		if (.cash_cost[.@i])
+			.@menu$ += "Pagar com CASH";
+		.@menu$ += ":";
+		if (.item_qtd[.@i])
+			.@menu$ += "Pagar com "+getitemname(.item_id);
+		.@menu$ += ":";
+		if (.zeny_cost[.@i])
+			.@menu$ += "Pagar com zeny";
+		switch(select(.@menu$ + ":Deixa pra lá.")) {
+		case 1:
+			mes "[" + strnpcinfo(1) + "]";
+			if ( #CASHPOINTS < .cash_cost[.@i] ) {
+				mes "Você não tem CASH suficiente.";
+			}
+			else {
+				#CASHPOINTS -= .cash_cost[.@i];
+				vip_time ( .day[.@i] * 1440 );
+				mes "VIP adquirido com sucesso!";
+				mes "Você pode usar o comando ^00FF00@tempovip^000000 para ver a duração do seu VIP.";
+			}
+			break;
+		case 2:
+			mes "[" + strnpcinfo(1) + "]";
+			if ( countitem( .item_id ) < .item_qtd[.@i] ) {
+				mes getitemname( .item_id ) + " insuficiente.";
+			}
+			else {
+				delitem .item_id, .item_qtd[.@i];
+				vip_time ( .day[.@i] * 1440 );
+				mes "VIP adquirido com sucesso!";
+				mes "Você pode usar o comando ^00FF00@tempovip^000000 para ver a duração do seu VIP.";
+			}
+			break;
+		case 3:
+			mes "[" + strnpcinfo(1) + "]";
+			if ( Zeny < .zeny_cost[.@i] ) {
+				mes "Você não tem Zeny suficiente.";
+			}
+			else {
+				Zeny -= .zeny_cost[.@i];
+				vip_time ( .day[.@i] * 1440 );
+				mes "VIP adquirido com sucesso!";
+				mes "Você pode usar o comando ^00FF00@tempovip^000000 para ver a duração do seu VIP.";
+			}
+			break;
+		case 4:
+			mes "[" + strnpcinfo(1) + "]";
+			mes "Até mais.";
+		}
+	}
+	close;
+
+OnCheck:
+	if (vip_status(VIP_STATUS_ACTIVE))
+		dispbottom "SISTEMA: Você é VIP até "+ gettimestr("%d/%m/%Y %H:%M",21,vip_status(VIP_STATUS_EXPIRE));
+	else
+		dispbottom "SISTEMA: Você não é VIP.";
+	end;
+
+OnInit:
+//== CONFIGURAÇÕES ==================
+	setarray .day,7,14,30;	//Opções de dias de VIP
+	//setarray .cash_cost,4000,7000,10000;	//Custo em Cash de cada opção (use // para desabilitar CASH)
+	//setarray .zeny_cost,10000000,15000000,30000000;	//Custo em Zeny de cada opção (use // para desabilitar Zeny)
+	.item_id = 7929;	//ID do item usado para troca
+	setarray .item_qtd,3,5,10;	//Custo (em item) para cada opção de tempo (use // para desabilitar item)
+//===================================
+	bindatcmd("tempovip", strnpcinfo(3)+"::OnCheck");
+	end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    callsub CheckVIPStatus;
+    addtimer 600000, strnpcinfo(3) + "::OnTimeCheck"; // Checa a cada 10 minutos
+
+OnTimeCheck:
+    callsub CheckVIPStatus;
+    if (vip_status(1)) {
+        // Se o VIP ainda está ativo, continua a checagem a cada 10 minutos
+        addtimer 600000, strnpcinfo(3) + "::OnTimeCheck";
+    }
+    end;
+
+CheckVIPStatus:
+    if (vip_status(1)){
+        // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+        sc_start SC_VIPSTATE,-1,0;
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: "+vip_status(2); // Data de expiração do VIP
+        dispbottom "Time left: "+vip_status(3);   // Tempo restante de VIP
+        dispbottom "==========================";
+    } else {
+        // Remove os bônus e o ícone de VIP quando o VIP expira
+        sc_end SC_VIPSTATE;
+        bonus_script_clear SI_BLANK;
+        sc_end SI_BLANK;
+        dispbottom "Your VIP benefits have been removed.";
+    }
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Se o VIP está ativo, aplica os bônus
+        callsub ApplyVIPBenefits;
+    } else {
+        // Se o VIP expirou, força o logout uma vez e impede reaplicação até que o jogador logue de novo
+        dispbottom "Your VIP has expired. You will be logged out.";
+        addtimer 5000, strnpcinfo(3) + "::OnForceLogout"; // Força o logout após 5 segundos
+        end; // Não aplica mais nada até o jogador logar de novo
+    }
+    addtimer 600000, strnpcinfo(3) + "::OnTimeCheck"; // Checa a cada 10 minutos
+    end;
+
+OnTimeCheck:
+    if (vip_status(1)) {
+        // Se o VIP ainda está ativo, continua a checagem a cada 10 minutos
+        callsub ApplyVIPBenefits;
+        addtimer 600000, strnpcinfo(3) + "::OnTimeCheck";
+    } else {
+        // Se o VIP expirou, remove os buffs
+        callsub RemoveVIPBenefits;
+    }
+    end;
+
+ApplyVIPBenefits:
+    // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+    bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+    sc_start SC_VIPSTATE,-1,0;
+    dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+    dispbottom "==========================";
+    dispbottom "Teleport enabled to VIP area. Password: foN";
+    dispbottom "Account Status: Exp & Job Increase 50%";
+    dispbottom "Account Status: Drop Increase 50%";
+    dispbottom "Expire Date: "+vip_status(2); // Data de expiração do VIP
+    dispbottom "Time left: "+vip_status(3);   // Tempo restante de VIP
+    dispbottom "==========================";
+    end;
+
+RemoveVIPBenefits:
+    // Remove os bônus e o ícone de VIP quando o VIP expira
+    sc_end SC_VIPSTATE;
+    bonus_script_clear SI_BLANK;
+    sc_end SI_BLANK;
+    dispbottom "Your VIP benefits have been removed.";
+    end;
+
+OnForceLogout:
+    atcommand "@kick "+strcharinfo(0); // Desloga o jogador uma vez
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Se o VIP está ativo, aplica os bônus
+        callsub ApplyVIPBenefits;
+    } else {
+        // Se o VIP expirou, congela o personagem e não aplica mais nada
+        dispbottom "Your VIP has expired. You have been frozen.";
+        sc_start SC_FREEZE,-1,0; // Congela o personagem indefinidamente
+        end;
+    }
+    addtimer 60000, strnpcinfo(3) + "::OnTimeCheck"; // Checa a cada 20 minutos
+    end;
+
+OnTimeCheck:
+    if (vip_status(1)) {
+        // Se o VIP ainda está ativo, continua a checagem a cada 20 minutos
+        callsub ApplyVIPBenefits;
+        addtimer 60000, strnpcinfo(3) + "::OnTimeCheck";
+    } else {
+        // Se o VIP expirou, remove os buffs e congela o personagem
+        callsub RemoveVIPBenefits;
+        dispbottom "Your VIP has expired. You have been frozen.";
+        sc_start SC_FREEZE,-1,0; // Congela o personagem indefinidamente
+    }
+    end;
+
+ApplyVIPBenefits:
+    // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+    bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+    sc_start SC_VIPSTATE,-1,0;
+    dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+    dispbottom "==========================";
+    dispbottom "Teleport enabled to VIP area. Password: foN";
+    dispbottom "Account Status: Exp & Job Increase 50%";
+    dispbottom "Account Status: Drop Increase 50%";
+    dispbottom "Expire Date: "+vip_status(2); // Data de expiração do VIP
+    dispbottom "Time left: "+vip_status(3);   // Tempo restante de VIP
+    dispbottom "==========================";
+    sc_end SC_FREEZE; // Descongela o personagem se o VIP estiver ativo
+    end;
+
+RemoveVIPBenefits:
+    // Remove os bônus e o ícone de VIP quando o VIP expira
+    sc_end SC_VIPSTATE;
+    bonus_script_clear SI_BLANK;
+    sc_end SI_BLANK;
+    dispbottom "Your VIP benefits have been removed.";
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Se o VIP está ativo, aplica os bônus
+        callsub ApplyVIPBenefits;
+    } else {
+        // Se o VIP expirou, descongela ao logar e remove os buffs
+        callsub RemoveVIPBenefits;
+        dispbottom "Your VIP has expired. You have been frozen.";
+        sc_start SC_FREEZE,-1,0; // Congela o personagem indefinidamente
+    }
+    end;
+
+OnTimeCheck:
+    if (vip_status(1)) {
+        // Se o VIP ainda está ativo, continua a checagem a cada 20 minutos
+        callsub ApplyVIPBenefits;
+    } else {
+        // Se o VIP expirou, remove os buffs e congela o personagem
+        callsub RemoveVIPBenefits;
+        dispbottom "Your VIP has expired. You have been frozen.";
+        sc_start SC_FREEZE,-1,0; // Congela o personagem indefinidamente
+    }
+    addtimer 60000, strnpcinfo(3) + "::OnTimeCheck"; // Checa a cada 20 minutos
+    end;
+
+ApplyVIPBenefits:
+    // Aplica os bônus e o ícone de VIP enquanto o VIP está ativo
+    bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+    sc_start SC_VIPSTATE,-1,0;
+    dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+    dispbottom "==========================";
+    dispbottom "Teleport enabled to VIP area. Password: foN";
+    dispbottom "Account Status: Exp & Job Increase 50%";
+    dispbottom "Account Status: Drop Increase 50%";
+    dispbottom "Expire Date: "+vip_status(2); // Data de expiração do VIP
+    dispbottom "Time left: "+vip_status(3);   // Tempo restante de VIP
+    dispbottom "==========================";
+    sc_end SC_FREEZE; // Descongela o personagem se o VIP estiver ativo
+    end;
+
+RemoveVIPBenefits:
+    // Remove os bônus e o ícone de VIP quando o VIP expira
+    sc_end SC_VIPSTATE;
+    bonus_script_clear SI_BLANK;
+    sc_end SI_BLANK;
+    end;
+}
+*/
+/*
+-	script	VIPICON_AdobeRO	-1,{
+OnPCLoginEvent:
+	if (vip_status(1)) {
+		// Obtém o tempo restante do VIP em segundos
+		set .@vipTime, vip_status(3);
+		
+		// Se for VIP permanente, define um tempo seguro (máx. permitido pelo servidor)
+		if (.@vipTime == -1) {
+			set .@vipTimeStr$, "Permanente";
+			set .@vipDuration, 2147483 * 1000; // Máximo suportado (~24 dias)
+		} else if (.@vipTime > 0) {
+			// Converte para dias, horas e minutos
+			set .@days, .@vipTime / 86400;
+			set .@hours, (.@vipTime % 86400) / 3600;
+			set .@minutes, (.@vipTime % 3600) / 60;
+			set .@vipTimeStr$, "" + .@days + "d " + .@hours + "h " + .@minutes + "m";
+			set .@vipDuration, min(.@vipTime * 1000, 2147483000); // Garante que não passe do limite
+		} else {
+			set .@vipTimeStr$, "VIP Expirado";
+			set .@vipDuration, 0;
+		}
+
+		// Aplica os bônus e o ícone VIP
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_BLANK;
+		
+		// Define o tempo do status VIPSTATE
+		if (.@vipDuration > 0) {
+			sc_start SC_VIPSTATE, .@vipDuration, 0;
+		} else {
+			sc_end SC_VIPSTATE;
+		}
+
+		// Exibe mensagens para o jogador VIP
+		dispbottom " ";
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -",0xFFD700;
+		dispbottom "==========================",0xFFFFFF;
+		dispbottom "Teleport enabled to VIP area. Password: foN",0xDCDCDC;
+		dispbottom "@elemento: Allows VIP users to enchant a weapon with any element",0xD3D3D3;
+		dispbottom "@restock free for VIP",0xC0C0C0;
+		dispbottom "@whobuy: List who is buying the item (amount, price, and location).",0xA9A9A9;
+		dispbottom "@whosell: List who is vending the item (amount, price, and location).",0x808080;
+		dispbottom "@jumptowhosell: Warps to the cheapest shop.",0x808080;
+		dispbottom "@ii2 or @itemdesc: Item Descriptions.",0x808080;
+		dispbottom "Account Status: Exp & Job Increase 50%",0xA9A9A9;
+		dispbottom "Account Status: Drop Increase 50%",0xC0C0C0;
+		dispbottom "Expire Date: "+vip_status(2),0xD3D3D3; // Data de expiração do VIP
+		dispbottom "Time left: " + .@vipTimeStr$,0xDCDCDC;   // Tempo restante de VIP formatado
+		dispbottom "==========================",0xFFFFFF;
+	} else {
+		// Remove o bônus e o ícone VIP quando o tempo expira
+		sc_end SC_VIPSTATE;
+		bonus_script_clear SI_BLANK;
+	}
+}
+*/

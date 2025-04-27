@@ -1,0 +1,58 @@
+sec_in02,139,166,3	script	Soul Link	4_M_MANAGER,{
+
+	mes .npc$;
+	mes "Hey ^008aff"+strcharinfo(0)+"^000000, Can I give you a tip?";
+	mes "write: ^32CD32heal^000000 in chat to be healed.";
+	mes "write: ^0000FFbuff^000000 in chat to receive Agi and Bless.";
+	mes "write: ^8A2BE2link^000000 in chat to connect your soul.";
+	close;
+		
+OnHeal:
+	specialeffect2 EF_HEAL2;
+	percentheal 100,100;
+	emotion ET_BEST;
+	end;
+OnBuffs:
+	emotion ET_BEST;
+	skilleffect 34,0; sc_start SC_BLESSING,240000,10;			//Blessing (Skill ID# 34) 240 sec
+	skilleffect 29,0; sc_start SC_INCREASEAGI,240000,10;			//Increase Agility (Skill ID# 29) 240 sec
+	end;
+OnLink:
+	switch ( basejob ) {
+	case Job_Alchemist:	set .@spirit, 445; break;
+	case Job_Monk:	 set .@spirit, 447; break;
+	case Job_Star_Gladiator:  set .@spirit, 448; break;
+	case Job_Sage:	 set .@spirit, 449; break;
+	case Job_Crusader:	set .@spirit, 450; break;
+	case Job_SuperNovice:   set .@spirit, 451; break;
+	case Job_Knight:	set .@spirit, 452; break;
+	case Job_Wizard:	set .@spirit, 453; break;
+	case Job_Priest:	set .@spirit, 454; break;
+	case Job_Bard: case Job_Dancer: set .@spirit, 455; break;
+	case Job_Rogue:	 set .@spirit, 456; break;
+	case Job_Assassin:	set .@spirit, 457; break;
+	case Job_Blacksmith:   set .@spirit, 458; break;
+	case Job_Hunter:	set .@spirit, 460; break;
+	case Job_Soul_Linker:   set .@spirit, 461; break;
+	default:
+	if ( upper == 1 && baselevel < 70 )
+	set .@spirit, 494;
+	}
+	if ( .@spirit ) {
+	sc_start4 sc_spirit, 360000, 5, .@spirit,0,0;
+	skilleffect .@spirit, 5;
+	}
+	dispbottom "You has been Soul Linked.";
+	end;
+OnInit:
+	//============================================================
+	//=================== Configuration ==========================
+	//============================================================
+	.npc$ = "[^FF7F00 Soul Linker ^000000]";	// Name of NPC;
+	defpattern 1, "heal","OnHeal";
+	defpattern 1, "buff","OnBuffs";
+	defpattern 1, "link","OnLink";
+	activatepset 1;
+	//============================================================
+	end;
+}

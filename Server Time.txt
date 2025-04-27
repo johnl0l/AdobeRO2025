@@ -1,0 +1,93 @@
+
+
+prontera,148,184,5	script	Server Time	1193,{
+end;
+OnInit:
+    while ( 1 ) {
+        delwaitingroom strnpcinfo(0);
+        waitingroom gettimestr( "[D%d]%I:%M:%S %p",21 ),0;
+        sleep 1000;
+    }
+    end;
+}
+
+
+
+
+/*
+
+//Usa OnTimer, mais seguro que while (1).
+//Atualiza a cada segundo também (setnpctimer 1000).
+//Formato [Dia %d] 24h:%M:%S (fica mais neutro pro player).
+//Se o NPC for reloadado, ele reinicia certo.
+
+prontera,148,184,5	script	Server Time	1193,{
+OnInit:
+    delwaitingroom strnpcinfo(0);
+    initnpctimer;
+end;
+
+OnTimer1000:
+    delwaitingroom strnpcinfo(0);
+    waitingroom gettimestr( "[Dia %d] %H:%M:%S", 21 ), 0;
+    setnpctimer 1000;
+    end;
+}
+
+*/
+
+/*
+
+//Dia da Semana (Monday, Tuesday, etc.)
+//Dia e Mês (27/04, etc.)
+//Relógio em 24h (18:42:01)
+//Status: mostra "ONLINE" com cor verde.
+//Cor muda com horário:
+//Manhã = Azul
+//Tarde = Laranja
+//Noite = Vermelho queimado
+//Madrugada = Roxo
+
+prontera,148,184,5	script	Server Time	1193,{
+// Início do script
+OnInit:
+	delwaitingroom strnpcinfo(0);
+	initnpctimer;
+	end;
+
+OnTimer1000:
+	// Limpa o waitingroom anterior
+	delwaitingroom strnpcinfo(0);
+	
+	// Variáveis
+	.@weekday$ = gettimestr("%A", 21); // Dia da semana (ex: Monday, Tuesday)
+	.@hour = atoi(gettimestr("%H", 21)); // Hora atual em 24h
+	
+	// Cor padrão
+	.@color$ = "^00FF00"; // Verde
+	
+	// Muda a cor dependendo da hora
+	if (.@hour >= 6 && .@hour < 12)  // Manhã
+		.@color$ = "^00BFFF"; // Azul claro
+	else if (.@hour >= 12 && .@hour < 18) // Tarde
+		.@color$ = "^FFA500"; // Laranja
+	else if (.@hour >= 18 && .@hour < 22) // Noite
+		.@color$ = "^FF4500"; // Vermelho queimado
+	else // Madrugada
+		.@color$ = "^9370DB"; // Roxo médio
+	
+	// Checa se o servidor está online (simulação simples)
+	.@status$ = "^00FF00ONLINE"; // Pode colocar checagem real depois se quiser
+
+	// Monta o texto final
+	.@text$ = .@color$ + "[ " + .@weekday$ + " | " + gettimestr("%d/%m",21) + " ] " + gettimestr("%H:%M:%S",21) + " - " + .@status$;
+	
+	// Exibe no waitingroom
+	waitingroom .@text$, 0;
+
+	// Continua atualizando a cada 1 segundo
+	setnpctimer 1000;
+	end;
+}
+
+*/

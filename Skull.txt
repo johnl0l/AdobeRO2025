@@ -1,0 +1,75 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+/*
+prontera,188,208,5	script	Skull Buyer	792,{
+mes "I am a Player Skull Buyer.";
+mes "I'm going to buy all your skulls for^FF0000 8k^000000";
+mes "But how many skull that you will sell to me?";
+next;
+mes "Please Input the Skull that you want to sell it.";
+mes "Input ^FF00000^000000 to cancel.";
+input @amount,0,countitem(7420);
+if ( @amount == 0 ){
+mes "You have choose to cancel the Deal.";
+close;
+}
+delitem 7420,@amount;
+set Zeny,Zeny+(@amount*8000);
+message strcharinfo(0),"You have gained "+(@amount*8000)+" Zeny.";
+close;
+}
+sec_in02,146,173,2	duplicate(Skull Buyer)	Black Witch#sec	792
+*/
+
+//prontera,188,208,5	script	Skull Buyer	792,{
+prontera,164,170,3	script	Skull Buyer	792,{
+	
+	.@item_id = 7420; // Skull ID
+	.@price = 8000;   // Preço por Skull
+	
+	mes "[ ^770000Skull Buyer^000000 ]";
+	mes "I'm a ^770000Skull^000000 Buyer!";
+	mes "I'll pay you ^FF0000" + .@price + "^000000 ^DAA520Zeny^000000 for each ^770000Skull^000000 you give me.";
+	
+	.@skull_count = countitem(.@item_id);
+	if (.@skull_count == 0) {
+		mes "You don't have any ^770000skulls^000000 with you!";
+		close;
+	}
+	
+	mes "You currently have ^0000FF" + .@skull_count + "^000000 ^770000skull^000000(s).";
+	mes "How many do you want to sell?";
+	input @amount, 0, .@skull_count;
+	
+	if (@amount <= 0) {
+		mes "You ^FF0000canceled^000000 the transaction.";
+		close;
+	}
+	
+	// Confirmação
+	mes "Are you sure you want to sell ^FF0000" + @amount + "^000000 ^770000skull^000000(s) for ^00FF00" + (@amount * .@price) + "^000000 Zeny?";
+	if(select("^FF0000Yes^000000:No") == 2) {
+		mes "Alright, maybe next time.";
+		close;
+	}
+	
+	// Transação segura
+	if (countitem(.@item_id) < @amount) {
+		mes "Wait a moment... You don't have that many ^770000skulls^000000!";
+		close;
+	}
+	delitem .@item_id, @amount;
+	set Zeny, Zeny + (@amount * .@price);
+	
+	message strcharinfo(0), "You sold " + @amount + " skull(s) for " + (@amount * .@price) + " Zeny.";
+	mes "Thanks for the trade!";
+	close;
+}
+
+sec_in02,146,173,2	duplicate(Skull Buyer)	Black Witch#sec	792

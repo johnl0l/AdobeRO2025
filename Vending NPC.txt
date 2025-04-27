@@ -1,0 +1,48 @@
+prontera,150,185,5	script	Vending NPC	100,{
+    mes "[Vending NPC]: Bem-vindo ao nosso sistema de vendas!";
+    next;
+    if (#vending_shop > 0) {
+        mes "[Vending NPC]: Desculpe, mas você já possui uma loja aberta!";
+        close;
+    } else {
+        mes "[Vending NPC]: Selecione o tipo de moeda para sua loja:";
+        next;
+        //menu "Zeny", "Cash Point", "Kafra Point", "Outro Item";
+        switch( select( "Zeny", "Cash Point", "Kafra Point", "Outro Item" ) ) {
+            case 1:
+                set #vending_currency, 1; // Zeny
+                break;
+            case 2:
+                set #vending_currency, 2; // Cash Point
+                break;
+            case 3:
+                set #vending_currency, 3; // Kafra Point
+                break;
+            case 4:
+                set #vending_currency, 4; // Outro Item
+                break;
+            case 5:
+                mes "[Vending NPC]: Operação cancelada!";
+                close;
+                break;
+        }
+        
+        mes "[Vending NPC]: Digite o valor que você deseja vender seus itens:";
+        next;
+        input #vending_price, 9;
+        mes "[Vending NPC]: Digite o tempo de expiração da loja em dias (padrão: 7 dias):";
+        next;
+        input #vending_expire, 3;
+        set #vending_expire, gettimetick(2) + (#vending_expire * 24 * 60 * 60 * 1000);
+        
+        mes "[Vending NPC]: Sua loja foi configurada com sucesso!";
+        mes "[Vending NPC]: Por favor, coloque os itens que você deseja vender no carrinho.";
+        next;
+        
+        set #vending_shop, 1;
+		set #vending_shop, 2;
+		set #vending_shop, 3;
+		set #vending_shop, 4;
+        close;
+    }
+}

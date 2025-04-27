@@ -1,0 +1,23 @@
+-	script	pvpresu	-1,{
+
+OnInit:
+	setarray .map$,"guild_vs1","guild_vs3","guild_vs4";
+	end;
+
+OnPCDieEvent:
+
+//if(getmapflag(strcharinfo(3),mf_pvp) == 0) end;
+
+if(strcharinfo(3) != .map$) end;
+
+dispbottom "You'll be revived in 3 seconds";
+
+sleep2 3000;
+
+warp strcharinfo(3),0,0;
+
+if(HP == 0) atcommand "@alive";
+
+percentheal 100,100;
+
+}

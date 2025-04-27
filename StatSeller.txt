@@ -1,0 +1,84 @@
+//==================================================[Blueheel]=================================================================
+//			You can use this as much as you want. A very basic and simple script.
+//				This script is made because of people demanding it(?).
+//					Also, please state the credits.
+//=================================================[What to know]==============================================================
+//			10 status points is equivalent to 4m. Thus 100 status points is equal to 40m.
+//  			   The stat skill is DISTRIBUTED directly to the stat the player chose.
+//			     Resetting stat will remove, AGAIN, WILL REMOVE THE BOUGHT POINTS.
+//					This script doesn't SELL SKILL POINTS.
+//================================================[Credits:Blueheel]===========================================================
+//================================================[End of Comments]============================================================
+prontera,168,179,0	script	Stat Seller	831,{
+mes "[^DC143CStat Seller^000000]";
+mes "Good day, I am the ^DC143CStat Seller^000000";
+next;
+mes "[^DC143CStat Seller^000000]";
+mes "I sell ^6A5ACD10^000000 stat points directly to your desired stat.";
+next;
+mes "[^DC143CStat Seller^000000]";
+mes "Each ^6A5ACD10^000000 stat points cost ^FFD70020^000000,^FFD700000^000000,^FFD700000^000000 zeny.";
+mes "Would you like to buy ^6A5ACD10^000000 stat points from me?";
+next;
+menu "^1E90FFYes^000000",YES,"^808080No^000000",NO;
+YES:
+	mes "[^DC143CStat Seller^000000]";
+	if(Zeny < 20000000) goto no400k;
+	mes "Which status points would you like me to distribute?";
+	next;
+	menu "^FF0000Str^000000",STR,"^FFFF00Agi^000000",AGI,"^006400Vit^000000",VIT,"^000080Int^000000",INT,"^8B4513Dex^000000",DEX,"^8A2BE2Luk^000000",LUK;
+	STR:
+		mes "[^DC143CStat Seller^000000]";
+		mes "There you go.";
+		mes "Come by again.";
+		statusup2 bStr,10;
+		set Zeny, Zeny - 20000000;
+		close;
+	AGI:
+		mes "[^DC143CStat Seller^000000]";
+		mes "There you go.";
+		mes "Come by again.";
+		statusup2 bAgi,10;
+		set Zeny, Zeny - 20000000;
+		close;
+	VIT:
+		mes "[^DC143CStat Seller^000000]";
+		mes "There you go.";
+		mes "Come by again.";
+		statusup2 bVit,10;
+		set Zeny, Zeny - 20000000;
+		close;
+	INT:
+		mes "[^DC143CStat Seller^000000]";
+		mes "There you go.";
+		mes "Come by again.";
+		statusup2 bInt,10;
+		set Zeny, Zeny - 20000000;
+		close;
+	DEX:
+		mes "[^DC143CStat Seller^000000]";
+		mes "There you go.";
+		mes "Come by again.";
+		statusup2 bDex,10;
+		set Zeny, Zeny - 20000000;
+		close;
+	LUK:
+		mes "[^DC143CStat Seller^000000]";
+		mes "There you go.";
+		mes "Come by again.";
+		statusup2 bLuk,10;
+		set Zeny, Zeny - 20000000;
+		close;
+
+	no400k:
+		mes "[^DC143CStat Seller^000000]";
+		mes "Apparently, you don't have enough zeny to buy these points.";
+		next;
+		mes "[^DC143CStat Seller^000000]";
+		mes "Come by any time.";
+		close;
+NO:
+	mes "[^DC143CStat Seller^000000]";
+	mes "Come by if you need me.";
+	close;
+	}

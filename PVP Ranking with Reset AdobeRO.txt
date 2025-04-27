@@ -1,0 +1,139 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+*/
+
+/*
+//Tabela SQL Atualizada
+ALTER TABLE `char` ADD `pvp_kill_ffa` INT(11) UNSIGNED NOT NULL DEFAULT '0' AFTER `fame`;
+ALTER TABLE `char` ADD `pvp_kill_trans` INT(11) UNSIGNED NOT NULL DEFAULT '0' AFTER `pvp_kill_ffa`;
+ALTER TABLE `char` ADD `pvp_kill_guild` INT(11) UNSIGNED NOT NULL DEFAULT '0' AFTER `pvp_kill_trans`; 
+*/
+
+prontera,139,173,5	script	PVP	801,{
+
+if ( agitcheck() || agitcheck2() ) {
+    mes "Sorry, ^800000PVP^000000 Rooms are ^FF0000Locked^000000 During WOE.";
+    emotion e_no;
+    close;
+}
+
+    emotion e_com;
+    mes "[ ^FF0000" + strnpcinfo(0) + "^000000 ]";
+    mes "What would you like me to do?";
+    switch( select("^006400Free^000000 ^008000for^000000 ^228B22ALL^000000 [^696969 "+getmapusers("guild_vs3")+" ^000000^A9A9A9Users^000000 ]",
+                    "^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000 [^696969 "+getmapusers("guild_vs1")+" ^000000^A9A9A9Users^000000 ]",
+                    "^0000FFGuild^000000 ^4169E1Arena^000000 [^696969 "+getmapusers("guild_vs4")+" ^000000^A9A9A9Users^000000 ]",
+                    "^6A5ACDPVP^000000 ^836FFFRanking^000000",
+                    ( getgmlevel() >= 99 ) ? "[^FF0000GM^000000] ^483D8BReset^000000 ^6A5ACDPVP^000000 ^836FFFRanking^000000":""
+    )) {
+
+        case 1:
+            warp "guild_vs3",0,0;
+            announce ""+strcharinfo(0)+" Has Entered PVP! Free for All",bc,0x006400;
+            end;
+        
+        case 2:
+            if ( Class == .thirdJob[1] ){
+                mes "You are not ^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000, so you can't enter.";
+            } else {
+                warp "guild_vs1",0,0;
+                announce ""+strcharinfo(0)+" Has Entered PVP for Trans. 2nd Job",bc,0xFF4500;
+            }
+            end;
+        
+        case 3:
+            if( !getcharid(2) ){
+                mes "You don't have a ^0000FFGuild^000000"; 
+                close;
+            } else {
+                warp "guild_vs4",0,0;
+                announce ""+strcharinfo(0)+" Has Entered PVP! Guild Arena",bc,0x0000FF;
+            }
+            end;
+        
+        case 4:
+            mes "Select ranking to view:";
+            switch(select("^006400Free^000000 ^008000for^000000 ^228B22ALL^000000", "^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000", "^0000FFGuild^000000 ^4169E1Arena^000000")) {
+                case 1:
+                    query_sql("SELECT `name`,`pvp_kill_ffa` FROM `char` WHERE `pvp_kill_ffa` > 0 ORDER BY `pvp_kill_ffa` DESC LIMIT 10", .@name$, .@pvp_kill);
+                    break;
+                case 2:
+                    query_sql("SELECT `name`,`pvp_kill_trans` FROM `char` WHERE `pvp_kill_trans` > 0 ORDER BY `pvp_kill_trans` DESC LIMIT 10", .@name$, .@pvp_kill);
+                    break;
+                case 3:
+                    query_sql("SELECT guild.name, SUM(`char`.pvp_kill_guild) FROM `char` JOIN `guild` ON `char`.guild_id = `guild`.guild_id WHERE `char`.pvp_kill_guild > 0 GROUP BY `char`.guild_id ORDER BY SUM(`char`.pvp_kill_guild) DESC LIMIT 10", .@name$, .@pvp_kill);
+                    break;
+            }
+            .@size = getarraysize( .@name$ );
+            for ( .@i = 0; .@i < .@size; .@i++ ) {
+                mes "[^FF0000"+(.@i + 1 )+"^000000] ^FF6347"+.@name$[.@i]+"^000000 - ^FF7F50"+.@pvp_kill[.@i]+"^000000 ^FFA07Akills^000000";
+            }
+            break;
+        
+        case 5:
+            mes "Select ranking to reset:";
+            switch(select("^006400Free^000000 ^008000for^000000 ^228B22ALL^000000", "^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000", "^0000FFGuild^000000 ^4169E1Arena^000000")) {
+                case 1:
+                    query_sql("UPDATE `char` SET `pvp_kill_ffa` = 0 WHERE `pvp_kill_ffa` > 0");
+                    break;
+                case 2:
+                    query_sql("UPDATE `char` SET `pvp_kill_trans` = 0 WHERE `pvp_kill_trans` > 0");
+                    break;
+                case 3:
+                    query_sql("UPDATE `char` SET `pvp_kill_guild` = 0 WHERE `pvp_kill_guild` > 0");
+                    break;
+            }
+            mes "^FF0000Done^000000.";
+            break;
+    }
+    close;
+    
+    OnPCKillEvent:
+    if ( getcharid(3) != killedrid ) {
+        if ( strcharinfo(3) == "guild_vs3" )
+            query_sql("UPDATE `char` SET `pvp_kill_ffa` = `pvp_kill_ffa` + 1 WHERE `char_id` = "+getcharid(0));
+        else if ( strcharinfo(3) == "guild_vs1" )
+            query_sql("UPDATE `char` SET `pvp_kill_trans` = `pvp_kill_trans` + 1 WHERE `char_id` = "+getcharid(0));
+        else if ( strcharinfo(3) == "guild_vs4" )
+            query_sql("UPDATE `char` SET `pvp_kill_guild` = `pvp_kill_guild` + 1 WHERE `char_id` = "+getcharid(0));
+    }
+    end;
+	
+				OnInit:
+	setarray	.thirdJob[1],0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,4001,4002,4003,4004,4005,4006,4007,4054,4055,4056,4057,4058,4059,4060,4061,4062,4063,4064,4065,4066,4067,4068,4069,4070,4071,4072,4073,4074,4075,4076,4077,4078,4079,4190,4191,4096,4097,4098,4099,4100,4101,4102,4103,4104,4105,4106,4107,4108,4223,4224,4229,4239,4240,4241,4242;
+	setmapflag	"guild_vs3",mf_nosave;
+	setmapflag	"guild_vs3",mf_nogo;
+	setmapflag	"guild_vs3",mf_nomemo;
+	setmapflag	"guild_vs3",mf_nobranch;
+	setmapflag	"guild_vs3",mf_nowarp;
+	setmapflag	"guild_vs3",mf_nowarpto;
+	setmapflag	"guild_vs3",mf_noteleport;
+	setmapflag	"guild_vs3",mf_noreturn;
+	setmapflag	"guild_vs3",mf_pvp;
+	
+	setmapflag	"guild_vs1",mf_nosave;
+	setmapflag	"guild_vs1",mf_nogo;
+	setmapflag	"guild_vs1",mf_nomemo;
+	setmapflag	"guild_vs1",mf_nobranch;
+	setmapflag	"guild_vs1",mf_nowarp;
+	setmapflag	"guild_vs1",mf_nowarpto;
+	setmapflag	"guild_vs1",mf_noteleport;
+	setmapflag	"guild_vs1",mf_noreturn;
+	setmapflag	"guild_vs1",mf_pvp;
+
+	setmapflag	"guild_vs4",mf_nosave;
+	setmapflag	"guild_vs4",mf_nogo;
+	setmapflag	"guild_vs4",mf_nomemo;
+	setmapflag	"guild_vs4",mf_nobranch;
+	setmapflag	"guild_vs4",mf_nocostume;
+	setmapflag	"guild_vs4",mf_nowarp;
+	setmapflag	"guild_vs4",mf_nowarpto;
+	setmapflag	"guild_vs4",mf_noteleport;
+	setmapflag	"guild_vs4",mf_noreturn;
+	setmapflag	"guild_vs4",mf_gvg;
+	setmapflag	"guild_vs4",mf_pvp;
+}

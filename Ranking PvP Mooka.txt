@@ -1,0 +1,25 @@
+// ============================= //
+// Powered by Envolvents         //
+// ============================= //
+// Rank PvP Mooka v.1            //
+// ============================= //
+// Compatível com a porra toda.  //
+// ============================= //
+prontera,157,166,5	script	Eu no Rank PK	404,{
+
+	set @P10,getcharid(0);
+	query_sql "SELECT `kills` FROM `pvpm_data` WHERE `id`="+@P10+"",@MT10;
+	query_sql "SELECT `dies` FROM `pvpm_data` WHERE `id`="+@P10+"",@MR10;
+	query_sql "SELECT `leader` FROM `pvpm_data` WHERE `id`="+@P10+"",@SD;
+	
+	mes "[^FF0000Eu no Rank PK^000000]";
+	mes "-- Rank PK --";
+	if (@MR10 == 0) mes "Na arena PK você matou: ^0000FF"+@MT10+"^000000 e você morreu: ^FF6600"+@MR10+"^000000 vez.";
+	if (@MR10 == 1) mes "Na arena PK você matou: ^0000FF"+@MT10+"^000000 e você morreu: ^FF6600"+@MR10+"^000000 vez.";
+	if (@MR10 >= 2) mes "Na arena PK você matou: ^0000FF"+@MT10+"^000000 e você morreu: ^FF6600"+@MR10+"^000000 vezes.";
+	mes "Seu saldo é de: ^0000FF"+@SD+"^000000.";
+	next;
+	mes "[^FF0000Eu no Rank PK^000000]";
+	mes "Até mais...";
+	close;
+}

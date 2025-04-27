@@ -1,0 +1,281 @@
+
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+		if (vip_status(1)){
+			//set .@Time, 1 * 1 * 24 * 60 * 60;
+			//set .@a, vip_status(2) - gettimetick(2);
+			//set .@timer, vip_status(3);
+			//set MaxWeight,MaxWeight + 40000;
+			bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_VIPSTATE;
+			//sc_start SC_VIPSTATE,-1,0;
+			//sc_start SC_FOOD_STR_CASH,-1,10;
+			//sc_start SC_FOOD_AGI_CASH,-1,10;
+			//sc_start SC_FOOD_VIT_CASH,-1,10;
+			//sc_start SC_FOOD_INT_CASH,-1,10;
+			//sc_start SC_FOOD_DEX_CASH,-1,10;
+			//sc_start SC_FOOD_LUK_CASH,-1,10;
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Account Status: Exp & Job Increase 50%";
+		dispbottom "Account Status: Drop Increase 50%";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+		}
+		else {
+			//atcommand "@kick "+ vip_status(3);
+			//sc_end SC_VIPSTATE;
+			bonus_script_clear SI_VIPSTATE;
+			sc_end SI_VIPSTATE;
+			//sc_end SC_FOOD_STR_CASH;
+			//sc_end SC_FOOD_AGI_CASH;
+			//sc_end SC_FOOD_VIT_CASH;
+			//sc_end SC_FOOD_INT_CASH;
+			//sc_end SC_FOOD_DEX_CASH;
+			//sc_end SC_FOOD_LUK_CASH;
+	}
+}
+
+/*
+-	script	VIP_STATUSx	-1,{
+OnPCLoginEvent:
+		if (vip_status(1)) {
+			dispbottom "========================";
+			dispbottom "Account Status : VIP";
+			dispbottom "Expire Date : "+vip_status(2);
+			dispbottom "Time left : "+vip_status(3);
+			dispbottom "========================";
+			end;
+		}
+	}
+*/
+/*
+-	script	VIP_STATUSx	-1,{
+OnPCLoginEvent:
+	if (vip_status(VIP_STATUS_ACTIVE)){
+		sc_end SC_BATKFOOD;
+		sc_start SC_BATKFOOD,(vip_status(VIP_STATUS_REMAINING) * 1000),200;
+			set .@Timer, vip_status(2);
+			dispbottom "You're VIP.";
+			dispbottom "=============================================";
+			dispbottom "Account Status : VIP Account";
+			dispbottom "Account Status : Enable to warp in VIP Central!";
+			dispbottom "Account Status : Exp & Job Increase 50%";
+			dispbottom "Account Status : Drop Increase 50%";
+			dispbottom "Time left : "+vip_status(3);
+			dispbottom "============================================";
+		end;
+	}
+}
+*/
+/*
+-	script	VIP_STATUSx	-1,{
+OnPcloginEvent:
+	//bonus_script_clear EFST_VIPSTATE;
+	bonus_script_clear SC_VIPSTATE;
+	if(vip_status(1)) {
+		//bonus_script "{}",99999999,0,0,EFST_VIPSTATE;
+		
+		//dispbottom "TEST EFST_VIPSTATE" + EFST_VIPSTATE;
+		//dispbottom "TEST EFST_MAX" + EFST_MAX;
+		//not quite needed yet
+		sc_start SC_VIPSTATE,(VIP_STATUS_REMAINING) + gettimetick(3),0; 
+		//sc_start SC_VIPSTATE,-1,0;
+		//sc_start SC_EXPBOOST,-1,50;
+		//sc_start SC_INCMSPRATE,-1,100;
+		//sc_start SC_STRFood,-1,5;
+		//sc_start SC_AGIFood,-1,5;
+		//sc_start SC_VITFood,-1,5;
+		//sc_start SC_INTFood,-1,5;
+		//sc_start SC_DEXFood,-1,5;
+		//sc_start SC_LUKFood,-1,5;
+		//sc_start SC_COMMONSC_RESIST,500000,rand(20,40);
+		
+		set .@timer, vip_status(2);
+
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Account Status: Exp & Job Increase 50%";
+		dispbottom "Account Status: Drop Increase 50%";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+			end;
+		}
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+		if ( vip_status(1) ) {
+		set viptime, vip_status(3);
+		sc_start SC_STRFood,viptime,5;
+		sc_start SC_AGIFood,viptime,5;
+		sc_start SC_VITFood,viptime,5;
+		sc_start SC_INTFood,viptime,5;
+		sc_start SC_DEXFood,viptime,5;
+		sc_start SC_LUKFood,viptime,5;
+		set .@Timer, vip_status(VIP_STATUS_EXPIRE);
+		
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+		end;
+}
+}
+*/
+/*
+-	script	VIP_STATUSx	-1,{
+OnPcloginEvent:
+	//bonus_script_clear EFST_VIPSTATE;
+	//bonus_script_clear SC_VIPSTATE;
+	sc_end SC_VIPSTATE;
+	if(vip_status(1)) {
+		//bonus_script "{}",99999999,0,0,EFST_VIPSTATE;
+		
+		//dispbottom "TEST EFST_VIPSTATE" + EFST_VIPSTATE;
+		//dispbottom "TEST EFST_MAX" + EFST_MAX;
+		//not quite needed yet
+		set .@timer, vip_status(3);
+		sc_start SC_VIPSTATE,.@timer,0; 
+		//sc_start SC_VIPSTATE,-1,0;
+		//sc_start SC_EXPBOOST,-1,50;
+		//sc_start SC_INCMSPRATE,-1,100;
+		//sc_start SC_STRFood,-1,5;
+		//sc_start SC_AGIFood,-1,5;
+		//sc_start SC_VITFood,-1,5;
+		//sc_start SC_INTFood,-1,5;
+		//sc_start SC_DEXFood,-1,5;
+		//sc_start SC_LUKFood,-1,5;
+		//sc_start SC_COMMONSC_RESIST,500000,rand(20,40);
+
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Account Status: Exp & Job Increase 50%";
+		dispbottom "Account Status: Drop Increase 50%";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+			end;
+		}
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+		if ( vip_status(1) ) {
+		set viptime, vip_status(3);
+		sc_start SC_EXPBOOST,viptime,0;
+			set .@Timer, vip_status(VIP_STATUS_EXPIRE);
+			dispbottom "Account Status : VIP Account";
+			dispbottom "Expire Date: "+ gettimestr("%m-%d-%Y %H:%M:%S",21,vip_status(VIP_STATUS_EXPIRE));
+			dispbottom "Time left : "+ callfunc("Time2Str",.@Timer);
+
+		end;
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+	if ( vip_status(1) ) {
+		//sc_start SC_EXPBOOST,1000*60*60*24,0;
+			set .@Timer, vip_status(2);
+			dispbottom "You're VIP.";
+			dispbottom "=============================================";
+			dispbottom "Account Status : VIP Account";
+			dispbottom "Account Status : Get more buff on healer npc";
+			dispbottom "Account Status : Exp & Job Increase 50%";
+			dispbottom "Account Status : Drop Increase 20%";
+			dispbottom "Time left : "+ callfunc("Time2Str",.@Timer);
+			dispbottom "============================================";
+		end;
+	}
+}
+*/
+
+/*
+prontera,155,181,5	script	Sample#vip	4_F_KAFRA1,{
+
+	OnTalk:
+		if ( vip_status(0) ) {
+			mes "You're VIP.";
+		}
+		else {
+			mes "Buy VIP ?";
+			
+			.@i = select( 
+				.vip_day[0] + " Days",
+				.vip_day[1] + " Days",
+				.vip_day[2] + " Days"
+			) - 1;
+			
+			mes "VIP "+.vip_day[.@i]+" Days";
+			mes "Cost: "+.vip_cashpoint[.@i]+" or "+.vip_pod[.@i]+"x "+getitemname( .pod_id );
+			if ( select( "Pay by CashPoint","Pay by "+getitemname( .pod_id ) ) == 1 ) {
+				if ( #CASHPOINT < .vip_cashpoint[.@i] ) {
+					mes "Not enough cash point.";
+				}
+				else {
+					#CASHPOINT -= .vip_cashpoint[.@i];
+					vip_time ( .vip_day[.@i] * 1440 );
+				}
+			}
+			else {
+				if ( countitem( .pod_id ) < .vip_pod[.@i] ) {
+					mes "Not enough "+getitemname( .pod_id );
+				}
+				else {
+					delitem .pod_id,.vip_pod[.@i];
+					vip_time ( .vip_day[.@i] * 1440 );
+				}
+			}
+		}
+		close;
+		
+	OnCheck:
+		if (vip_status(0)) {
+			dispbottom "Expire Time : "+vip_status(3);
+		}
+		end;
+		
+	OnInit:
+		.pod_id = 7179;
+		
+		setarray .vip_day,7,14,30;
+		setarray .vip_cashpoint,4000,7000,10000;
+		setarray .vip_pod,4000,7000,10000;
+		bindatcmd("vip", strnpcinfo(3)+"::OnTalk");
+		bindatcmd("vipstatus", strnpcinfo(3)+"::OnCheck");
+		end;
+}
+*/
+
+-	script	VIP_Checker	-1,{
+OnCheck:
+	if(!(.@nb = query_sql("SELECT `account_id` FROM `login` WHERE `group_id` = '1'", .@aid))) {
+		dispbottom "No data found.";
+		end;
+	}
+	dispbottom "VIP Account ID list :";
+	for ( .@i = 0; .@i < .@nb; .@i++ )
+		dispbottom (.@i+1) +". Account ID : "+ .@aid[.@i];
+	dispbottom "Total of "+.@nb +" Active VIP account(s).";
+	end;
+OnInit:
+	bindatcmd "checkvip", strnpcinfo(0)+"::OnCheck", 60, 60; // @checkvip to list active vip accounts
+}

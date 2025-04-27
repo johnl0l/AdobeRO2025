@@ -1,0 +1,162 @@
+/*
+-	script	Skull Collector	449,{
+mes "I'm collecting dead people skull.";
+mes "Each ^DC143CSkull^000000 you bring will give you^DC143C 2 ^000000Cash Points";
+mes "Hmm... well well looks like you have something there aye!?";
+mes " ";
+mes " ";
+mes " ";
+mes "Let me just check it.............";
+next;
+mes "You have^DC143C "+( .@skulls = countitem(7420) )+" ^000000Skulls";
+mes "And";
+mes "You currently have^FFD700 "+ #CASHPOINTS +" ^000000Cash Points";
+next;
+if ( !.@skulls ) {
+	mes "I don't see any ^FF0000Skulls^000000 you have >_< so get ^FF0000LOSS^000000! you wasting my time.";
+	close;
+}
+if ( input ( .@amount, 1, .@skulls ) ) {
+	mes "^FF0000invalid amount^000000";
+	close;
+}
+delitem 7420, .@amount;
+#CASHPOINTS = #CASHPOINTS + .@amount *2;
+dispbottom "[ Cash ] Gained "+( .@amount *2 )+" Cash Points. Total : "+ #CASHPOINTS +" Cash Points.";
+mes "Gained^FF0000 "+( .@amount *2 )+" ^000000Cash Points.";
+mes "Total :^FFD700 "+ #CASHPOINTS +" ^000000Cash Points.";
+close;
+}
+
+sec_in02,169,173,2	duplicate(Skull Collector)	Dark Magician#sec	449
+*/
+
+/*
+-	script	Skull Collector	449,{
+	mes "I'm collecting dead people skull.";
+	mes "Each ^DC143CSkull^000000 you bring will give you^DC143C 2 ^000000Cash Points";
+	mes "Let me just check it...";
+
+	set .@skull_id, 7420;
+	set .@skulls_total, 0;
+
+	// Limpar variáveis temporárias
+	deletearray .@skull_name$, 128;
+	deletearray .@blocked_skulls, 128;
+	deletearray .@valid_skulls, 128;
+
+	getinventorylist;
+	for (set .@i, 0; .@i < @inventorylist_count; set .@i, .@i + 1) {
+		set .@j, .@i;
+		if (@inventorylist_id[.@j] == .@skull_id) {
+			.@skull_name$[.@skulls_total] = getitemname(@inventorylist_id[.@j]);
+			// Aqui futuramente podemos tentar extrair o dono da skull, se o emulador suportar
+			set .@skulls_total, .@skulls_total + 1;
+		}
+	}
+
+
+	if (.@skulls_total == 0) {
+		mes "You don't have any skulls!";
+		close;
+	}
+
+	// Verificar quais são válidas
+	set .@valid_count, 0;
+	for (set .@i, 0; .@i < .@skulls_total; set .@i, .@i + 1) {
+		set .@owner$, getd("skname$["+.@i+"]"); // Nome do dono da skull
+		set .@is_friend, 0;
+
+		// Checar se é do próprio jogador
+		if (.@owner$ == strcharinfo(0)) continue;
+
+		// Checar se é amigo
+		for (set .@f, 0; .@f < getarraysize(@friendlist$); set .@f, .@f + 1)
+			if (.@owner$ == @friendlist$[.@f]) { set .@is_friend, 1; break; }
+
+		if (.@is_friend) continue;
+
+		// Skull válida
+		.@valid_count++;
+	}
+
+	mes "You have ^DC143C"+.@valid_count+"^000000 valid skulls to trade.";
+	mes "You currently have ^FFD700"+#CASHPOINTS+"^000000 Cash Points.";
+
+	if (.@valid_count == 0) {
+		mes "All your skulls are from friends or your own. No dirty business here!";
+		close;
+	}
+
+	if (input(.@amount, 1, .@valid_count)) {
+		mes "^FF0000Invalid amount.^000000";
+		close;
+	}
+
+	// Consumir skulls válidas (simples, remove pelo ID)
+	delitem .@skull_id, .@amount;
+	#CASHPOINTS += (.@amount * 2);
+	dispbottom "[ Cash ] Gained "+(.@amount * 2)+" Cash Points. Total: "+#CASHPOINTS+" Cash Points.";
+	mes "Gained ^FF0000"+(.@amount * 2)+"^000000 Cash Points.";
+	mes "Total: ^FFD700"+#CASHPOINTS+"^000000 Cash Points.";
+	close;
+}
+sec_in02,169,173,2	duplicate(Skull Collector)	Dark Magician#sec	449
+*/
+
+-	script	Skull Collector	449,{
+	mes "I'm collecting dead people skull.";
+	mes "Each ^DC143CSkull^000000 you bring will give you ^DC143C2^000000 Cash Points.";
+	mes "Let me just check it...";
+
+	set .@skull_id, 7420;
+	set .@skulls_total, 0;
+	set .@valid_count, 0;
+
+	getinventorylist;
+
+	for (set .@i, 0; .@i < @inventorylist_count; set .@i, .@i + 1) {
+		if (@inventorylist_id[.@i] == .@skull_id) {
+			set .@skull_name$, getitemname(@inventorylist_id[.@i]); // ex: "Titan's Skull"
+
+			// Extrair o nome antes de "'s Skull"
+			set .@apos$, "'s Skull";
+			set .@owner_len, getstrlen(.@skull_name$) - getstrlen(.@apos$);
+			set .@owner_name$, substr(.@skull_name$, 0, .@owner_len);
+
+			// Verifica se é do próprio jogador
+			if (.@owner_name$ == strcharinfo(0)) continue;
+
+			// Verifica se é de amigo
+			set .@is_friend, 0;
+			for (set .@f, 0; .@f < getarraysize(@friendlist$); set .@f, .@f + 1)
+				if (.@owner_name$ == @friendlist$[.@f]) { set .@is_friend, 1; break; }
+
+			if (.@is_friend) continue;
+
+			// Skull válida
+			set .@valid_count, .@valid_count + 1;
+		}
+	}
+
+	if (.@valid_count == 0) {
+		mes "All your skulls are from yourself or friends.";
+		close;
+	}
+
+	mes "You have ^DC143C"+.@valid_count+"^000000 valid skulls to trade.";
+	mes "You currently have ^FFD700"+#CASHPOINTS+"^000000 Cash Points.";
+
+	if (input(.@amount, 1, .@valid_count)) {
+		mes "^FF0000Invalid amount.^000000";
+		close;
+	}
+
+	delitem .@skull_id, .@amount;
+	#CASHPOINTS += (.@amount * 2);
+	dispbottom "[ Cash ] Gained "+(.@amount * 2)+" Cash Points. Total: "+#CASHPOINTS+" Cash Points.";
+	mes "Gained ^FF0000"+(.@amount * 2)+"^000000 Cash Points.";
+	mes "Total: ^FFD700"+#CASHPOINTS+"^000000 Cash Points.";
+	close;
+}
+sec_in02,169,173,2	duplicate(Skull Collector)	Dark Magician#sec	449

@@ -1,0 +1,23 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+//Créditos: Johnlol
+prontera,163,189,5	script	Reparadora	53,{
+//emotion 51;
+//atcommand "@repairall";
+//end;
+//}
+emotion 51;
+while (getbrokenid(1)) {
+repair(1);
+set .@i, .@i +1;
+}
+if (.@i) dispbottom .@i + " items repaired.";
+end;
+}

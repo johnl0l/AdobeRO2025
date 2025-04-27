@@ -1,0 +1,96 @@
+//===== rAthena Script =======================================
+//= PVP Warper
+//===== By: ==================================================
+//= HaARiZz
+//===== Current Version: =====================================
+//= 1.0
+//===== Compatible With: =====================================
+//= rAthena Project
+//===== Description: =========================================
+//= Basic PVP Warper script.
+//= Free for ALL
+//= PVP for 2nd Job
+//= Guild Arena
+//===== Additional Comments: =================================
+//= 1.0 Initial script.
+//============================================================
+
+prontera,139,173,5	script	PVP	801,{
+//Locked PVP During Woe
+if ( agitcheck() || agitcheck2() ) {
+mes "Sorry, ^800000PVP^000000 Rooms are ^FF0000Locked^000000 During WOE.";
+emotion e_no;
+close;
+}
+
+	emotion e_com;
+	mes "[ ^FF0000" + strnpcinfo(0) + "^000000 ]";
+	mes "What would you like me to do?";
+	switch( select("^006400Free^000000 ^008000for^000000 ^228B22ALL^000000 [ "+getmapusers("guild_vs3")+" Users ]","^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000 [ "+getmapusers("guild_vs1")+" Users ]","^0000FFGuild^000000 ^4169E1Arena^000000 [ "+getmapusers("guild_vs4")+" Users ]") ) {
+
+		case 1:
+			warp "guild_vs3",0,0;
+			announce ""+strcharinfo(0)+" Has Enter PVP! Free for All",bc,0xBAB9B9;
+			end;
+			
+		case 2:
+			if ( Class == .thirdJob[1] ){
+				mes "You are not ^FF4500Trans^000000. ^FF8C002nd^000000 ^FFA500Job^000000, so you cant enter.";
+			}else{
+				warp "guild_vs1",0,0;
+				announce ""+strcharinfo(0)+" Has Enter PVP for Trans. 2nd Job",bc,0xBAB9B9;
+
+			}
+			end;
+
+		case 3:
+		if( !getcharid(2) ){
+			mes "You dont have a ^0000FFGuild^000000"; close;
+			}else{
+			warp "guild_vs4",0,0;
+			announce ""+strcharinfo(0)+" Has Enter PVP! Guild Arena",bc,0xBAB9B9;
+
+			}
+			end;
+	}
+//Hide NPC On Woe
+/*
+OnAgitEnd:
+OnAgitEnd2:
+	hideoffnpc strnpcinfo(0);
+	end;
+
+OnAgitStart:
+OnAgitStart2:
+	hideonnpc strnpcinfo(0);
+	end;
+*/
+OnInit:
+	setarray	.thirdJob[1],0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,4001,4002,4003,4004,4005,4006,4007,4054,4055,4056,4057,4058,4059,4060,4061,4062,4063,4064,4065,4066,4067,4068,4069,4070,4071,4072,4073,4074,4075,4076,4077,4078,4079,4190,4191,4096,4097,4098,4099,4100,4101,4102,4103,4104,4105,4106,4107,4108,4223,4224,4229,4239,4240,4241,4242;
+	setmapflag	"guild_vs3",mf_nosave;
+	setmapflag	"guild_vs3",mf_nowarp;
+	setmapflag	"guild_vs3",mf_nowarpto;
+	setmapflag	"guild_vs3",mf_noteleport;
+	setmapflag	"guild_vs3",mf_noreturn;
+	setmapflag	"guild_vs3",mf_pvp;
+	
+	setmapflag	"guild_vs1",mf_nosave;
+	setmapflag	"guild_vs1",mf_nowarp;
+	setmapflag	"guild_vs1",mf_nowarpto;
+	setmapflag	"guild_vs1",mf_noteleport;
+	setmapflag	"guild_vs1",mf_noreturn;
+	setmapflag	"guild_vs1",mf_pvp;
+
+	setmapflag	"guild_vs4",mf_nosave;
+	setmapflag	"guild_vs4",mf_nowarp;
+	setmapflag	"guild_vs4",mf_nowarpto;
+	setmapflag	"guild_vs4",mf_noteleport;
+	setmapflag	"guild_vs4",mf_noreturn;
+	setmapflag	"guild_vs4",mf_gvg;
+	setmapflag	"guild_vs4",mf_pvp;
+
+
+	//waitingroom "PvP Warper ",0;
+	//end;
+
+}

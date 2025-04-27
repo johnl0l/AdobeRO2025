@@ -1,0 +1,55 @@
+
+prontera,163,184,0	script	AdobeRO	643,{
+end;
+
+OnInit:
+set .message$, "Welcome to     AdobeRO     ";
+
+while (1) {
+	set .message$, delchar(.message$+charat(.message$,0),0);
+	delwaitingroom;
+	waitingroom .message$, 0;
+	sleep 200;
+}
+}
+
+
+/*
+//Troca de mensagem automaticamente a cada 5 segundos
+//Cada mensagem gira o texto animadamente
+//Cada mensagem pode ter cor diferente (^00FFFF, ^FF4500, etc.)
+//Dá um efeito de "servidor profissional" e super animado no seu Prontera! ???
+
+prontera,163,184,5	script	AdobeRO Letreiro Plus	643,{
+
+OnInit:
+	// Mensagens que vão aparecer, pode adicionar mais!
+	setarray .messages$[0],
+		"Welcome to AdobeRO!     ",
+		"Prepare-se para aventuras!     ",
+		"Divirta-se e chame seus amigos!     ",
+		"Eventos diários toda semana!     ",
+		"Não esqueça de votar!     ";
+
+	// Tempo entre as mudanças de mensagem (em milissegundos)
+	.rotateDelay = 8000;
+
+	while (1) {
+		for (.@msgID = 0; .@msgID < getarraysize(.messages$); .@msgID++) {
+
+			set .currentMessage$, .messages$[.@msgID];
+
+			// Roda o texto enquanto não passar o tempo de troca
+			.@startTime = gettimetick(2);
+			while (gettimetick(2) - .@startTime < (.rotateDelay / 1000)) {
+				// Gira o primeiro caractere para o final
+				set .currentMessage$, delchar(.currentMessage$ + charat(.currentMessage$, 0), 0);
+				delwaitingroom;
+				waitingroom .currentMessage$, 0;
+				sleep 200; // Velocidade da rotação
+			}
+		}
+	}
+	end;
+}
+*/

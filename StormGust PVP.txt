@@ -1,0 +1,32 @@
+guild_vs3,50,50,1	script	 	111,3,3,{
+//-	script	WZ_STORMGUST	-1,{
+unitskillusepos getnpcid(0),"WZ_STORMGUST",10,50,51;		//StormGust
+//npcskill "MO_EXTREMITYFIST",5,130,99;		//Asura
+emotion E_GG;
+end;
+
+OnInit:
+setunitdata(getnpcid(0),UNPC_PLUSALLSTAT,130);		//StormGust
+//setunitdata (getnpcid(0),UNPC_ATKMIN,430);		//Asura
+//setunitdata (getnpcid(0),UNPC_ATKMAX,930);		//Asura
+//setunitdata (getnpcid(0),UNPC_MATKMIN,130);
+//setunitdata (getnpcid(0),UNPC_MATKMAX,130);
+end;
+}
+
+/*
+guild_vs3,50,51,1	script	LANDPROTECTOR	111,3,3,{
+unitskillusepos getnpcid(0),"SA_LANDPROTECTOR",5,50,51;
+//npcskill "SA_LANDPROTECTOR",5,130,99;
+end;
+
+OnInit:
+setunitdata(getnpcid(0),UNPC_PLUSALLSTAT,130);
+
+end;
+}
+*/
+
+//guild_vs3,50,81,3	duplicate(WZ_STORMGUST)	WZ_STORMGUST#guildvs3	647,3,3
+//guild_vs1,50,91,3	duplicate(WZ_STORMGUST)	WZ_STORMGUST#guildvs1	647,3,3
+//guild_vs4,50,91,3	duplicate(WZ_STORMGUST)	WZ_STORMGUST#guildvs4	647,3,3

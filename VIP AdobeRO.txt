@@ -1,0 +1,1303 @@
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+	if (vip_status(1)) {
+		// Calcula o tempo restante em segundos
+		set .@expireTime, vip_status(2); // Data de expiração
+		set .@currentTime, gettimetick(2); // Tempo atual em segundos
+		set .@totalTime, .@expireTime - .@currentTime; // Tempo restante em segundos
+
+		// Verifica se ainda há tempo restante
+		if (.@totalTime > 0) {
+			// Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+			bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+			// Mensagens de boas-vindas para o VIP
+			dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+			dispbottom "==========================";
+			dispbottom "Teleport enabled to VIP area. Password: foN";
+			dispbottom "Account Status: Exp & Job Increase 50%";
+			dispbottom "Account Status: Drop Increase 50%";
+			dispbottom "Expire Date: " + vip_status(2);
+			dispbottom "Time left: " + .@totalTime + " seconds.";
+			dispbottom "==========================";
+		} else {
+			// Remove o bônus e o ícone de VIP se o tempo expirou
+			bonus_script_clear;
+			sc_end SC_VIPSTATE;
+		}
+	} else {
+		// Remove o bônus e o ícone de VIP se o VIP não está ativo
+		bonus_script_clear;
+		sc_end SC_VIPSTATE;
+	}
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+	mes "[ ^FFD700VIP^000000 NPC ]";
+	mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+	close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        atcommand "@vip +24h " + strcharinfo(0) + "";
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        atcommand "@vip +7d " + strcharinfo(0) + "";
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        atcommand "@vip +1m " + strcharinfo(0) + "";
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Calcula o tempo restante de VIP
+set .@expireTime, vip_status(2); // Data de expiração
+set .@currentTime, gettimetick(2); // Tempo atual em segundos
+set .@totalTime, .@expireTime - .@currentTime; // Tempo restante em segundos
+
+// Adiciona o tempo conforme a opção escolhida
+if (select("24 Hours:1 Week:1 Month") == 1) {
+    set .@totalTime, .@totalTime + 86400; // 24 horas em segundos
+} else if (select("24 Hours:1 Week:1 Month") == 2) {
+    set .@totalTime, .@totalTime + 604800; // 7 dias em segundos
+} else {
+    set .@totalTime, .@totalTime + 2592000; // 30 dias em segundos
+}
+
+// Aplica o bônus de VIP com base no tempo total acumulado
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        atcommand "@vip +24h " + strcharinfo(0) + "";
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        atcommand "@vip +7d " + strcharinfo(0) + "";
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        atcommand "@vip +1m " + strcharinfo(0) + "";
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Calcula o tempo restante de VIP
+set .@timeLeft, vip_status(3);
+set .@totalTime, .@timeLeft;
+
+// Adiciona o tempo conforme a opção escolhida
+if (select("24 Hours:1 Week:1 Month") == 1) {
+    set .@totalTime, .@timeLeft + 86400; // 24 horas em segundos
+} else if (select("24 Hours:1 Week:1 Month") == 2) {
+    set .@totalTime, .@timeLeft + 604800; // 7 dias em segundos
+} else {
+    set .@totalTime, .@timeLeft + 2592000; // 30 dias em segundos
+}
+
+// Aplica o bônus de VIP com base no tempo total acumulado
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, 86400; // 24 horas em segundos
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, 604800; // 7 dias em segundos
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, 2592000; // 30 dias em segundos
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Verifica o tempo restante de VIP e soma o novo tempo
+set .@timeLeft, vip_status(3);
+if (.@timeLeft > 0) {
+    set .@totalTime, .@timeLeft + .@addTime;
+} else {
+    set .@totalTime, .@addTime;
+}
+
+// Estende o tempo de VIP
+atcommand "@vip + " + (.@totalTime - .@timeLeft) + "s " + strcharinfo(0) + "";
+
+// Aplica o bônus de VIP com base no tempo total acumulado
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day, 1000;
+set .@week, 5000;
+set .@month, 20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, 86400; // 24 horas em segundos
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, 604800; // 7 dias em segundos
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, 2592000; // 30 dias em segundos
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Verifica o tempo restante de VIP e soma o novo tempo
+set .@timeLeft, vip_status(3);
+if (.@timeLeft > 0) {
+    set .@totalTime, .@timeLeft + .@addTime;
+} else {
+    set .@totalTime, .@addTime;
+}
+
+// Estende o tempo de VIP sem mexer no atcommand
+atcommand "@vip + " + (.@totalTime - .@timeLeft) + "s " + strcharinfo(0) + "";
+
+// Aplica o bônus de VIP com base no tempo total acumulado
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime - gettimetick(2), 0, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day, 1000;
+set .@week, 5000;
+set .@month, 20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, "+24h"; // 24 horas
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, "+7d"; // 7 dias
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, "+1m"; // 1 mês
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Adiciona o tempo conforme a opção escolhida usando o comando @vip
+atcommand "@vip " + .@addTime + " " + strcharinfo(0) + "";
+
+// Recalcula o tempo restante de VIP
+set .@timeLeft, vip_status(3);
+
+// Aplica o bônus de VIP com base no tempo total restante
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@timeLeft, 0, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day, 1000;
+set .@week, 5000;
+set .@month, 20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, "+24h"; // 24 horas
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, "+7d"; // 7 dias
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, "+1m"; // 1 mês
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Adiciona o tempo conforme a opção escolhida usando o comando @vip
+atcommand "@vip " + .@addTime + " " + strcharinfo(0) + "";
+
+// Recalcula o tempo restante de VIP
+set .@timeLeft, vip_status(3);
+
+// Verifica se o tempo restante é maior que 0
+if (.@timeLeft > 0) {
+    // Aplica o bônus de VIP com base no tempo total restante
+    bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@timeLeft, 0, 1, SI_VIPSTATE;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day, 1000;
+set .@week, 5000;
+set .@month, 20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, "+24h"; // 24 horas
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, "+7d"; // 7 dias
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, "+30d"; // 1 mês (30 dias)
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Adiciona o tempo conforme a opção escolhida usando o comando @vip
+atcommand "@vip " + .@addTime + " " + strcharinfo(0);
+
+// Recalcula o tempo restante de VIP
+set .@timeLeft, vip_status(3);
+
+// Verifica se o tempo restante é maior que 0
+if (.@timeLeft > 0) {
+    // Aplica o bônus de VIP com base no tempo total restante
+    bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@timeLeft, 0, 1, SI_VIPSTATE;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+	mes "[ ^FFD700VIP^000000 NPC ]";
+	mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+	close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+	case 1:
+		if (#CASHPOINTS < .@day) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000s not enough,";
+			mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@day;
+		atcommand "@vip +24h " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 24 horas (86400 segundos)
+		addtimer(86400, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",86400,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 2:
+		if (#CASHPOINTS < .@week) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@week;
+		atcommand "@vip +7d " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 7 dias (604800 segundos)
+		addtimer(604800, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",604800,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 3:
+		if (#CASHPOINTS < .@month) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@month;
+		atcommand "@vip +1m " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 30 dias (2592000 segundos)
+		addtimer(2592000, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",2592000,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 4:
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+		close;
+}
+
+OnEndVIP:
+	// Remove o bônus e o ícone VIP quando o tempo acabar
+	bonus_script_clear;
+	sc_end SC_VIPSTATE;
+	end;
+
+OnInit:
+	waitingroom "VIP System",0;
+	end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+    mes "[ ^FFD700VIP^000000 NPC ]";
+    mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+    close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+    case 1:
+        if (#CASHPOINTS < .@day) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000s not enough,";
+            mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@day;
+        set .@addTime, 86400; // 24 horas em segundos
+        break;
+
+    case 2:
+        if (#CASHPOINTS < .@week) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@week;
+        set .@addTime, 604800; // 7 dias em segundos
+        break;
+
+    case 3:
+        if (#CASHPOINTS < .@month) {
+            mes "[ ^FFD700VIP^000000 NPC ]";
+            mes "Your ^FF0000Cash Points^000000 not enough,";
+            mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+            close;
+        }
+        set #CASHPOINTS, #CASHPOINTS - .@month;
+        set .@addTime, 2592000; // 30 dias em segundos
+        break;
+
+    case 4:
+        mes "[ ^FFD700VIP^000000 NPC ]";
+        mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+        close;
+}
+
+// Verifica o tempo restante de VIP e soma o novo tempo
+set .@timeLeft, vip_status(3);
+if (.@timeLeft > 0) {
+    set .@totalTime, .@timeLeft + .@addTime;
+} else {
+    set .@totalTime, .@addTime;
+}
+
+// Estende o tempo de VIP
+atcommand "@vip + " + (.@totalTime - .@timeLeft) + "s " + strcharinfo(0) + "";
+
+// Aplica o bônus de VIP com base no tempo total acumulado
+bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "Enjoy your ^FFD700VIP^000000 Service.";
+dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+close;
+
+OnInit:
+    waitingroom "VIP System", 0;
+    end;
+}
+*/
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+	if (vip_status(1)) {
+		// Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",99999999,0,1,SI_VIPSTATE;
+		// Mensagens de boas-vindas para o VIP
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Account Status: Exp & Job Increase 50%";
+		dispbottom "Account Status: Drop Increase 50%";
+		dispbottom "Expire Date: " + vip_status(2);
+		dispbottom "Time left: " + vip_status(3);
+		dispbottom "==========================";
+	} else {
+		// Remove o bônus e o ícone de VIP se o tempo expirou
+		bonus_script_clear;
+		sc_end SC_VIPSTATE;
+	}
+}
+*/
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+	if (vip_status(1)) {
+		// Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",vip_status(3),0,1,SI_VIPSTATE;
+		// Mensagens de boas-vindas para o VIP
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Account Status: Exp & Job Increase 50%";
+		dispbottom "Account Status: Drop Increase 50%";
+		dispbottom "Expire Date: " + vip_status(2);
+		dispbottom "Time left: " + vip_status(3);
+		dispbottom "==========================";
+	} else {
+		// Remove o bônus e o ícone de VIP se o tempo expirou
+		bonus_script_clear;
+		sc_end SC_VIPSTATE;
+	}
+}
+*/
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Converte o valor de vip_status(3) de string para segundos
+        set .@timeLeftStr, vip_status(3);
+        set .@days, atoi(getsubstring(.@timeLeftStr, 4, 2));
+        set .@hours, atoi(getsubstring(.@timeLeftStr, 7, 2));
+        set .@minutes, atoi(getsubstring(.@timeLeftStr, 10, 2));
+        set .@totalTime, (.@days * 86400) + (.@hours * 3600) + (.@minutes * 60);
+        
+        // Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+        
+        // Mensagens de boas-vindas para o VIP
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: " + vip_status(2);
+        dispbottom "Time left: " + .@timeLeftStr;
+        dispbottom "==========================";
+    } else {
+        // Remove o bônus e o ícone de VIP se o tempo expirou
+        bonus_script_clear;
+        sc_end SC_VIPSTATE;
+    }
+}
+*/
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Converte o valor de vip_status(3) de string para segundos
+        set .@timeLeftStr, vip_status(3);
+        set .@days, atoi(getsubstring(.@timeLeftStr, 0, 1)); // Pega o primeiro valor que representa dias
+        set .@hours, atoi(getsubstring(.@timeLeftStr, 2, 1)); // Pega o segundo valor que representa horas
+        set .@minutes, atoi(getsubstring(.@timeLeftStr, 4, 2)); // Pega o valor que representa minutos
+        set .@totalTime, (.@days * 86400) + (.@hours * 3600) + (.@minutes * 60);
+        
+        // Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+        
+        // Mensagens de boas-vindas para o VIP
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: " + vip_status(2);
+        dispbottom "Time left: " + .@timeLeftStr;
+        dispbottom "==========================";
+    } else {
+        // Remove o bônus e o ícone de VIP se o tempo expirou
+        bonus_script_clear;
+        sc_end SC_VIPSTATE;
+    }
+}
+*/
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Converte o valor de vip_status(3) de string para segundos
+        set .@timeLeftStr, vip_status(3);
+        set .@days, atoi(getsubstring(.@timeLeftStr, 0, 1)); // Pega o primeiro valor que representa dias
+        set .@hours, atoi(getsubstring(.@timeLeftStr, 2, 1)); // Pega o segundo valor que representa horas
+        set .@minutes, atoi(getsubstring(.@timeLeftStr, 4, 2)); // Pega o valor que representa minutos
+        set .@totalTime, (.@days * 86400) + (.@hours * 3600) + (.@minutes * 60);
+        
+        // Aplica os bônus e o ícone de VIP com duração igual ao tempo de VIP restante
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+        
+        // Mensagens de boas-vindas para o VIP
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: " + vip_status(2);
+        dispbottom "Time left: " + .@timeLeftStr;
+        dispbottom "==========================";
+    } else {
+        // Remove o bônus e o ícone de VIP se o tempo expirou
+        bonus_script_clear;
+        sc_end SC_VIPSTATE;
+    }
+}
+*/
+/*
+-	script	V1P_ST4TUS	-1,{
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Converte o valor de vip_status(3) de string para segundos
+        set .@timeLeftStr, vip_status(3);
+
+        // Supondo que o valor retornado por vip_status(3) esteja no formato "hh:mm:ss"
+        set .@hours, atoi(getsubstring(.@timeLeftStr, 0, 2));  // Pega o valor de horas
+        set .@minutes, atoi(getsubstring(.@timeLeftStr, 3, 2)); // Pega o valor de minutos
+        set .@seconds, atoi(getsubstring(.@timeLeftStr, 6, 2)); // Pega o valor de segundos
+
+        // Converte tudo para segundos
+        set .@totalTime, (.@hours * 3600) + (.@minutes * 60) + .@seconds;
+
+        // Aplica os bônus e o ícone de VIP com duração em segundos
+        bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }", .@totalTime, 0, 1, SI_VIPSTATE;
+
+        // Mensagens de boas-vindas para o VIP
+        dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+        dispbottom "==========================";
+        dispbottom "Teleport enabled to VIP area. Password: foN";
+        dispbottom "Account Status: Exp & Job Increase 50%";
+        dispbottom "Account Status: Drop Increase 50%";
+        dispbottom "Expire Date: " + vip_status(2);
+        dispbottom "Time left: " + vip_status(3);  // Exibe o tempo restante no formato original
+        dispbottom "==========================";
+    } else {
+        // Remove o bônus e o ícone de VIP se o tempo expirou
+        bonus_script_clear;
+        sc_end SC_VIPSTATE;
+    }
+}
+*/
+
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+	mes "[ ^FFD700VIP^000000 NPC ]";
+	mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+	close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+	case 1:
+		if (#CASHPOINTS < .@day) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000s not enough,";
+			mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@day;
+		atcommand "@vip +24h " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 24 horas (86400 segundos)
+		addtimer(86400, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",86400,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 2:
+		if (#CASHPOINTS < .@week) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@week;
+		atcommand "@vip +7d " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 7 dias (604800 segundos)
+		addtimer(604800, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",604800,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 3:
+		if (#CASHPOINTS < .@month) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@month;
+		atcommand "@vip +1m " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 30 dias (2592000 segundos)
+		addtimer(2592000, strnpcinfo(3) + "::OnEndVIP");
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",2592000,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 4:
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+		close;
+}
+
+OnEndVIP:
+	// Remove o bônus e o ícone VIP quando o tempo acabar
+	bonus_script_clear;
+	sc_end SC_VIPSTATE;
+	end;
+
+OnInit:
+	waitingroom "VIP System",0;
+	end;
+}
+*/
+/*
+prontera,136,171,3	script	VIP System	109,{
+
+set .@day,1000;
+set .@week,5000;
+set .@month,20000;
+
+if (getgroupid() > 4) {
+	mes "[ ^FFD700VIP^000000 NPC ]";
+	mes "Sorry,^4B0082GM Staff^000000 can't use this.";
+	close;
+}
+
+mes "[ ^FFD700VIP^000000 NPC ]";
+mes "This is the price for ^FFD700VIP^000000 Service.";
+mes "24 Hours^DAA520 " + .@day + " ^000000Cash Point";
+mes "1 Week^DAA520 " + .@week + " ^000000Cash Point";
+mes "1 Month^DAA520 " + .@month + " ^000000Cash Point";
+mes "Your Cash Point^DAA520 " + #CASHPOINTS + "^000000.";
+next;
+
+switch(select("Register 24 Hours:Register 1 Week:Register 1 Month:^FF6347No^000000, ^FF6347Thanks^000000.")) {
+	case 1:
+		if (#CASHPOINTS < .@day) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000s not enough,";
+			mes "^FF0000" + .@day + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@day;
+		atcommand "@vip +24h " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 24 horas (86400 segundos)
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",86400,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 2:
+		if (#CASHPOINTS < .@week) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@week + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@week;
+		atcommand "@vip +7d " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 7 dias (604800 segundos)
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",604800,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP^000000 Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 3:
+		if (#CASHPOINTS < .@month) {
+			mes "[ ^FFD700VIP^000000 NPC ]";
+			mes "Your ^FF0000Cash Points^000000 not enough,";
+			mes "^FF0000" + .@month + " ^000000Cash Point to get ^FFD700VIP^000000 Service.";
+			close;
+		}
+		set #CASHPOINTS, #CASHPOINTS - .@month;
+		atcommand "@vip +1m " + strcharinfo(0) + "";
+		// Aplica os bônus com duração de 30 dias (2592000 segundos)
+		bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",2592000,0,1,SI_VIPSTATE;
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "Enjoy your ^FFD700VIP Service.";
+		dispbottom "Your current Cash Point now " + #CASHPOINTS + ".";
+		close;
+
+	case 4:
+		mes "[ ^FFD700VIP^000000 NPC ]";
+		mes "^FF6347Ok^000000, ^FF6347Thank You^000000.";
+		close;
+}
+
+OnPCLoginEvent:
+    if (vip_status(1)) {
+        // Verifica se o tempo de VIP expirou e remove o bônus e o ícone, se necessário
+        if (vip_status(3) <= 0) {
+            bonus_script_clear;
+            sc_end SC_VIPSTATE;
+        }
+    }
+
+OnInit:
+	waitingroom "VIP System",0;
+	end;
+}
+*/
+/*
+function	script	timeleft__	{
+	if ( ( .@left = getarg(0) ) <= 0 ) return getarg(0);
+	.@day = .@left / 86400;
+	.@hour = .@left % 86400 / 3600;
+	.@min = .@left % 3600 / 60;
+	.@sec = .@left % 60;
+	if ( .@day )
+		return .@day +" day "+ .@hour +" hour";
+	else if ( .@hour )
+		return .@hour +" hour "+ .@min +" min";
+	else if ( .@min )
+		return .@min +" min "+ .@sec +" sec";
+	else
+		return .@sec +" sec";
+}
+
+-	shop	vipshop#7	-1,501:100
+-	shop	vipshop#30	-1,501:100
+
+-	script	vipnpc	FAKE_NPC,{
+OnInit:
+	bindatcmd "vipshop", strnpcinfo(0)+"::Onvipshop";
+	end;
+
+Onvipshop:
+	if ( #vipshop == 1 ) callshop "vipshop#7", 1;
+	else if ( #vipshop == 2 ) callshop "vipshop#30", 1;
+	else {
+		mes "Which VIP status do you want to buy?";
+		mes "VIP 7 days = 10 Cash points";
+		mes "VIP 30 days = 20 Cash points";
+		next;
+		if ( select( "VIP 7 Days", "VIP 30 Days" ) == 1 ) {
+			if ( #CASHPOINTS < 10 ) {
+				mes "You don't have enough Cash points.";
+				close;
+			}
+			mes "Thanks for purchasing!";
+			#vipshop = 1;
+			#CASHPOINTS -= 10;
+			addtimer 7*24*60*60*1000, strnpcinfo(0)+"::OnTimeUp";
+			#viptimeleft = 7*24*60*60 + gettimetick(2);
+			bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",7*24*60*60,0,1,SI_VIPSTATE;
+			close;
+		}
+		else {
+			if ( #CASHPOINTS < 20 ) {
+				mes "You don't have enough Cash points.";
+				close;
+			}
+			mes "Thanks for purchasing!";
+			#vipshop = 2;
+			#CASHPOINTS -= 20;
+			#viptimeleft = 30*24*60*60 + gettimetick(2);
+			bonus_script "{ bonus bAddMaxWeight,40000; bonus bAllStats,10; }",30*24*60*60,0,1,SI_VIPSTATE;
+			close;
+		}
+	}
+	dispbottom "You currently have "+ #CASHPOINTS +" Cash points. Expires in "+ callfunc("timeleft__", #viptimeleft - gettimetick(2)) + ".";
+	end;
+
+OnPCLoginEvent:
+	if ( #viptimeleft < gettimetick(2) )
+		addtimer 1, strnpcinfo(0)+"::OnTimeUp"; 
+	else if ( #viptimeleft - gettimetick(2) < 2147483 )
+		addtimer ( #viptimeleft - gettimetick(2) )*1000, strnpcinfo(0)+"::OnTimeUp";
+	end;
+
+OnTimeUp:
+	#viptimeleft = #vipshop = 0;
+	sc_end SC_VIPSTATE;
+	bonus_script_clear SI_VIPSTATE;
+	end;
+}
+
+-	script	vipnpc#7	FAKE_NPC,{
+OnInit:
+	function addshopitem {
+		npcshopdelitem "vipshop#7", 501;
+		.@count = getargcount();
+		for ( .@i = 0; .@i < .@count; .@i++ ) {
+			if ( .@i % 2 == 0 )
+				.itemid[ .@i / 2 ] = getarg( .@i );
+			else {
+				.itemcost[ .@i / 2 ] = getarg( .@i );
+				npcshopadditem "vipshop#7", .itemid[ .@i / 2 ], .itemcost[ .@i / 2 ];
+			}
+		}
+	}
+	addshopitem 501,10,502,20,503,30,504,40,505,50;
+	npcshopattach "vipshop#7";
+	.@itemsize = getarraysize( .itemid );
+	for ( .@i = 0; .@i < .@itemsize; .@i++ )
+		.itemcost[ .itemid[.@i] ] = .itemcost[.@i];
+	end;
+
+OnBuyItem:
+	if ( !@bought_quantity ) end;
+	.@size = getarraysize( @bought_nameid );
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		.@itemcost += .itemcost[ @bought_nameid[.@i] ] * @bought_quantity[.@i];
+	if ( .@itemcost > #CASHPOINTS ) {
+		mes "You don't have enough Cash points.";
+		close;
+	}
+	if ( !checkweight2( @bought_nameid, @bought_quantity ) ) {
+		mes "You can't carry all these items!";
+		close;
+	}
+	#CASHPOINTS -= .@itemcost;
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		getitem @bought_nameid[.@i], @bought_quantity[.@i];
+	end;
+}
+
+-	script	vipnpc#30	FAKE_NPC,{
+OnInit:
+	function addshopitem {
+		npcshopdelitem "vipshop#30", 501;
+		.@count = getargcount();
+		for ( .@i = 0; .@i < .@count; .@i++ ) {
+			if ( .@i % 2 == 0 )
+				.itemid[ .@i / 2 ] = getarg( .@i );
+			else {
+				.itemcost[ .@i / 2 ] = getarg( .@i );
+				npcshopadditem "vipshop#30", .itemid[ .@i / 2 ], .itemcost[ .@i / 2 ];
+			}
+		}
+	}
+	addshopitem 501,5,502,10,503,15,504,20,505,25;
+	npcshopattach "vipshop#30";
+	.@itemsize = getarraysize( .itemid );
+	for ( .@i = 0; .@i < .@itemsize; .@i++ )
+		.itemcost[ .itemid[.@i] ] = .itemcost[.@i];
+	end;
+
+OnBuyItem:
+	if ( !@bought_quantity ) end;
+	.@size = getarraysize( @bought_nameid );
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		.@itemcost += .itemcost[ @bought_nameid[.@i] ] * @bought_quantity[.@i];
+	if ( .@itemcost > #CASHPOINTS ) {
+		mes "You don't have enough Cash points.";
+		close;
+	}
+	if ( !checkweight2( @bought_nameid, @bought_quantity ) ) {
+		mes "You can't carry all these items!";
+		close;
+	}
+	#CASHPOINTS -= .@itemcost;
+	for ( .@i = 0; .@i < .@size; .@i++ )
+		getitem @bought_nameid[.@i], @bought_quantity[.@i];
+	end;
+}
+*/

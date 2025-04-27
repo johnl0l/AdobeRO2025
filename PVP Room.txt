@@ -1,0 +1,16 @@
+prontera,139,173,5	script	PVP Room	757,{
+mes "Go in PVP Room?";
+if( select("Yes:No") == 1 ){
+	warp "guild_vs5",0,0;
+	announce "[ "+strcharinfo(0)+" ] has joined PVP.",0;
+}
+close;
+
+OnInit:
+while( 1 ){
+	delwaitingroom;
+	waitingroom "PVP : "+getmapusers("guild_vs5"),0;
+	sleep 1000;
+}
+end;
+}

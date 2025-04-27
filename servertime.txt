@@ -1,0 +1,13 @@
+prontera,154,197,0	script	Server Time	837,{
+	end;
+
+OnInit:
+	while(1) {
+		set .@h, gettime(3);
+		set .@m, gettime(2);
+		set .@s, gettime(1);
+		delwaitingroom;
+		waitingroom "AdobeRO:"+ ( .@h > 12 ? .@h -12 : .@h ) +":"+ ( .@m >= 10 ? .@m : "0"+ .@m ) +":"+ ( .@s >= 10 ? .@s : "0"+ .@s ) +" "+ ( .@h > 12 ? "PM" : "AM" ),0;
+		sleep 998;
+	}
+}

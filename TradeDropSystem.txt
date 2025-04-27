@@ -1,0 +1,91 @@
+-	script	TradeDropSystem	-1,{
+	mes "[EmpireRO]";
+	mes "Bem vindo ao sistema de segurança EmpireRO!";
+	
+	if (#TDS_Password$ == "") {
+		mes "Você não possui nenhuma senha definida em nosso sistema.";
+		
+retry_setfpass:
+		mes "Digite a seguir a senha que deseja ultilizar.";
+		next;
+		
+		input @npassword_1$;
+		
+		if (@npassword_1$ == "") {
+			mes "[EmpireRO]";
+			mes "Você deve digitar uma senha.";
+			goto retry_setfpass;
+		}
+		
+		mes "[EmpireRO]";
+		mes "Confirme a senha que deseja ultilizar.";
+		next;
+		
+		input @npassword_2$;
+		
+		if (@npassword_1$ == @npassword_2$) {
+			#TDS_Password$ = @npassword_1$;
+			mes "[EmpireRO]";
+			mes "Senha definida com successo!";
+			close2;
+			if (.@unlocktype != -1)
+				empirero_unlocktd(.@unlocktype);
+			end;
+		} else {
+			mes "[EmpireRO]";
+			mes "As senhas não coincidem, tente novamente.";
+			next;
+			goto retry_setfpass;
+		}
+	} else {
+		mes "O que deseja?";
+		next;
+		@what$ = .@unlocktype == 0 ? "trade" : "drop";
+		@sel = select("- Liberar " + @what$ + ".:- Alterar senha.:- Cancelar.");
+		
+		switch (@sel) {
+			case 1:
+				mes "[EmpireRO]";
+				mes "Digite sua senha de trade/drop.";
+				next;
+				
+retry_changepwd:
+				input @apassword$;
+				
+				if (@apassword$ != #TDS_Password$) {
+					mes "[EmpireRO]";
+					mes "Senha incorreta, tente novamente.";
+					next;
+					goto retry_changepwd;
+				}
+			
+				empirero_unlocktd(.@unlocktype);
+				goto thankyou;
+			case 2:
+				mes "[EmpireRO]";
+				mes "Digite sua senha atual.";
+				next;
+				
+retry_changepwd2:
+				input @apassword$;
+				
+				if (@apassword$ != #TDS_Password$) {
+					mes "[EmpireRO]";
+					mes "Senha incorreta, tente novamente.";
+					next;
+					goto retry_changepwd2;
+				}
+				
+				mes "[EmpireRO]";
+				.@unlocktype = -1;
+				goto retry_setfpass;
+			default:
+				goto thankyou;
+		}
+	}
+	
+thankyou:
+	mes "[EmpireRO]";
+	mes "Obrigado por ultilizar nossos serviços!";
+	close;
+}

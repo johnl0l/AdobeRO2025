@@ -1,0 +1,233 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+/*
+-	script	PVP Cash Points	-1,{
+OnInit:
+set .Delay,30;		// Delay, in seconds
+end;
+OnPCKillEvent:
+if( @Delay < gettimetick(2) ){
+set .@Amount,rand(1,4);
+set #CASHPOINTS,#CASHPOINTS + .@Amount;
+dispbottom "Gained "+.@Amount+" Cash Point. Total = "+#CASHPOINTS+" Cash Points.";
+if( .Delay ) set @Delay,gettimetick(2) + .Delay;
+specialeffect2 EF_MVP;
+}
+end;
+}
+*/
+
+//Log de mortes para evitar farm (#PVP_Kill_Log por conta, salva o nome do último morto e hora).
+//Recompensa dobrada se o inimigo tiver 5+ kills seguidos (estilo bounty).
+//Anti-farm: Sem recompensa se o jogador morto for da mesma party ou guild.
+//Restrição de mapas: Só funciona nos mapas guild_vs1, guild_vs3, guild_vs4.
+//Atualizado: 08:02 - 23/04/2025
+/*
+-	script	PVP Cash Points	-1,{
+
+OnInit:
+	set .Delay, 30; // Delay entre recompensas
+	end;
+
+OnPCKillEvent:
+	// Não conta se matou a si mesmo
+	if (killerrid == getcharid(0)) end;
+
+	// Mapa atual
+	.@map$ = strcharinfo(3);
+	if (.@map$ != "guild_vs1" && .@map$ != "guild_vs3" && .@map$ != "guild_vs4") end;
+
+	// Verifica delay
+	if (@Delay > gettimetick(2)) end;
+
+	// Checa se matou alguém da mesma guild
+	if (getguildid(killerrid) == getguildid(getcharid(0)) && getguildid(getcharid(0)) > 0)
+		end;
+
+	// Checa se matou alguém da mesma party
+	if (getpartyid(killerrid) == getpartyid(getcharid(0)) && getpartyid(getcharid(0)) > 0)
+		end;
+
+	// Evita farm (log simples: nome e horário do último morto)
+	if (#PVP_Kill_Log$ == strcharinfo(0) && (#PVP_Kill_Log_Time + 60) > gettimetick(2)) {
+		dispbottom "You recently killed this same player. No Cash Point awarded.";
+		end;
+	}
+
+	// Define recompensa base
+	set .@Amount, rand(1, 4);
+
+	// Se o inimigo tiver 5+ kills seguidos, dá recompensa dobrada (bounty system)
+	if (@pvpkill >= 5) {
+		set .@Amount, .@Amount * 2;
+		dispbottom "Bounty Bonus! Enemy had "+@pvpkill+" kills. Bonus reward applied!";
+	}
+
+	// Dá recompensa
+	set #CASHPOINTS, #CASHPOINTS + .@Amount;
+	dispbottom "Gained "+.@Amount+" Cash Point(s). Total = "+#CASHPOINTS+" Cash Points.";
+	specialeffect2 EF_MVP;
+
+	// Atualiza delay e log
+	set @Delay, gettimetick(2) + .Delay;
+	set #PVP_Kill_Log$, strcharinfo(0);
+	set #PVP_Kill_Log_Time, gettimetick(2);
+
+	end;
+}
+*/
+
+//Usa @WD2 como contador de streak.
+//Mantém todas as checagens anti-farm.
+//Dá bônus de Cash Points se o inimigo tiver streak 5+.
+//Atualizado: 08:13 - 23/04/2025
+/*
+-	script	PVP Cash Points	-1,{
+
+OnInit:
+	set .Delay, 30; // Delay entre recompensas
+	end;
+
+OnPCKillEvent:
+	if (killerrid == getcharid(0)) end;
+
+	.@map$ = strcharinfo(3);
+	if (.@map$ != "guild_vs1" && .@map$ != "guild_vs3" && .@map$ != "guild_vs4") end;
+
+	if (@Delay > gettimetick(2)) end;
+
+	// Anti-farm: mesma guild
+	if (getguildid(killerrid) == getguildid(getcharid(0)) && getguildid(getcharid(0)) > 0) end;
+
+	// Anti-farm: mesma party
+	if (getpartyid(killerrid) == getpartyid(getcharid(0)) && getpartyid(getcharid(0)) > 0) end;
+
+	// Log para evitar farm com mesmo alvo
+	if (#PVP_Kill_Log$ == strcharinfo(0) && (#PVP_Kill_Log_Time + 60) > gettimetick(2)) {
+		dispbottom "You recently killed this same player. No Cash Point awarded.";
+		end;
+	}
+
+	// Recompensa
+	set .@Amount, rand(1, 4);
+
+	// Bônus por streak com base no sistema Narrator PvP
+	if (@WD2 >= 5) {
+		set .@Amount, .@Amount * 2;
+		dispbottom "Bounty Bonus! Enemy had "+@WD2+" kills. Bonus reward applied!";
+	}
+
+	set #CASHPOINTS, #CASHPOINTS + .@Amount;
+	dispbottom "Gained "+.@Amount+" Cash Point(s). Total = "+#CASHPOINTS+" Cash Points.";
+	specialeffect2 EF_MVP;
+
+	// Atualiza delay e log
+	set @Delay, gettimetick(2) + .Delay;
+	set #PVP_Kill_Log$, strcharinfo(0);
+	set #PVP_Kill_Log_Time, gettimetick(2);
+
+	end;
+}
+*/
+
+/*
+-	script	PVP Cash Points	-1,{
+
+OnInit:
+	set .Delay, 30; // Delay entre recompensas
+	end;
+
+OnPCKillEvent:
+	if (killerrid == getcharid(0)) end;
+
+	.@map$ = strcharinfo(3);
+	if (.@map$ != "guild_vs1" && .@map$ != "guild_vs3" && .@map$ != "guild_vs4") end;
+
+	if (@Delay > gettimetick(2)) end;
+
+	// Anti-farm: mesma guild
+	if (getcharid(2) == getcharid(2, rid2name(killerrid)) && getcharid(2) > 0) end;
+
+	// Anti-farm: mesma party
+	if (getcharid(1) == getcharid(1, rid2name(killerrid)) && getcharid(1) > 0) end;
+
+	// Log para evitar farm com mesmo alvo
+	if (#PVP_Kill_Log$ == strcharinfo(0) && (#PVP_Kill_Log_Time + 60) > gettimetick(2)) {
+		dispbottom "You recently killed this same player. No Cash Point awarded.";
+		end;
+	}
+
+	// Recompensa
+	set .@Amount, rand(1, 3);
+
+	// Bônus por streak com base no sistema Narrator PvP
+	if (@WD2 >= 5) {
+		set .@Amount, .@Amount * 2;
+		dispbottom "Bounty Bonus! Enemy had "+@WD2+" kills. Bonus reward applied!";
+	}
+
+	set #CASHPOINTS, #CASHPOINTS + .@Amount;
+	dispbottom "Gained "+.@Amount+" Cash Point(s). Total = "+#CASHPOINTS+" Cash Points.";
+	specialeffect2 EF_MVP;
+
+	// Atualiza delay e log
+	set @Delay, gettimetick(2) + .Delay;
+	set #PVP_Kill_Log$, strcharinfo(0);
+	set #PVP_Kill_Log_Time, gettimetick(2);
+
+	end;
+}
+*/
+
+
+-	script	PVP Cash Points	-1,{
+
+OnInit:
+	set .Delay, 30; // Delay entre recompensas
+	end;
+
+OnPCKillEvent:
+	.@map$ = strcharinfo(3);
+	if (.@map$ != "guild_vs1" && .@map$ != "guild_vs3" && .@map$ != "guild_vs4") end;
+
+	if (@Delay > gettimetick(2)) end;
+
+	// Anti-farm: mesma guild
+	if (getcharid(2) == getcharid(2, rid2name(killedrid)) && getcharid(2) > 0) end;
+
+	// Anti-farm: mesma party
+	if (getcharid(1) == getcharid(1, rid2name(killedrid)) && getcharid(1) > 0) end;
+
+	// Log para evitar farm com mesmo alvo
+	if (#PVP_Kill_Log$ == rid2name(killedrid) && (#PVP_Kill_Log_Time + 60) > gettimetick(2)) {
+		dispbottom "You recently killed this same player. No Cash Point awarded.";
+		end;
+	}
+
+	// Recompensa
+	set .@Amount, rand(1, 3);
+
+	// Bônus por streak com base no sistema Narrator PvP
+	if (@WD2 >= 5) {
+		set .@Amount, .@Amount * 2;
+		dispbottom "Bounty Bonus! Enemy had "+@WD2+" kills. Bonus reward applied!";
+	}
+
+	set #CASHPOINTS, #CASHPOINTS + .@Amount;
+	dispbottom "Gained "+.@Amount+" Cash Point(s). Total = "+#CASHPOINTS+" Cash Points.";
+	specialeffect2 EF_MVP;
+
+	// Atualiza delay e log
+	set @Delay, gettimetick(2) + .Delay;
+	set #PVP_Kill_Log$, rid2name(killedrid);
+	set #PVP_Kill_Log_Time, gettimetick(2);
+
+	end;
+}

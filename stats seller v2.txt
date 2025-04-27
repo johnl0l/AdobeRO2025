@@ -1,0 +1,39 @@
+prontera,155,181,5	script	Stats Mistress	757,{
+    
+    mes "[ Stats Mistress ]";
+    .@i = select( .stat_menu$ ) - 1;
+    input .@amount,0,( .max_stats - readparam( 13+.@i ) );
+    if ( .@amount > 0 )
+        callsub( __OnBuyStat,.@i,.@amount );
+    close;
+    
+    
+    __OnBuyStat:
+        .@index= getarg(0);
+        .@amount = getarg(1);
+        .@cost = ( .cost_per_stat * .@amount );
+        
+        mes "Stats : "+.stat$[.@index]+" +"+F_InsertComma( .@amount );
+        mes "Price : "F_InsertComma( .@cost )+"z";
+        mes "Do you wish to continue ?";
+        
+        if ( Zeny >= .@cost )
+            if ( select( "Buy "+F_InsertComma( .@amount )+" "+.stat$[.@index] ) ) {
+                Zeny -= .@cost;
+                statusup2 ( 13 + .@index ),.@amount;
+            }
+        return;
+ 
+    OnInit:
+        .max_stats = 100;
+        
+        .cost_per_stat = 400000;
+        
+        setarray .stat$,"STR","AGI","VIT","INT","DEX","LUK";
+        .@stat_size = getarraysize( .stat$ );
+        while ( .@i < .@stat_size ) {
+            .stat_menu$ = .stat_menu$ + .stat$[.@i] + ":";
+            .@i++;
+        }
+        end;
+}

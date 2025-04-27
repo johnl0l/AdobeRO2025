@@ -1,0 +1,26 @@
+prt_in,288,124,5	script	ToolDealer#prt	125,{
+    mes "What do you like to buy?";
+    switch( select( "~~Sell","Consumable", "Miscellaneous", "Nothing" ) ) {
+    next;
+
+    case 1:
+        callshop "sell",2;
+        end;
+
+    case 2:
+        callshop "Consumable",1;
+        end;
+    case 3:
+        callshop "Miscellaneous",1;
+        end;
+
+    case 4:
+        mes "Okay, have a nice day";
+        close;
+        
+    }
+}
+
+-	shop	ToolDealer#shop::Consumable	-1,611:-1,1750:-1,501:-1,502:-1,503:-1,504:-1,506:-1,568:-1,533:-1,645:-1,656:-1,657:-1,601:-1,602:-1,1065:-1,610:-1
+-	shop	ToolDealer#shop::Miscellaneous	-1,713:-1,717:-1,716:-1,715:-1,12020:-1,523:-1,12043:25000,12058:25000,12053:25000,12048:25000,12063:25000,12068:25000
+-	shop	sell	-1,512:-1

@@ -1,0 +1,40 @@
+-	script	VIPICON_AdobeRO	-1,{
+
+OnPCLoginEvent:
+	if (vip_status(1)) {
+		// Pega o tempo restante do VIP
+		set .@vip_expire, vip_status(2); // timestamp
+		set .@now, gettimetick(2);
+		set .@timer, .@vip_expire - .@now;
+
+		if (.@timer > 0) {
+			// Aplica ícone com tempo restante
+			fakeIcon(getcharid(0), EFST_VIPSTATE, .@timer, 1);
+
+			// Agendar remoção automática
+			addtimer(.@timer * 1000, strnpcinfo(3) + "::OnRemoveIcon");
+
+			// Aplica peso extra
+			set MaxWeight, MaxWeight + 2000;
+		}
+
+		dispbottom "Server Time: " + gettimestr("%H:%M:%S", 10);
+		dispbottom "=============================================";
+		dispbottom "Account Status : Premium Account";
+		dispbottom "Account Status : Exp & Job Increase 100%";
+		dispbottom "Account Status : Drop Increase 100%";
+		dispbottom "Time left : " + callfunc("Time2Str", vip_status(2)); // ou usa vip_status(VIP_STATUS_EXPIRE)
+		dispbottom "=============================================";
+	}
+	end;
+
+OnRemoveIcon:
+	// Remove ícone VIP
+	fakeIcon(getcharid(0), EFST_VIPSTATE, 0, 1);
+
+	// Remove bônus de peso
+	set MaxWeight, MaxWeight - 2000;
+
+	dispbottom "[VIP] Seu tempo VIP terminou. Benefícios removidos.";
+	end;
+}

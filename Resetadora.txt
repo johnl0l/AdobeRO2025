@@ -1,0 +1,445 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+//===== Cronus Script ======================================== 
+//= Resetadora
+//===== Por: =================================================
+//= Mehah
+//===== Versão Atual: ======================================== 
+//= 1.0
+//===== Descrição: =========================================== 
+//= Reseta os pontos de Habilidades e Atributos do personagem
+//============================================================
+//Este NPC, chamado Reset Girl, é um NPC de reset para um servidor de Ragnarok Online baseado no
+//emulador rAthena. Ele oferece várias opções de reset para o jogador, incluindo reset de habilidades,
+//atributos e um sistema de reset completo ao estilo MU Online.
+//============================================================
+/*
+Fluxo do NPC
+1 - O NPC exibe um diálogo informando as opções de reset e seus respectivos custos.
+2 - O jogador escolhe qual reset deseja fazer.
+3 - O NPC verifica se o jogador tem o Zeny necessário.
+4 - Se for um reset completo, o NPC verifica o nível do personagem e se ele já atingiu o limite de resets.
+5 - O reset é aplicado, e o jogador recebe os pontos de status conforme configurado.
+Este NPC é útil para servidores de Ragnarok que adotam um sistema de resets, permitindo que os jogadores evoluam várias vezes e acumulem mais pontos de status, similar ao sistema de resets do MU Online. ??
+*/
+
+prontera,151,187,4	script	Reset Girl	75,{
+
+function MUresetStatus;
+function CheckZeny;
+function CheckVIP;
+
+//== (MU) Reset Char =======================
+	set @MUreset,1; //Habilitar resete baseado no MU (1 para Habilitar)
+	set @MUlvl,99; //Level requerido para reseta
+	set @MUlimite,36; //Limite de quantos resete o jogador pode ter (0 para infinitos resets)
+	setarray @MUlimiteVIP[1],40,1; //Limite de quantos resete o vip pode ter (0 para infinitos resets) OBS: (0= Limite de Reset 1= Level de VIP(GM))
+	set @MUinfo,1; //Mostra informação de quantos pontos em cada resete (se tiver ativado o limite)
+	set @MUpnt,30; //Quantos pontos vai receber a cada resete
+	set @Mupreco,150000000; //Preço requerido para resetar	
+//==========================================
+	set @Pskill,50000; //Preço para resetar skill
+	set @Pstatus,100000; //Preço para resetar status 
+	set @Pambos,@Pskill+@Pstatus-10000; //Preço para resetar ambos
+//==========================================
+	CheckVIP();
+	mes "[ ^66CDAAResetadora^000000 ]";
+	mes "Olá ^0000CD"+strcharinfo(0)+"^000000, posso resetar seus pontos.";
+	if(@MUreset) mes "^A020F0Resetar Char^000000: ^696969"+@Mupreco+"^000000z";
+	mes "^0000FFResetar Habilidades^000000: ^696969"+@Pskill+"^000000z";
+	mes "^00FF00Resetar Atributos^000000: ^696969"+@Pstatus+"^000000z";
+	mes "^FF0000Resetar Ambos^000000: ^696969"+@Pambos+"^000000z";
+	next;
+	if(@MUreset)
+		select("^0000FFResetar Habilidades^000000","^00FF00Resetar Atributos^000000","^FF0000Resetar Ambos^000000","^A020F0Resetar Char (MU)^000000","Nenhum, obrigado.");
+	else
+		select("^0000FFResetar Habilidades^000000","^00FF00Resetar Atributos^000000","^FF0000Resetar Ambos^000000","Nenhum, obrigado.");
+
+	switch(@menu){
+		mes "[ ^66CDAAResetadora^000000 ]";
+		//mes "Volte quando precisar.";
+		
+		case 1:
+			CheckZeny(@Pskill);
+			mes "Tudo bem, vou resetar agora.. Lembrando, ajeite seus pontos e fale comigo mais vezes se precisar!";
+			ResetSkill;
+			close;
+			
+		case 2:
+			CheckZeny(@Pstatus);
+			break;
+			
+		case 3:
+			CheckZeny(@Pambos);
+			ResetSkill;
+			break;
+			
+		case 4: 
+			if(@MUreset && BaseLevel >= @MUlvl && (resetchar < @MUlimite || !@MUlimite)){
+				mes "Tudo bem, vou resetar agora.. Lembrando, você voltará ao ^B22222lvl 1^000000 com uma certa quantia de pontos!";
+				if(@MUinfo && @MUlimite){
+					mes " ";
+					mes "Informacões:";
+					if(resetchar == 1) mes "Você possui ^9370DB"+resetchar+"^000000 resete."; else
+					if(resetchar) mes "Você possui ^9370DB"+resetchar+"^000000 resets.";
+					for(set @i,1; @i <= @MUlimite; set @i,@i+1)
+						mes @i+" reset ^A020F0+^000000^4682B4"+@MUpnt*@i+"^000000 pontos";
+				}
+				next;
+				mes "[ ^66CDAAResetadora^000000 ]";
+				mes "Você tem certeza?";
+				next;
+				if(select("Sim","Não") == 1){
+					mes "[ ^66CDAAResetadora^000000 ]";
+					CheckZeny(@Mupreco);
+					set resetchar,resetchar + 1;
+					resetlvl(3);
+					MUresetStatus(1);
+					mes "Resetado com Sucesso";
+				}
+			}else if(@MUreset)
+				if(BaseLevel < @MUlvl)
+					mes "Desculpe, você não tem level necessário";
+				else
+					mes "Desculpe, você ja chego no limite de resete";
+					
+		case 5:
+		mes "Volte quando precisar.";
+		close;
+	}
+	mes "Tudo bem, vou resetar agora.. Lembrando, ajeite seus pontos e fale comigo mais vezes se precisar!";
+	MUresetStatus(0);
+	close;
+	
+	function	MUresetStatus	{
+		resetstatus;
+		if(!getarg(0)){
+			if(resetchar) set statuspoint,statuspoint + @MUpnt*resetchar-48;
+		}else{
+				set statuspoint,statuspoint - statuspoint;
+				set statuspoint,statuspoint + @MUpnt*resetchar;
+		}
+	}
+
+	function	CheckZeny	{
+		if (Zeny < getarg(0)){
+			mes "Desculpe, você não tem todo o ^FF3355Zeny^000000 necessário.";
+			close;
+		}else set Zeny,zeny-getarg(0);
+	}
+
+	function	CheckVIP	{
+		if(getgroupid() >= @MUlimiteVIP[2]){
+			if(!@MUlimiteVIP[1])
+				set @MUlimite,0;
+			else
+				set @MUlimite,@MUlimiteVIP[1];
+		}
+	}
+}
+
+/*
+prontera,151,187,4	script	Reset Girl	75,{
+
+    function MUresetStatus;
+    function CheckZeny;
+    function CheckVIP;
+
+    //== (MU) Reset Char =======================
+    set @MUreset,1; // Habilitar reset estilo MU
+    set @MUlvl,99; // Level requerido para reset
+    set @MUlimite,36; // Limite de resets para jogadores normais
+    setarray @MUlimiteVIP[1],40,1; // Limite para VIPs [limite, nível VIP]
+    set @MUinfo,1; // Mostrar informações de pontos ao resetar
+    set @MUpnt,30; // Pontos ganhos por reset
+    set @Mupreco,150000000; // Preço do reset MU
+    set @MuprecoVIP,100000000; // Preço reduzido para VIPs
+    
+    //== Configuração de resets normais ==========
+    set @Pskill,50000; // Reset de habilidades
+    set @Pstatus,100000; // Reset de atributos
+    set @Pambos,140000; // Reset de ambos
+    set @DescontoVIP,20; // Desconto VIP em %
+    
+    CheckVIP();
+    
+    // Aplicar desconto VIP
+    if (getgroupid() >= @MUlimiteVIP[2]) {
+        set @Pskill, @Pskill - ((@Pskill * @DescontoVIP) / 100);
+        set @Pstatus, @Pstatus - ((@Pstatus * @DescontoVIP) / 100);
+        set @Pambos, @Pambos - ((@Pambos * @DescontoVIP) / 100);
+    }
+    
+    mes "[ ^66CDAAResetadora^000000 ]";
+    mes "Olá ^0000CD"+strcharinfo(0)+"^000000, posso resetar seus pontos.";
+    if(@MUreset) mes "Resetar Char: ^696969" + ((getgroupid() >= @MUlimiteVIP[2]) ? @MuprecoVIP : @Mupreco) + "^000000z";
+    mes "Resetar Habilidades: ^696969" + @Pskill + "^000000z";
+    mes "Resetar Atributos: ^696969" + @Pstatus + "^000000z";
+    mes "Resetar Ambos: ^696969" + @Pambos + "^000000z";
+    next;
+    
+    if(@MUreset)
+        set @menu, select("Resetar Habilidades","Resetar Atributos","Resetar Ambos","Resetar Char (MU)","Sair");
+    else
+        set @menu, select("Resetar Habilidades","Resetar Atributos","Resetar Ambos","Sair");
+    
+    switch(@menu) {
+        case 1:
+            CheckZeny(@Pskill);
+            ResetSkill;
+            break;
+        case 2:
+            CheckZeny(@Pstatus);
+            ResetStatus;
+            break;
+        case 3:
+            CheckZeny(@Pambos);
+            ResetSkill;
+            ResetStatus;
+            break;
+        case 4:
+            if(@MUreset && BaseLevel >= @MUlvl && (resetchar < @MUlimite || !@MUlimite)) {
+                CheckZeny((getgroupid() >= @MUlimiteVIP[2]) ? @MuprecoVIP : @Mupreco);
+                set resetchar, resetchar + 1;
+                resetlvl(3);
+                MUresetStatus(1);
+                mes "Resetado com sucesso!";
+            } else {
+                mes "Você não atende aos requisitos para resetar.";
+            }
+            break;
+        case 5:
+            mes "Volte quando precisar.";
+            close;
+    }
+    close;
+    
+    function MUresetStatus {
+        resetstatus;
+        if (!getarg(0)) {
+            if (resetchar) set statuspoint, statuspoint + @MUpnt * resetchar - 48;
+        } else {
+            set statuspoint, @MUpnt * resetchar;
+        }
+    }
+    
+    function CheckZeny {
+        if (Zeny < getarg(0)) {
+            mes "Você não tem zeny suficiente!";
+            close;
+        }
+        set Zeny, Zeny - getarg(0);
+    }
+    
+    function CheckVIP {
+        if (getgroupid() >= @MUlimiteVIP[2]) {
+            set @MUlimite, @MUlimiteVIP[1];
+        }
+    }
+}
+*/
+
+/*
+prontera,151,187,4	script	Reset Girl	75,{
+
+//== (MU) Reset Char =======================
+set @MUreset,1; // Habilitar resete baseado no MU (1 para Habilitar)
+set @MUlvl,99; // Level requerido para resetar
+set @MUlimite,36; // Limite de resets (0 = infinito)
+setarray @MUlimiteVIP[1],40,1; // Limite de reset VIP (0 = infinito)
+set @MUinfo,1; // Mostrar informações dos resets
+set @MUpnt,30; // Pontos ganhos a cada reset
+set @Mupreco,150000000; // Preço do reset
+set @Pskill,50000; // Preço reset habilidades
+set @Pstatus,100000; // Preço reset atributos
+set @Pambos,@Pskill+@Pstatus-10000; // Preço reset ambos
+
+callfunc("CheckVIP");
+
+mes "[ ^66CDAAResetadora^000000 ]";
+mes "Olá ^0000CD"+strcharinfo(0)+"^000000, posso resetar seus pontos.";
+if(@MUreset) mes "^A020F0Resetar Char^000000: ^696969"+@Mupreco+"^000000z";
+mes "^0000FFResetar Habilidades^000000: ^696969"+@Pskill+"^000000z";
+mes "^00FF00Resetar Atributos^000000: ^696969"+@Pstatus+"^000000z";
+mes "^FF0000Resetar Ambos^000000: ^696969"+@Pambos+"^000000z";
+next;
+
+if(select("Habilidades","Atributos","Ambos","Reset Char (MU)","Cancelar") == 1){
+    callfunc("ConfirmReset", "habilidades", @Pskill);
+} else if(@menu == 2){
+    callfunc("ConfirmReset", "atributos", @Pstatus);
+} else if(@menu == 3){
+    callfunc("ConfirmReset", "ambos", @Pambos);
+} else if(@menu == 4 && @MUreset && BaseLevel >= @MUlvl){
+    callfunc("ConfirmMUReset");
+} else {
+    mes "Volte quando precisar.";
+    close;
+}
+
+function	script	CheckVIP	{
+    if(getgroupid() >= @MUlimiteVIP[2]){
+        set @MUlimite, @MUlimiteVIP[1] ? @MUlimiteVIP[1] : 0;
+    }
+}
+
+function	script	ConfirmReset	{
+    mes "Tem certeza que deseja resetar " + getarg(0) + " por ^696969" + getarg(1) + "^000000 Zeny?";
+    if(select("Sim", "Não") == 1){
+        callfunc("CheckZeny", getarg(1));
+        if(getarg(0) == "habilidades"){
+            resetstatus;
+        } else if(getarg(0) == "atributos"){
+            ResetSkill;
+        } else {
+            resetstatus;
+            ResetSkill;
+        }
+        mes "Reset concluído!";
+    }
+    close;
+}
+
+function	script	ConfirmMUReset	{
+    mes "Você voltará ao nível 1 com bônus de pontos. Tem certeza?";
+    if(select("Sim", "Não") == 1){
+        callfunc("CheckZeny", @Mupreco);
+        query_sql("UPDATE char SET resetchar = resetchar + 1 WHERE char_id = " + getcharid(0));
+        atcommand("@blvl 1");
+        atcommand("@jlvl 1");
+        callfunc("MUresetStatus");
+        mes "Resetado com sucesso!";
+    }
+    close;
+}
+
+function	script	CheckZeny	{
+    if(Zeny < getarg(0)){
+        mes "Você não tem Zeny suficiente!";
+        close;
+    }
+    set Zeny, Zeny - getarg(0);
+}
+
+function	script	MUresetStatus	{
+    resetstatus;
+    query_sql("SELECT resetchar FROM char WHERE char_id = " + getcharid(0), @resets);
+    set statuspoint, statuspoint + @MUpnt * @resets;
+}
+}
+*/
+
+/*
+prontera,151,187,4	script	Reset Girl	75,{
+
+// Funções declaradas corretamente
+function	script	MUresetStatus	{
+	resetstatus;
+	if (!getarg(0)) {
+		if (resetchar) {
+			set statuspoint, statuspoint + @MUpnt * resetchar - 48;
+		}
+	} else {
+		set statuspoint, statuspoint - statuspoint;
+		set statuspoint, statuspoint + @MUpnt * resetchar;
+	}
+}
+
+function script CheckZeny {
+	if (Zeny < getarg(0)) {
+		mes "Desculpe, você não tem todo o ^FF3355Zeny^000000 necessário.";
+		close;
+	} else {
+		set Zeny, Zeny - getarg(0);
+	}
+}
+
+function script CheckVIP {
+	if (getgroupid() >= @MUlimiteVIP[2]) {
+		if (!@MUlimiteVIP[1]) {
+			set @MUlimite, 0;
+		} else {
+			set @MUlimite, @MUlimiteVIP[1];
+		}
+	}
+}
+
+// Variáveis de configuração
+set @MUreset, 1;
+set @MUlvl, 99;
+set @MUlimite, 36;
+setarray @MUlimiteVIP[1], 40, 1;
+set @MUinfo, 1;
+set @MUpnt, 30;
+set @Mupreco, 150000000;
+set @Pskill, 50000;
+set @Pstatus, 100000;
+set @Pambos, @Pskill + @Pstatus - 10000;
+
+CheckVIP();
+
+mes "[ ^66CDAAResetadora^000000 ]";
+mes "Olá ^0000CD" + strcharinfo(0) + "^000000, posso resetar seus pontos.";
+if (@MUreset) mes "^A020F0Resetar Char^000000: ^696969" + @Mupreco + "^000000z";
+mes "^0000FFResetar Habilidades^000000: ^696969" + @Pskill + "^000000z";
+mes "^00FF00Resetar Atributos^000000: ^696969" + @Pstatus + "^000000z";
+mes "^FF0000Resetar Ambos^000000: ^696969" + @Pambos + "^000000z";
+next;
+
+if (@MUreset) {
+	select("^0000FFResetar Habilidades^000000", "^00FF00Resetar Atributos^000000", "^FF0000Resetar Ambos^000000", "^A020F0Resetar Char (MU)^000000", "Nenhum, obrigado.");
+} else {
+	select("^0000FFResetar Habilidades^000000", "^00FF00Resetar Atributos^000000", "^FF0000Resetar Ambos^000000", "Nenhum, obrigado.");
+}
+
+switch (@menu) {
+	case 1:
+		CheckZeny(@Pskill);
+		mes "Resetando habilidades...";
+		ResetSkill;
+		close;
+	case 2:
+		CheckZeny(@Pstatus);
+		break;
+	case 3:
+		CheckZeny(@Pambos);
+		ResetSkill;
+		break;
+	case 4:
+		if (@MUreset && BaseLevel >= @MUlvl && (resetchar < @MUlimite || !@MUlimite)) {
+			mes "Você voltará ao ^B22222lvl 1^000000 com uma certa quantia de pontos!";
+			if (@MUinfo && @MUlimite) {
+				mes "Você possui ^9370DB" + resetchar + "^000000 resets.";
+				for (set @i, 1; @i <= @MUlimite; set @i, @i + 1) {
+					mes @i + " reset ^A020F0+^000000^4682B4" + @MUpnt * @i + "^000000 pontos";
+				}
+			}
+			next;
+			mes "Você tem certeza?";
+			if (select("Sim", "Não") == 1) {
+				CheckZeny(@Mupreco);
+				set resetchar, resetchar + 1;
+				resetlvl(3);
+				MUresetStatus(1);
+				mes "Resetado com Sucesso";
+			}
+		} else if (@MUreset) {
+			if (BaseLevel < @MUlvl) {
+				mes "Desculpe, você não tem level necessário";
+			} else {
+				mes "Desculpe, você já chegou no limite de resets";
+			}
+		}
+		close;
+	case 5:
+		mes "Volte quando precisar.";
+		close;
+}
+}
+*/

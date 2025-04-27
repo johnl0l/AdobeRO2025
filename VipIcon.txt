@@ -1,0 +1,316 @@
+/*
+-	script	VipIcon	-1,{
+
+OnPCLoginEvent:
+	mes "[Points Viewer]";
+	mes "Hello "+strcharinfo(0);
+	mes ""+#CASHPOINTS+" Cash and "+#KAFRAPOINTS+" Free Cash.";
+	mes "-----------------------------------";
+	mes "Time VIP left";
+	mes Time2Str(vip_status(VIP_STATUS_REMAINING) + gettimetick(2));
+	//mes Time2Str(VIP_STATUS_EXPIRE) + gettimetick(2));
+	mes "-----------------------------------";
+	close;
+}
+*/
+/*
+-	script	vip_info	-1,{
+OnVIPInfo:
+	if (!vip_status(VIP_STATUS_ACTIVE)) {
+		dispbottom "You are not a VIP member. You may purchase one at Cash Shop.",0xff0000;
+		end;
+	}
+	dispbottom "VIP Time Left: "+ Time2Str(vip_status(VIP_STATUS_REMAINING)+gettimetick(2)),0x5cdcff;
+	end;
+OnInit:
+	bindatcmd "vipinfo", strnpcinfo(0)+"::OnVIPInfo";
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	if(vip_status(1)) {
+		set .@a, vip_status(2) - gettimetick(2);
+		bonus_script "{}",.@a,8,0,EFST_VIPSTATE;
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "VIP Player";
+		dispbottom "Remaining VIP duration :"+callfunc("Time2Str",vip_status(2));
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	bonus_script_clear SC_VIPSTATE;
+	if(vip_status(1)) {
+		set .@timer, vip_status(VIP_STATUS_EXPIRE);
+		
+		bonus_script "{}",3600,0,0,EFST_VIPSTATE;
+
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "Jogador VIP";
+		dispbottom "Duração do VIP restante :"+callfunc("Time2Str",.@timer);
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	if ( vip_status(1) ) {
+			set .@timer, vip_status(2) - gettimetick(2);
+        	if (getcharid(0),EFST_VIPSTATE2,.@timer,1);			
+			set MaxWeight, MaxWeight + 2000;
+			hateffect 19,true;
+			dispbottom "Server Time: "+gettimestr("%H:%M:%S", 10)+"";
+			dispbottom "=============================================";
+			dispbottom "Account Status : Premium Account";
+			dispbottom "Account Status : Exp & Job Increase 100%";
+			dispbottom "Account Status : Drop Increase 100%";
+			dispbottom "Time left : "+ callfunc("Time2Str",vip_status(VIP_STATUS_EXPIRE));
+			dispbottom "=============================================";
+    		end;
+}
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+	bonus_script_clear SC_VIPSTATE;
+	if ( vip_status(1) ) {
+			//set .@Timer, gettimetick(2) + 90500;
+			set .@timer, vip_status(2);
+			sc_start SC_VIPSTATE,.@timer,0;
+			dispbottom "Server Time: "+gettimestr("%H:%M:%S", 10)+"";
+			dispbottom "========================";
+			dispbottom "Account Status : VIP";
+			dispbottom "Expire Date: "+vip_status(2);
+			dispbottom "Time left: "+vip_status(3);
+			dispbottom "========================";
+      end;
+	}
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+		if ( vip_status(1) ) {
+		set .@viptime, vip_status(3);
+			set .@Timer, vip_status(VIP_STATUS_EXPIRE);
+			set MaxWeight, MaxWeight + 2000;
+			sc_start SC_VIPSTATE,Time2Str(VIP_STATUS_REMAINING),0; 
+			dispbottom "Account Status : VIP Account";
+			dispbottom "Expire Date: "+vip_status(2);
+			dispbottom "Time left: "+vip_status(3);
+
+		end;
+}
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+if (vip_status(VIP_STATUS_ACTIVE)){
+sc_end SC_VIPSTATE;
+sc_start SC_VIPSTATE,(vip_status(VIP_STATUS_REMAINING) * 1000),0;
+	end;
+	}
+
+*/
+/*
+prontera,131,209,4	script	TESsT	550,{
+	mes "Vip SALLER";
+	next;
+	switch( select( "VIP", "NO") ) {
+		case 1:
+			if (vip_status(VIP_STATUS_ACTIVE)){
+				mes "Your is VIP";
+				end;
+			}
+			vip_time 5;
+			sc_start SC_VIPSTATE,300000,200;
+			mes "VIP 5 MIN ACTIVE";
+			end;
+		case 2:
+			end;
+	}
+	end;
+	
+OnPCLoginEvent:
+if (vip_status(VIP_STATUS_ACTIVE)){
+sc_end SC_VIPSTATE;
+sc_start SC_VIPSTATE,(vip_status(VIP_STATUS_REMAINING) * 1000),200;
+	end;
+	}
+}
+*/
+/*
+-	script	VIP_STATUSs	-1,{
+OnPCLoginEvent:
+		if ( vip_status(1) ) {
+		set viptime, vip_status(3);
+		sc_start SC_VIPSTATE,viptime,0;
+			set .@Timer, vip_status(VIP_STATUS_EXPIRE);
+			dispbottom "Account Status : VIP Account";
+			dispbottom "Expire Date: "+ gettimestr("%m-%d-%Y %H:%M:%S",21),vip_status(VIP_STATUS_EXPIRE);
+			dispbottom "Time left : "+ callfunc("Time2Str",.@Timer);
+
+		end;
+}
+}
+*/
+/*
+-	script	VIP_STATUSx	-1,{
+OnPcloginEvent:
+	//bonus_script_clear EFST_VIPSTATE;
+	//bonus_script_clear SC_VIPSTATE;
+	if(vip_status(1)) {
+		//bonus_script "{}",99999999,0,0,EFST_VIPSTATE;
+		set .@timer, vip_status(3);
+		//dispbottom "TEST EFST_VIPSTATE" + EFST_VIPSTATE;
+		//dispbottom "TEST EFST_MAX" + EFST_MAX;
+		//not quite needed yet
+		set MaxWeight, MaxWeight + 4000;
+		sc_start SC_VIPSTATE,500000,0; 
+		//sc_start SC_VIPSTATE,-1,0;
+		//sc_start SC_EXPBOOST,-1,50;
+		//sc_start SC_INCMSPRATE,-1,100;
+		//sc_start SC_STRFood,-1,10;
+		//sc_start SC_AGIFood,-1,10;
+		//sc_start SC_VITFood,-1,10;
+		//sc_start SC_INTFood,-1,10;
+		//sc_start SC_DEXFood,-1,10;
+		//sc_start SC_LUKFood,-1,10;
+		//sc_start SC_COMMONSC_RESIST,500000,rand(20,40);
+
+		dispbottom "- - - - - - - - - - - VIP - - - - - - - - - - - -";
+		dispbottom "==========================";
+		dispbottom "Teleport enabled to VIP area. Password: foN";
+		dispbottom "Account Status: Exp & Job Increase 50%";
+		dispbottom "Account Status: Drop Increase 50%";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+			end;
+		}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	bonus_script_clear EFST_VIPSTATE;
+	if(vip_status(1)) {
+		set .@timer, vip_status(VIP_STATUS_EXPIRE);
+		
+		bonus_script "{}",3600,0,0,EFST_VIPSTATE;
+
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "Jogador VIP";
+		dispbottom "Duração do VIP restante: "+callfunc("Time2Str",.@timer);
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	if(vip_status(1)) {
+		set .@vip_time, gettimetick(2) - gettimetick(2, "#vip_time");
+		sc_start SC_VIPSTATE, .@vip_time * 1000, 0;
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "VIP Player";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	if(vip_status(1)) {
+		set .@vip_time_remaining, vip_status(2);
+		sc_start SC_VIPSTATE, .@vip_time_remaining * 1000, 0;
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "VIP Player";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	if(vip_status(1)) {
+		set .@day, gettimetick(2) + 86400000;
+		sc_start SC_VIPSTATE, .@day, 0;
+		set MaxWeight, MaxWeight + 4000;
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "VIP Player";
+		dispbottom "Expire Date: "+vip_status(2);
+		dispbottom "Time left: "+vip_status(3);
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-1,{
+
+OnPCLoginEvent:
+	bonus_script_clear EFST_VIPSTATE;
+	if(vip_status(1)) {
+		set .@timer, vip_status(VIP_STATUS_EXPIRE);
+		
+		bonus_script "{}",3600,0,0,EFST_VIPSTATE;
+
+		dispbottom "--- VIP ----";
+		dispbottom "==========================";
+		dispbottom "Jogador VIP";
+		dispbottom "Duração do VIP restante :"+callfunc("Time2Str",.@timer);
+		dispbottom "==========================";
+		end;
+	}
+}
+*/
+/*
+-	script	Vip_Icon	-,{
+
+OnPCLoginEvent:
+	bonus_script_clear EFST_VIPSTATE;
+	sc_end SC_VIPSTATE;
+	if(vip_status(1)) {
+		set .@Timer, vip_status(VIP_STATUS_EXPIRE);
+		set MaxWeight, MaxWeight + 4000;
+		sc_start SC_VIPSTATE,vip_status(VIP_STATUS_EXPIRE),0;
+	dispbottom "- - - - - [ VIP ] - - - - -";
+	dispbottom "==========================";
+	dispbottom "Welcome "+strcharinfo(0)+",";
+	dispbottom "^FF0000Your VIP Status will Expire at:^000000";
+	dispbottom gettimestr("%Y-%m/%d %H:%M:%S",21,vip_status(VIP_STATUS_EXPIRE));
+	dispbottom "^FF0000Time Left: ^000000" + callfunc("Time2Str",.@Timer);
+	dispbottom "==========================";
+	end;
+	}
+	}
+*/

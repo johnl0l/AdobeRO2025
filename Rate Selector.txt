@@ -1,0 +1,305 @@
+/*
+-	script	RateSelect	-1,{
+
+OnPCLoginEvent:
+		switch (individual_rate) {
+			case 1:
+				.@exp_rate_multiplier = 100;
+				.@jexp_rate_multiplier = 100;
+				set .@rate_description$, "x1 (Low Rate)";
+				break;
+			case 2:
+				.@exp_rate_multiplier = 2500;
+				.@jexp_rate_multiplier = 2500;
+				set .@rate_description$, "x25 (Mid Rate)";
+				break;
+			case 3:
+				.@exp_rate_multiplier = 5000;
+				.@jexp_rate_multiplier = 5000;
+				set .@rate_description$, "x50 (High Rate)";
+				break;
+			case 4:
+				.@exp_rate_multiplier = 10000;
+				.@jexp_rate_multiplier = 10000;
+				set .@rate_description$, "x100 (Super High Rate)";
+				break;
+			default:
+				mes "[ ^008000Rate Selector^000000 ]";
+				mes "Select your preferred server rate for this character.";
+				mes "BE CAREFUL: YOU CAN'T CHANGE IT AFTERWARD!";
+				individual_rate = select("^FFA07ALow Rate^000000:^FF7F50Mid Rate^000000:^FF6347High Rate^000000:^FF4500Super High Rate^000000");
+			close2;
+			goto OnPCLoginEvent; // Return to case evaluation after selection
+		}
+		
+	// Save the multipliers to the player variables
+	set #exp_rate_multiplier, .@exp_rate_multiplier;
+	set #jexp_rate_multiplier, .@jexp_rate_multiplier;
+	fakeIcon(getcharid(0),2002,0,1);
+	dispbottom "You have chosen the " + .@rate_description$ + " for your character.";
+	end;
+
+OnNPCKillEvent:
+	// Retrieve the stored multipliers
+	.@exp_rate_multiplier = #exp_rate_multiplier;
+	.@jexp_rate_multiplier = #jexp_rate_multiplier;
+
+	.@base_exp = getmonsterinfo(killedrid, MOB_BASEEXP) * .@exp_rate_multiplier;
+	.@job_exp = getmonsterinfo(killedrid, MOB_JOBEXP) * .@jexp_rate_multiplier;
+
+	// Debug messages to track values
+	dispbottom "[Debug] Base EXP: " + .@base_exp;
+	dispbottom "[Debug] Job EXP: " + .@job_exp;
+
+	if (.@base_exp > 0 || .@job_exp > 0) {
+		// Use getcharid(0) to specify the character ID
+		getexp2(.@base_exp, .@job_exp);
+	} else {
+		dispbottom "[Error] Experience values are zero.";
+	}
+	end;
+}
+*/
+
+/*
+-	script	RateSelect	-1,{
+
+OnInit:
+	.rate_ticket_id = 7227; // ID do TCG Card
+	end;
+
+OnPCLoginEvent:
+	// Mostrar o rate atual ao entrar
+	if (#exp_rate_multiplier && #jexp_rate_multiplier) {
+		dispbottom "[Rate System] Rate atual: Base EXP x" + #exp_rate_multiplier + " | Job EXP x" + #jexp_rate_multiplier;
+		end;
+	}
+
+	// Se ainda não escolheu
+	switch (individual_rate) {
+		case 1:
+			.@exp_rate_multiplier = 100;
+			.@jexp_rate_multiplier = 100;
+			.@rate_description$ = "x1 (Low Rate)";
+			break;
+		case 2:
+			.@exp_rate_multiplier = 2500;
+			.@jexp_rate_multiplier = 2500;
+			.@rate_description$ = "x25 (Mid Rate)";
+			break;
+		case 3:
+			.@exp_rate_multiplier = 5000;
+			.@jexp_rate_multiplier = 5000;
+			.@rate_description$ = "x50 (High Rate)";
+			break;
+		case 4:
+			.@exp_rate_multiplier = 10000;
+			.@jexp_rate_multiplier = 10000;
+			.@rate_description$ = "x100 (Super High Rate)";
+			break;
+		default:
+			mes "[ ^008000Rate Selector^000000 ]";
+			mes "Selecione o rate desejado para este personagem.";
+			mes " ^FF0000Atenção:^000000 Você ^não poderá mudar depois^, exceto com item!";
+			individual_rate = select("^00FF00x1 - Low Rate^000000:^FFA500x25 - Mid Rate^000000:^FF6347x50 - High Rate^000000:^FF0000x100 - Super High Rate^000000");
+
+			// Voltar para aplicar os valores
+			close2;
+			goto OnPCLoginEvent;
+	}
+
+	// Confirmação de escolha
+	mes "[ ^008000Rate Selector^000000 ]";
+	mes "Você escolheu: ^00CED1" + .@rate_description$ + "^000000.";
+	mes "Tem certeza?";
+	if (select("Confirmar:Cancelar") == 2) {
+		individual_rate = 0;
+		close2;
+		goto OnPCLoginEvent;
+	}
+
+	// Salvar os valores permanentes
+	#exp_rate_multiplier = .@exp_rate_multiplier;
+	#jexp_rate_multiplier = .@jexp_rate_multiplier;
+
+	// GM pode alterar se quiser
+	if (getgmlevel() >= 99) {
+		mes "[ ^836FFFGM Override^000000 ]";
+		mes "Você é GM e pode trocar de rate livremente.";
+		if (select("Trocar Rate:Manter") == 1) {
+			individual_rate = 0;
+			close2;
+			goto OnPCLoginEvent;
+		}
+	}
+
+	fakeIcon(getcharid(0), 2002, 0, 1);
+	dispbottom "Você escolheu o rate: " + .@rate_description$ + ".";
+	end;
+
+OnNPCKillEvent:
+	.@exp = getmonsterinfo(killedrid, MOB_BASEEXP);
+	.@jexp = getmonsterinfo(killedrid, MOB_JOBEXP);
+
+	.@exp_rate_multiplier = #exp_rate_multiplier;
+	.@jexp_rate_multiplier = #jexp_rate_multiplier;
+
+	.@base_exp = .@exp * .@exp_rate_multiplier;
+	.@job_exp = .@jexp * .@jexp_rate_multiplier;
+
+	// Mostrar os valores de debug
+	dispbottom "[Rate Debug] EXP Base: " + .@base_exp + " | EXP Job: " + .@job_exp;
+	dispbottom "[Rate Debug] Rate atual: x" + .@exp_rate_multiplier;
+
+	if (.@base_exp > 0 || .@job_exp > 0)
+		getexp2(.@base_exp, .@job_exp);
+	else
+		dispbottom "[Erro] EXP zerada.";
+	end;
+
+OnTalk:
+	mes "[ ^008000Rate Selector^000000 ]";
+	if (individual_rate == 0) {
+		mes "Você ainda não escolheu um rate.";
+		close2;
+		goto OnPCLoginEvent;
+	}
+
+	mes "Seu rate atual é:";
+	mes "^00CED1Base EXP x" + #exp_rate_multiplier + "^000000";
+	mes "^00CED1Job EXP x" + #jexp_rate_multiplier + "^000000";
+	mes "Deseja trocar? Isso custa 1 ^FF0000TCG Card^000000.";
+
+	if (countitem(.rate_ticket_id) < 1) {
+		mes "^FF0000Você não possui um TCG Card!^000000";
+		close;
+	}
+
+	if (select("Trocar de Rate:Cancelar") == 1) {
+		delitem .rate_ticket_id, 1;
+		individual_rate = 0;
+		dispbottom "[Rate System] TCG usado. Você pode escolher um novo rate.";
+		close2;
+		goto OnPCLoginEvent;
+	}
+	close;
+}
+*/
+
+/*
+-	script	RateSelect	-1,{
+
+OnPCLoginEvent:
+	mes "[ ^008000Rate Selector^000000 ]";
+	mes "Select your preferred server rate for this character.";
+	mes "NOTE: This selection will apply for this login only.";
+	individual_rate = select("^FFA07ALow Rate^000000:^FF7F50Mid Rate^000000:^FF6347High Rate^000000:^FF4500Super High Rate^000000");
+	close2;
+
+	// Define rates based on selection
+	switch (individual_rate) {
+		case 1:
+			.@exp_rate_multiplier = 100;
+			.@jexp_rate_multiplier = 100;
+			set .@rate_description$, "x1 (Low Rate)";
+			break;
+		case 2:
+			.@exp_rate_multiplier = 2500;
+			.@jexp_rate_multiplier = 2500;
+			set .@rate_description$, "x25 (Mid Rate)";
+			break;
+		case 3:
+			.@exp_rate_multiplier = 5000;
+			.@jexp_rate_multiplier = 5000;
+			set .@rate_description$, "x50 (High Rate)";
+			break;
+		case 4:
+			.@exp_rate_multiplier = 10000;
+			.@jexp_rate_multiplier = 10000;
+			set .@rate_description$, "x100 (Super High Rate)";
+			break;
+	}
+
+	// Salva as taxas como variáveis temporárias por login
+	set @exp_rate_multiplier, .@exp_rate_multiplier;
+	set @jexp_rate_multiplier, .@jexp_rate_multiplier;
+	fakeIcon(getcharid(0),2002,0,1);
+	dispbottom "You have chosen the " + .@rate_description$ + " for your character.";
+	end;
+
+OnNPCKillEvent:
+	.@exp_rate_multiplier = #exp_rate_multiplier;
+	.@jexp_rate_multiplier = #jexp_rate_multiplier;
+
+	.@base_exp = getmonsterinfo(killedrid, MOB_BASEEXP) * .@exp_rate_multiplier;
+	.@job_exp = getmonsterinfo(killedrid, MOB_JOBEXP) * .@jexp_rate_multiplier;
+
+	if (.@base_exp > 0 || .@job_exp > 0) {
+		getexp2(.@base_exp, .@job_exp);
+	} else {
+		dispbottom "[Error] Experience values are zero.";
+	}
+	end;
+}
+*/
+
+-	script	RateSelect	-1,{
+
+OnPCLoginEvent:
+	mes "[ ^008000Rate Selector^000000 ]";
+	mes "Select your preferred server rate for this character.";
+	mes "NOTE: This selection will apply for this login only.";
+	if(select("^FFA07ALow Rate^000000:^FF7F50Mid Rate^000000:^FF6347High Rate^000000:^FF4500Super High Rate^000000:^0000FFDefault Server Rate^000000") == 5) {
+		dispbottom "You are using the server's default EXP/JEXP rates.";
+		end;
+	}
+	
+	individual_rate = @menu - 1;
+
+	// Define rates based on selection
+	switch (individual_rate) {
+		case 0:
+			.@exp_rate_multiplier = 100;
+			.@jexp_rate_multiplier = 100;
+			set .@rate_description$, "x1 (Low Rate)";
+			break;
+		case 1:
+			.@exp_rate_multiplier = 2500;
+			.@jexp_rate_multiplier = 2500;
+			set .@rate_description$, "x25 (Mid Rate)";
+			break;
+		case 2:
+			.@exp_rate_multiplier = 5000;
+			.@jexp_rate_multiplier = 5000;
+			set .@rate_description$, "x50 (High Rate)";
+			break;
+		case 3:
+			.@exp_rate_multiplier = 10000;
+			.@jexp_rate_multiplier = 10000;
+			set .@rate_description$, "x100 (Super High Rate)";
+			break;
+		default:
+			end; // Caso algo fora do esperado aconteça, não aplica nada
+	}
+
+	// Salva as taxas como variáveis temporárias por login
+	set @exp_rate_multiplier, .@exp_rate_multiplier;
+	set @jexp_rate_multiplier, .@jexp_rate_multiplier;
+	fakeIcon(getcharid(0),2002,0,1);
+	dispbottom "You have chosen the " + .@rate_description$ + " for your character.";
+	end;
+
+OnNPCKillEvent:
+	.@exp_rate_multiplier = @exp_rate_multiplier;
+	.@jexp_rate_multiplier = @jexp_rate_multiplier;
+
+	.@base_exp = getmonsterinfo(killedrid, MOB_BASEEXP) * .@exp_rate_multiplier / 100;
+	.@job_exp = getmonsterinfo(killedrid, MOB_JOBEXP) * .@jexp_rate_multiplier / 100;
+
+	if (.@base_exp > 0 || .@job_exp > 0) {
+		getexp2(.@base_exp, .@job_exp);
+	} else {
+		dispbottom "[Error] Experience values are zero.";
+	}
+	end;
+}

@@ -1,0 +1,31 @@
+prontera,158,180,4	script	Restock	923,{
+
+mes "[Restock]";
+mes "Olá, o que deseja?";
+switch(select("Salvar Inventário:Restocar")){
+case 1:
+next;
+mes "[Restock]";
+setarray Itens[0],522,505,523,525,605,506,606,678,12016,645,656,657,12031,12034,12030,12032,12033,12028,12029,12117,12116,12114,12115,717,716,715,1025,12119,12120,12118,12121,12045,12060,12055,12050,12065,12070,714,1771,1010,1000,12220,1065;
+setarray Quantidade[0],countitem(522),countitem(505),countitem(523),countitem(525),countitem(605),countitem(506),countitem(606),countitem(678),countitem(12016),countitem(645),countitem(656),countitem(657),countitem(12031),countitem(12034),countitem(12030),countitem(12032),countitem(12033),countitem(12028),countitem(12029),countitem(12117),countitem(12116),countitem(12114),countitem(12115),countitem(717),countitem(716),countitem(715),countitem(1025),countitem(12119),countitem(12120),countitem(12118),countitem(12121),countitem(12045),countitem(12060),countitem(12055),countitem(12050),countitem(12065),countitem(12070),countitem(714),countitem(1771),countitem(1010),countitem(1000),countitem(12220),countitem(1065);
+mes "Restock salvo!";
+restockstatus = 1;
+close;
+
+case 2:
+
+for(set @i,0; @i <= getarraysize(Itens); set @i,@i+1){if(Quantidade[@i]>=1){getitem Itens[@i],Quantidade[@i]-countitem(Itens[@i]);}}
+close;
+
+}
+}
+
+prontera,161,180,4	shop	Utilidades	924,522:-1,505:-1,523:-1,525:-1,605:-1,506:-1,606:-1,678:-1,12016:-1,645:-1,656:-1,657:-1,12031:-1,12034:-1,12030:-1,12032:-1,12033:-1,12028:-1,12029:-1,12117:-1,12116:-1,12114:-1,12115:-1,717:-1,716:-1,715:-1,1025:-1,12119:-1,12120:-1,12118:-1,12121:-1,12045:-1,12060:-1,12055:-1,12050:-1,12065:-1,12070:-1,714:-1,1771:-1,1010:-1,1000:-1,12220:-1,1065:-1
+
+prontera,155,180,4	script	Curandeiro	922,{
+percentheal 100,100;
+if(restockstatus = 1)	{
+for(set @i,0; @i <= getarraysize(Itens); set @i,@i+1){if(Quantidade[@i]>=1){getitem Itens[@i],Quantidade[@i]-countitem(Itens[@i]);}}
+dispbottom "Itens restocados com sucesso!!!";
+						}
+}

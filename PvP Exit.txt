@@ -1,0 +1,63 @@
+/*
+
+guild_vs1,50,37,4	script	EXIT	497,{
+
+// ==============================================================
+
+set .@n$,"^0000FF[ PvP Exit ]^000000";
+// ==============================================================
+
+mes .@n$;
+
+mes "Are you sure you want to leave ^FF0000PvP^000000?";
+
+next;
+
+switch(select("^008000Yes^000000!:^696969No^000000!")) {
+
+case 1:
+dispbottom "Weak human!";
+warp "prontera",156,180;
+
+close;
+
+case 2:
+
+mes .@n$;
+
+mes "Don't be ^FF1493weak^000000!";
+
+close;
+
+}
+}
+guild_vs3,42,27,4	duplicate(EXIT)	EXIT#PvPExit	497
+
+*/
+
+guild_vs1,50,37,4	script	EXIT	497,{
+ 
+set .@amount, countitem(7420);
+if (.@amount == 0) {
+mes "[ ^008000 ... ^000000 ]";
+mes "Sorry, you don't have any items to exit ^FF0000PvP^000000.";
+mes "To leave ^FF0000PvP^000000 you need ^0000ff1^000000 ^008000Skull^000000";
+close;
+}
+mes "[^008000 ... ^000000]";
+mes "Are you sure you want to leave ^FF0000PvP^000000?";
+next;
+switch(select("Yes:No")) {
+case 1:
+delitem 7420,1;
+dispbottom "Weak human!";
+warp "SavePoint",0,0;
+close;
+ 
+case 2:
+mes "[^008000 ... ^000000]";
+mes "Don't be ^FF1493weak^000000!";
+close;
+}
+}
+guild_vs3,42,27,4	duplicate(EXIT)	EXIT#PvPExit	497

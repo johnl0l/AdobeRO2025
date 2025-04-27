@@ -1,0 +1,67 @@
+
+sec_in02,158,170,2	script	Status Points Seller	402,{
+	mes "[^DC143CStatus Points Seller^000000]";
+	mes "Hey! i sell Status Points! ^FFD700300^000000.^FFD700000^000000 ^FF0000zeny^000000 for ^6A5ACD3^000000 Status Points.";
+	mes "How many Status Points do you want to buy?";
+	switch(select("^6A5ACD3^000000 Status Points for ^FFD700300^000000.^FFD700000^000000z","^6A5ACD10^000000 Status Points for ^FFD7003,^000000^FFD700000^000000.^FFD700000^000000z","^6A5ACD20^000000 Status Points for ^FFD7006^000000,^FFD700000^000000,^FFD700000^000000z","^6A5ACD30^000000 Status Points for ^FFD7009^000000,^FFD700000^000000,^FFD700000^000000z")) {
+		case 1:
+			mes "[^DC143CStatus Points Seller^000000]";
+			mes "This will cost you ^FFD700300^000000,^FFD700000^000000 ^FF0000zeny^000000. Is this ok?";
+			next;
+			if (select("^FF0000Yes^000000:^4F4F4FNo^000000") == 2) close;
+			mes "[^DC143CStatus Points Seller^000000]";
+			if (Zeny < 300000) {
+				mes "You do not have enough ^FF0000zeny^000000!";
+				close;
+			}
+			set StatusPoint,StatusPoint + 3;
+			set Zeny,Zeny - 300000;
+			mes "Thank you for your purchase.";
+			close;
+		
+		case 2:
+			mes "[^DC143CStatus Points Seller^000000]";
+			mes "This will cost you ^FFD7003^000000.^FFD700000^000000.^FFD700000^000000 ^FF0000zeny^000000. Is this ok?";
+			next;
+			if (select("^FF0000Yes^000000:^4F4F4FNo^000000") == 2) close;
+			mes "[^DC143CStatus Points Seller^000000]";
+			if (Zeny < 3000000) {
+				mes "You do not have enough ^FF0000zeny^000000!";
+				close;
+			}
+			set StatusPoint,StatusPoint + 10;
+			set Zeny,Zeny - 3000000;
+			mes "Thank you for your purchase.";
+			close;
+
+		case 3:
+			mes "[^DC143CStatus Points Seller^000000]";
+			mes "This will cost you ^FFD7006^000000.^FFD700000^000000.^FFD700000^000000 ^FF0000zeny^000000. Is this ok?";
+			next;
+			if (select("^FF0000Yes^000000:^4F4F4FNo^000000") == 2) close;
+			mes "[^DC143CStatus Points Seller^000000]";
+			if (Zeny < 6000000) {
+				mes "You do not have enough ^FF0000zeny^000000!";
+				close;			}
+			set StatusPoint,StatusPoint + 20;
+			set Zeny,Zeny - 6000000;
+			mes "Thank you for your purchase.";
+			close;
+
+		case 4:
+			mes "[^DC143CStatus Points Seller^000000]";
+			mes "This will cost you ^FFD7009^000000.^FFD700000^000000.^FFD700000^000000 ^FF0000zeny^000000. Is this ok?";
+			next;
+			if (select("^FF0000Yes^000000:^4F4F4FNo^000000") == 2) close;
+			mes "[^DC143CStatus Points Seller^000000]";
+			if (Zeny < 9000000) {
+				mes "You do not have enough ^FF0000zeny^000000!";
+				close;			}
+			set StatusPoint,StatusPoint + 30;
+			set Zeny,Zeny - 9000000;
+			mes "Thank you for your purchase.";
+			close;
+
+
+	}
+}

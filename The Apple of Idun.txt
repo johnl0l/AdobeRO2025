@@ -1,0 +1,25 @@
+//prontera,156,182,4	script	The Apple of Idun	647,3,3,{
+-	script	The Apple of Idun	-1,{
+	end;
+	
+OnTouch:
+	if( .sbragi < gettimetick(2) ){			// triggered within area 7x7, start bragi if not on delay
+		//unitskilluseid getnpcid(0),321,10;	// A Poem of Bragi ID#321 level 10
+		//unitskilluseid getnpcid(0),320,10;	// Assassin Cross of Sunset ID#320 level 10
+		unitskilluseid getnpcid(0),322,10;	// The Apple of Idun ID#322 level 10 / + 25% Maximum HP & Heals 80HP
+		//unitskilluseid getnpcid(0),319,10;	// A Whistle ID#319 level 10
+		set .sbragi,gettimetick(2) + 0;	// delay 3 minute for npc to cast song
+	}
+	end;
+	
+OnInit:
+	//setunitdata getnpcid(0),UNPC_INT,170;	// set NPC INT 150
+	//setunitdata getnpcid(0),UNPC_DEX,170;	// set NPC DEX 150
+	//setunitdata getnpcid(0),UNPC_AGI,170;	// set NPC AGI 150
+	setunitdata(getnpcid(0),UNPC_PLUSALLSTAT,150);
+	end;
+}
+
+guild_vs3,49,19,2	duplicate(The Apple of Idun)	The Apple of Idun#guildvs3	647,3,3
+guild_vs1,49,8,2	duplicate(The Apple of Idun)	The Apple of Idun#guildvs1	647,3,3
+guild_vs4,49,8,2	duplicate(The Apple of Idun)	The Apple of Idun#guildvs4	647,3,3

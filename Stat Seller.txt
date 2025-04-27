@@ -1,0 +1,10 @@
+sec_in02,158,170,2	script	Stat Point Seller	402,{
+mes "How many Status Point you want to purchase ?";
+mes "^6A5ACD1^000000 Point = ^FFD7003^000000.^FFD700000^000000.^FFD700000^000000 ^FF0000Zeny^000000.";
+mes "You have ^FFD700"+Zeny+"^000000 ^FF0000Zeny^000000 , can purchase ^6A5ACD"+( Zeny / 3000000 )+"^000000 Points.";
+input .@i,0,( Zeny / 3000000 );
+mes "You purchased ^6A5ACD"+.@i+"^000000 Points.";
+set StatusPoint,StatusPoint + 1;
+set Zeny,Zeny - ( 3000000 * .@i );
+close;
+}

@@ -1,0 +1,584 @@
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+switch( select( "^0000FFDeposit^000000 ^006400"+.coin_name$,"^1E90FFWithdraw^000000 ^006400"+.coin_name$ ) ){
+	case 1:
+		mes "^000000How many ^006400"+.coin_name$+"^000000 to ^0000FFDeposit^000000 ??";
+		mes "^FF0000Max^000000 : ^B8860B"+countitem( .coin_id )+"^000000 ^006400"+.coin_name$;
+		input .@amount,0,countitem( .coin_id );
+		if( .@amount ){
+			delitem .coin_id,.@amount;
+			#coin_bank += .@amount;
+		}
+		else{
+			mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+		}
+		break;
+	case 2:
+		mes "^000000How many ^006400"+.coin_name$+"^000000 to ^1E90FFWithdraw^000000 ??";
+		mes "^FF0000Max^000000 : ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$;
+		input .@amount,0,#coin_bank;
+		if( .@amount ){
+			getitem .coin_id,.@amount;
+			#coin_bank -= .@amount;
+		}
+		else{
+			mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+		}
+		break;
+}
+close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname( .coin_id );
+	waitingroom "TCG Banker",0;
+	end;
+}
+*/
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+	switch( select( "^0000FFDeposit^000000 ^006400"+.coin_name$, "^1E90FFWithdraw^000000 ^006400"+.coin_name$, "^FFD700Check Balance^000000", "^32CD32Collect Interest^000000" ) ){
+		case 1:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+countitem( .coin_id )+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,countitem( .coin_id );
+			if( .@amount ){
+				delitem .coin_id,.@amount;
+				#coin_bank += .@amount;
+			}
+			else{
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,#coin_bank;
+			if( .@amount ){
+				getitem .coin_id,.@amount;
+				#coin_bank -= .@amount;
+			}
+			else{
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			mes "^000000Your current balance: ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$+".";
+			break;
+		case 4:
+			if( gettimetick(2) - #last_interest_time >= 86400 ) {
+				if( #coin_bank >= 100 ) {
+					.@interest = #coin_bank * 10 / 100;
+					#coin_bank += .@interest;
+					#last_interest_time = gettimetick(2);
+					mes "^32CD32Interest collected: ^B8860B"+.@interest+"^000000 ^006400"+.coin_name$+"^000000.";
+				} else {
+					mes "^FF0000You need at least 100 ^006400"+.coin_name$+"^FF0000 to earn interest.";
+				}
+			} else {
+				mes "^FF0000You can only collect interest once every 24 hours^000000.";
+			}
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname( .coin_id );
+	waitingroom "TCG Banker",0;
+	end;
+}
+*/
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+	switch( select( "^0000FFDeposit^000000 ^006400"+.coin_name$, "^1E90FFWithdraw^000000 ^006400"+.coin_name$, "^FFD700Check Balance^000000" ) ){
+		case 1:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+countitem( .coin_id )+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,countitem( .coin_id );
+			if( .@amount ){
+				delitem .coin_id,.@amount;
+				#coin_bank += .@amount;
+			}
+			else{
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			// Verifica se já passou 24 horas para aplicar o rendimento
+			if( gettimetick(2) - #last_interest_time >= 86400 ) {
+				if( #coin_bank >= 100 ) {
+					.@interest = #coin_bank * 10 / 100;
+					#coin_bank += .@interest;
+					#last_interest_time = gettimetick(2);
+				}
+			}
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,#coin_bank;
+			if( .@amount ){
+				getitem .coin_id,.@amount;
+				#coin_bank -= .@amount;
+			}
+			else{
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			// Aplica o rendimento automaticamente antes de mostrar o saldo
+			if( gettimetick(2) - #last_interest_time >= 86400 ) {
+				if( #coin_bank >= 100 ) {
+					.@interest = #coin_bank * 10 / 100;
+					#coin_bank += .@interest;
+					#last_interest_time = gettimetick(2);
+				}
+			}
+			mes "^000000Your current balance: ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$+".";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname( .coin_id );
+	waitingroom "TCG Banker",0;
+	end;
+}
+*/
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+	// Aplica o rendimento automaticamente ao jogador se já passou 24 horas
+	if( gettimetick(2) - #last_interest_time >= 86400 ) {
+		if( #coin_bank >= 100 ) {
+			.@interest = #coin_bank * 10 / 100;
+			#last_interest_time = gettimetick(2);
+			// Enviar juros diretamente para o storage
+			storeitem .coin_id, .@interest;
+			mes "^32CD32Your interest of ^B8860B"+.@interest+" ^006400"+.coin_name$+"^32CD32 has been deposited in your storage.";
+		}
+	}
+
+	switch( select( "^0000FFDeposit^000000 ^006400"+.coin_name$, "^1E90FFWithdraw^000000 ^006400"+.coin_name$, "^FFD700Check Balance^000000" ) ){
+		case 1:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+countitem( .coin_id )+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,countitem( .coin_id );
+			if( .@amount ){
+				delitem .coin_id,.@amount;
+				#coin_bank += .@amount;
+			}
+			else{
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,#coin_bank;
+			if( .@amount ){
+				getitem .coin_id,.@amount;
+				#coin_bank -= .@amount;
+			}
+			else{
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			mes "^000000Your current balance: ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$+".";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname( .coin_id );
+	waitingroom "TCG Banker",0;
+	end;
+}
+*/
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+	// Aplica o rendimento automaticamente ao jogador se já passou 24 horas
+	if( gettimetick(2) - #last_interest_time >= 86400 ) {
+		if( #coin_bank >= 100 ) {
+			.@interest = #coin_bank * 10 / 100;
+			#last_interest_time = gettimetick(2);
+			
+			// Verifica se o jogador tem espaço para receber as moedas
+			if( checkweight(.coin_id, .@interest) ) {
+				getitem .coin_id, .@interest;
+				mes "^32CD32Your interest of ^B8860B"+.@interest+" ^006400"+.coin_name$+"^32CD32 has been deposited in your inventory.";
+			} else {
+				mes "^FF0000Not enough weight capacity! Your interest could not be deposited. Make space in your inventory.";
+			}
+		}
+	}
+
+	switch( select( "^0000FFDeposit^000000 ^006400"+.coin_name$, "^1E90FFWithdraw^000000 ^006400"+.coin_name$, "^FFD700Check Balance^000000" ) ){
+		case 1:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+countitem( .coin_id )+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,countitem( .coin_id );
+			if( .@amount ){
+				delitem .coin_id,.@amount;
+				#coin_bank += .@amount;
+			}
+			else{
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,#coin_bank;
+			if( .@amount ){
+				getitem .coin_id,.@amount;
+				#coin_bank -= .@amount;
+			}
+			else{
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			mes "^000000Your current balance: ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$+".";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname( .coin_id );
+	waitingroom "TCG Banker",0;
+	end;
+}
+*/
+
+
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+	// Aplica o rendimento automaticamente ao jogador se já passou 24 horas
+	if( gettimetick(2) - #last_interest_time >= 86400 ) {
+		if( #coin_bank >= 100 ) {
+			.@interest = #coin_bank * 10 / 100;
+			#coin_bank += .@interest;
+			#last_interest_time = gettimetick(2);
+			
+			mes "^32CD32Your daily interest of ^B8860B"+.@interest+" ^006400"+.coin_name$+"^32CD32 has been added to your balance.";
+		}
+	}
+
+	switch( select( "^0000FFDeposit^000000 ^006400"+.coin_name$, "^1E90FFWithdraw^000000 ^006400"+.coin_name$, "^FFD700Check Balance^000000", "^FFA500Info^000000" ) ){
+		case 1:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+countitem( .coin_id )+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,countitem( .coin_id );
+			if( .@amount ){
+				delitem .coin_id,.@amount;
+				#coin_bank += .@amount;
+			}
+			else{
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400"+.coin_name$+"^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$;
+			input .@amount,0,#coin_bank;
+			if( .@amount ){
+				getitem .coin_id,.@amount;
+				#coin_bank -= .@amount;
+			}
+			else{
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			mes "^000000Your current balance: ^B8860B"+#coin_bank+"^000000 ^006400"+.coin_name$+".";
+			break;
+		case 4:
+			mes "^FFD700INFO:^000000 If you have at least ^B8860B100^000000 ^006400"+.coin_name$+"^000000, you will receive ^B8860B10% daily interest^000000 on your balance.";
+			mes "The interest is automatically added to your bank balance every 24 hours.";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname( .coin_id );
+	waitingroom "TCG Banker",0;
+	end;
+}
+*/
+
+
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+
+	// Aplica os juros acumulados corretamente
+	if (gettimetick(2) - #last_interest_time >= 86400) {
+		// Calcula quantos dias passaram desde o último cálculo
+		.@days_passed = (gettimetick(2) - #last_interest_time) / 86400;
+		
+		if (#coin_bank >= 100 && .@days_passed > 0) {
+			.@new_balance = #coin_bank * pow(1.1, .@days_passed); // Juros compostos
+			.@interest = .@new_balance - #coin_bank;
+			#coin_bank = .@new_balance;
+			#last_interest_time = gettimetick(2); // Atualiza o último tempo registrado
+
+			mes "^32CD32Your daily interest of ^B8860B" + .@interest + " ^006400" + .coin_name$ + "^32CD32 has been added to your balance.";
+		}
+	}
+
+	switch (select("^0000FFDeposit^000000 ^006400" + .coin_name$, "^1E90FFWithdraw^000000 ^006400" + .coin_name$, "^FFD700Check Balance^000000", "^FFA500Info^000000")) {
+		case 1:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + countitem(.coin_id) + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, countitem(.coin_id);
+			if (.@amount) {
+				delitem .coin_id, .@amount;
+				#coin_bank += .@amount;
+			} else {
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, #coin_bank;
+			if (.@amount) {
+				getitem .coin_id, .@amount;
+				#coin_bank -= .@amount;
+			} else {
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			mes "^000000Your current balance: ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$ + ".";
+			break;
+		case 4:
+			mes "^FFD700INFO:^000000 If you have at least ^B8860B100^000000 ^006400" + .coin_name$ + "^000000, you will receive ^B8860B10% daily interest^000000 on your balance.";
+			mes "The interest is automatically added to your bank balance every 24 hours and compounds daily.";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname(.coin_id);
+	waitingroom "TCG Banker", 0;
+	end;
+}
+*/
+
+
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+
+	// Aplica os juros acumulados corretamente
+	if (gettimetick(2) - #last_interest_time >= 86400) {
+		// Calcula quantos dias passaram desde o último cálculo
+		.@days_passed = (gettimetick(2) - #last_interest_time) / 86400;
+		
+		if (#coin_bank >= 100 && .@days_passed > 0) {
+			.@new_balance = #coin_bank * pow(1.1, .@days_passed); // Juros compostos
+			#interest_balance += .@new_balance - #coin_bank; // Armazena os juros separadamente
+			#coin_bank = .@new_balance;
+			#last_interest_time = gettimetick(2); // Atualiza o último tempo registrado
+
+			mes "^32CD32Your daily interest of ^B8860B" + #interest_balance + " ^006400" + .coin_name$ + "^32CD32 has been added to your balance.";
+		}
+	}
+
+	switch (select("^0000FFDeposit^000000 ^006400" + .coin_name$, "^1E90FFWithdraw^000000 ^006400" + .coin_name$, "^1E90FFWithdraw Interest^000000", "^FFD700Check Balance^000000", "^FFA500Info^000000")) {
+		case 1:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + countitem(.coin_id) + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, countitem(.coin_id);
+			if (.@amount) {
+				delitem .coin_id, .@amount;
+				#coin_bank += .@amount;
+			} else {
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, #coin_bank;
+			if (.@amount) {
+				getitem .coin_id, .@amount;
+				#coin_bank -= .@amount;
+			} else {
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			if (#interest_balance > 0) {
+				getitem .coin_id, #interest_balance;
+				mes "^000000You have withdrawn ^B8860B" + #interest_balance + " ^006400" + .coin_name$ + "^000000 (interest only).";
+				#interest_balance = 0; // Resetando os juros após o saque
+			} else {
+				mes "^FF0000You don't have any interest to withdraw yet.^000000";
+			}
+			break;
+		case 4:
+			mes "^000000Your current balance: ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$ + ".";
+			mes "^32CD32Accumulated interest: ^B8860B" + #interest_balance + "^000000 ^006400" + .coin_name$ + ".";
+			break;
+		case 5:
+			mes "^FFD700INFO:^000000 If you have at least ^B8860B100^000000 ^006400" + .coin_name$ + "^000000, you will receive ^B8860B10% daily interest^000000 on your balance.";
+			mes "The interest is automatically added to your bank balance every 24 hours and compounds daily.";
+			mes "You can withdraw your interest separately without touching your main balance.";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname(.coin_id);
+	waitingroom "TCG Banker", 0;
+	end;
+}
+*/
+
+/*
+prontera,128,213,5	script	TCG Banker	407,{
+
+	// Aplica os juros acumulados corretamente
+	if (gettimetick(2) - #last_interest_time >= 86400) {
+		.@days_passed = (gettimetick(2) - #last_interest_time) / 86400;
+
+		if (#coin_bank >= 100 && .@days_passed > 0) {
+			.@new_balance = #coin_bank;
+			for (.@i = 0; .@i < .@days_passed; .@i++) {
+				.@interest = .@new_balance * 10 / 100; // 10% de juros diários
+				.@new_balance += .@interest;
+				#interest_balance += .@interest; // Armazena apenas os juros
+			}
+			#coin_bank = .@new_balance;
+			#last_interest_time = gettimetick(2);
+
+			mes "^32CD32Your daily interest of ^B8860B" + #interest_balance + " ^006400" + .coin_name$ + "^32CD32 has been added to your balance.";
+		}
+	}
+
+	switch (select("^0000FFDeposit^000000 ^006400" + .coin_name$, "^1E90FFWithdraw^000000 ^006400" + .coin_name$, "^1E90FFWithdraw Interest^000000", "^FFD700Check Balance^000000", "^FFA500Info^000000")) {
+		case 1:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + countitem(.coin_id) + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, countitem(.coin_id);
+			if (.@amount) {
+				delitem .coin_id, .@amount;
+				#coin_bank += .@amount;
+			} else {
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, #coin_bank;
+			if (.@amount) {
+				getitem .coin_id, .@amount;
+				#coin_bank -= .@amount;
+			} else {
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			if (#interest_balance > 0) {
+				getitem .coin_id, #interest_balance;
+				mes "^000000You have withdrawn ^B8860B" + #interest_balance + " ^006400" + .coin_name$ + "^000000 (interest only).";
+				#interest_balance = 0; // Resetando os juros após o saque
+			} else {
+				mes "^FF0000You don't have any interest to withdraw yet.^000000";
+			}
+			break;
+		case 4:
+			mes "^000000Your current balance: ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$ + ".";
+			mes "^32CD32Accumulated interest: ^B8860B" + #interest_balance + "^000000 ^006400" + .coin_name$ + ".";
+			break;
+		case 5:
+			mes "^FFD700INFO:^000000 If you have at least ^B8860B100^000000 ^006400" + .coin_name$ + "^000000, you will receive ^B8860B10% daily interest^000000 on your balance.";
+			mes "The interest is automatically added to your bank balance every 24 hours and compounds daily.";
+			mes "You can withdraw your interest separately without touching your main balance.";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname(.coin_id);
+	waitingroom "TCG Banker", 0;
+	end;
+}
+*/
+
+
+prontera,128,213,5	script	TCG Banker	407,{
+
+	// Aplica os juros acumulados corretamente
+	if (gettimetick(2) - #last_interest_time >= 86400) {
+		.@days_passed = (gettimetick(2) - #last_interest_time) / 86400;
+
+		if (#coin_bank >= 100 && .@days_passed > 0) {
+			for (.@i = 0; .@i < .@days_passed; .@i++) {
+				.@interest = #coin_bank * 10 / 100; // 10% de juros diários
+				#interest_balance += .@interest; // Armazena os juros separadamente
+			}
+			#last_interest_time = gettimetick(2);
+
+			mes "^32CD32Your daily interest of ^B8860B" + .@interest + " ^006400" + .coin_name$ + "^32CD32 has been added to your balance.";
+		}
+	}
+
+	switch (select("^0000FFDeposit^000000 ^006400" + .coin_name$, "^1E90FFWithdraw^000000 ^006400" + .coin_name$, "^32CD32Withdraw Interest^000000", "^FFD700Check Balance^000000", "^FFA500Info^000000")) {
+		case 1:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^0000FFDeposit^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + countitem(.coin_id) + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, countitem(.coin_id);
+			if (.@amount) {
+				delitem .coin_id, .@amount;
+				#coin_bank += .@amount;
+			} else {
+				mes "^0000FFDeposit^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 2:
+			mes "^000000How many ^006400" + .coin_name$ + "^000000 to ^1E90FFWithdraw^000000 ??";
+			mes "^FF0000Max^000000 : ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$;
+			input .@amount, 0, #coin_bank;
+			if (.@amount) {
+				getitem .coin_id, .@amount;
+				#coin_bank -= .@amount;
+			} else {
+				mes "^1E90FFWithdraw^000000 ^FF0000Cancelled^000000.";
+			}
+			break;
+		case 3:
+			if (#interest_balance > 0) {
+				mes "^000000You have withdrawn ^B8860B" + #interest_balance + " ^006400" + .coin_name$ + "^000000 (interest only).";
+				getitem .coin_id, #interest_balance;
+				#interest_balance = 0; // Zera os juros após o saque
+			} else {
+				mes "^FF0000You don't have any interest to withdraw yet.^000000";
+			}
+			break;
+		case 4:
+			mes "^000000Your current balance: ^B8860B" + #coin_bank + "^000000 ^006400" + .coin_name$ + ".";
+			mes "^32CD32Accumulated interest: ^B8860B" + #interest_balance + "^000000 ^006400" + .coin_name$ + ".";
+			break;
+		case 5:
+			mes "^FFD700INFO:^000000 If you have at least ^B8860B100^000000 ^006400" + .coin_name$ + "^000000, you will receive ^B8860B10% daily interest^000000 on your balance.";
+			mes "The interest is automatically added to your bank balance every 24 hours and compounds daily.";
+			mes "You can withdraw your interest separately without touching your main balance.";
+			break;
+	}
+	close;
+
+OnInit:
+	.coin_id = 7227;
+	.coin_name$ = getitemname(.coin_id);
+	waitingroom "TCG Banker", 0;
+	end;
+}

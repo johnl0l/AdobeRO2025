@@ -1,0 +1,20 @@
+-	script	vipbuff	-1,{
+OnInit:
+	bindatcmd "vipbuff",strnpcinfo(0)+"::OnBuff";			
+	end;
+
+OnBuff:
+	if (getgroupid() <= 0) {
+	sc_start SC_ASSNCROS,60000,10;
+	sc_start SC_POEMBRAGI,60000,10;
+	sc_start SC_APPLEIDUN,60000,10;
+	sc_start SC_WHISTLE,60000,10;
+	sc_start SC_NIBELUNGEN,60000,5;
+	sc_start SC_DRUMBATTLE,60000,5;
+	sc_start SC_INTOABYSS,60000,1;
+	sc_start SC_SERVICE4U,60000,10;
+	sc_start SC_HUMMING,60000,10;
+	sc_start SC_FORTUNE,60000,10;
+	}
+end;
+}

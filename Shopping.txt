@@ -1,0 +1,233 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+// Fixed some Bug. [ By Goddameit ]
+
+// Leave this alone...
+
+-	shop	Emistry_Shop	-1,512:15
+
+
+prontera.gat,182,174,5	script	Shopping	411,{
+// NPC Name
+set .name$,"[^FF0000  Shop  ^000000]";
+
+mes .name$;
+mes "Each Shop Buy Item Using Different Items.";
+mes "Which shop you like to look at it";
+next;
+deletearray .ItemLists[0],getarraysize( .ItemLists );
+deletearray .ItemPrice[0],getarraysize( .ItemPrice );
+npcshopitem "Emistry_Shop",512,1;
+select("Headgears:Midgears:Lowgears:Items Box:God Items");
+callsub CaseCH,@menu;
+
+npcshopdelitem "Emistry_Shop",512;
+for(set .@i,0; .@i < getarraysize( .ItemLists ); set .@i,.@i+1)
+	npcshopadditem "Emistry_Shop",.ItemLists[.@i],.ItemPrice[.@i];
+mes "Okay...wait awhile";
+mes "This Shop use ^FF0000"+getitemname( @Currency )+"^000000 to buy the Items.";
+close2;
+callsub CaseCH,@menu;
+callshop "Emistry_Shop",1;
+npcshopattach "Emistry_Shop";
+dispbottom "You currently have "+countitem( @Currency )+" "+getitemname( @Currency )+".";
+end;
+
+OnBuyItem:
+	callsub CaseCH,@menu;
+	for(set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1)
+		for(set @j,0; @j < getarraysize( .ItemLists ); set @j,@j+1)
+			if( .ItemLists[@j] == @bought_nameid[@i] )
+			set @TotalCost,@TotalCost + ( .ItemPrice[@j] * @bought_quantity[@i] );
+	if( countitem( @Currency ) < @TotalCost )
+	{
+		for( set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1 )
+		{
+			mes "Item : ^0000FF"+getitemname( @bought_nameid[@i] )+"^000000";
+			mes "Quantity : ^0000FF"+@bought_quantity[@i]+"^000000";
+		}
+		mes "^00FF00____________________________^000000";
+		mes "Total Cost : ^0000FF"+@TotalCost+" x "+getitemname( @Currency )+"^000000";
+		mes "^00FF00____________________________^000000";
+		mes "[ ^FF0000X^000000 ] You do not have enough ^0000FF"+getitemname( @Currency )+"^000000 to purchase this.";
+	} else {
+		for(set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1)
+		{
+			getitem @bought_nameid[@i],@bought_quantity[@i];
+			message strcharinfo(0),"Purchased "+getitemname( @bought_nameid[@i] );
+		}
+		delitem @Currency,@TotalCost;
+		mes "Thank you for shopping.";
+		mes "You now have "+countitem( @Currency )+" "+getitemname( @Currency )+" left.";
+	}
+	set @TotalCost,0;
+	deletearray @bought_nameid[0],getarraysize( @bought_nameid );
+	deletearray @bought_quantity[0],getarraysize( @bought_quantity );
+	close;
+
+CaseCH:
+	switch(getarg(0))
+	{
+		Case 1:
+			// Item Currency
+			set @Currency,7227;
+			// Item ID Lists
+			setarray .ItemLists[0],5688,5137,5132,5490,5265,5386,18613,5765,5776,5809,5320,5283,5417,5340,5573,5563,5655,5595,5374,5518,5341,5363,5467,5423,5366,5415,5454,5547,5212,5310,5761,5388,5738,18596,5379,5343,5682,5466,5464;
+			// Item Price
+			setarray .ItemPrice[0],250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250;
+			return;
+		Case 2:
+			// Item Currency
+			set @Currency,7227;
+			// Item ID Lists
+			setarray .ItemLists[0],5788,5389,5401,5800,5135,5244,5470,5664,5471,5516,5610,5315,5325,5397,5592,18503,19087,18603,19245,18747,19126,5985,18657,18839,19024,19086,19162,19085,18682,19109,18576;
+			// Item Price
+			setarray .ItemPrice[0],200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200;
+			return;
+		Case 3:
+			// Item Currency
+			set @Currency,7227;
+			// Item ID Lists
+			setarray .ItemLists[0],18679,18859,19154,18845,18754,18844,5868,18666,19147,19153,18925,18936,18670,19095,18564,18917,19146,19150,18621,5532,18650,18867,19139,5574,19145;
+			// Item Price
+			setarray .ItemPrice[0],150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150;
+			return;
+		Case 4:
+			// Item Currency
+			set @Currency,7539;
+			// Item ID Lists
+			setarray .ItemLists[0],12103,14175,13581,13577,13585,13589,13595,14223,13610,13611,13716,13718,13720,13742,13745,13751,13757,13871,13872,13873,13874,13875,13876,13926,13927,13928,13929,13930,13931,13945,13946,13947,13948,13949,13950,13973,14180,13995;
+			// Item Price
+			setarray .ItemPrice[0],5,5,20,25,25,25,25,25,20,20,25,10,10,15,15,30,30,70,70,70,70,70,70,75,75,75,75,75,75,80,80,80,80,80,80,15,15,5;
+			return;
+		Case 5:
+			// Item Currency
+			set @Currency,7179;
+			// Item ID Lists
+			setarray .ItemLists[0],2629,2630,2410,1530,2541,2383,1161;
+			// Item Price
+			setarray .ItemPrice[0],500,500,500,500,500,500,500;
+			return;
+
+		// Case 4,5,6.....etc...
+
+		default:
+			mes "Wrong Selection / Configurations";
+			close;
+	}
+}
+
+/*
+-	shop	Emistry_Shop	-1,512:15
+
+prontera.gat,182,174,5	script	Shopping	411,{
+// NPC Name
+set .name$,"[^FF0000  Shop  ^000000]";
+
+mes .name$;
+mes "Each Shop Buy Item Using Different Items.";
+mes "Which shop you like to look at it";
+next;
+
+// Limpa as listas de itens e preços
+deletearray .ItemLists[0],getarraysize(.ItemLists);
+deletearray .ItemPrice[0],getarraysize(.ItemPrice);
+
+select("Headgears:Midgears:Lowgears:Items Box:God Items");
+callsub CaseCH, @menu;
+
+// Atualiza a loja com os itens e preços da lista
+npcshopdelitem "Emistry_Shop", 512;
+for(set .@i, 0; .@i < getarraysize(.ItemLists); set .@i, .@i + 1) {
+    npcshopadditem "Emistry_Shop", .ItemLists[.@i], .ItemPrice[.@i];
+}
+
+// Exibe saldo e abre a loja
+callfunc "DisplayAccountInfo"; // Exibe o saldo e, em seguida, abre a loja
+callshop "Emistry_Shop", 1;
+end;
+
+OnBuyItem:
+	callsub CaseCH, @menu;
+	for(set @i,0; @i < getarraysize(@bought_nameid); set @i,@i+1)
+		for(set @j,0; @j < getarraysize(.ItemLists); set @j,@j+1)
+			if(.ItemLists[@j] == @bought_nameid[@i])
+				set @TotalCost, @TotalCost + (.ItemPrice[@j] * @bought_quantity[@i]);
+	if(countitem(@Currency) < @TotalCost) {
+		for(set @i, 0; @i < getarraysize(@bought_nameid); set @i,@i+1) {
+			mes "Item : ^0000FF"+getitemname(@bought_nameid[@i])+"^000000";
+			mes "Quantity : ^0000FF"+@bought_quantity[@i]+"^000000";
+		}
+		mes "^00FF00____________________________^000000";
+		mes "Total Cost : ^0000FF"+@TotalCost+" x "+getitemname(@Currency)+"^000000";
+		mes "^00FF00____________________________^000000";
+		mes "[ ^FF0000X^000000 ] You do not have enough ^0000FF"+getitemname(@Currency)+"^000000 to purchase this.";
+	} else {
+		for(set @i,0; @i < getarraysize(@bought_nameid); set @i,@i+1) {
+			getitem @bought_nameid[@i], @bought_quantity[@i];
+			message strcharinfo(0), "Purchased "+getitemname(@bought_nameid[@i]);
+		}
+		delitem @Currency, @TotalCost;
+		mes "Thank you for shopping.";
+		mes "You now have "+countitem(@Currency)+" "+getitemname(@Currency)+" left.";
+	}
+	set @TotalCost, 0;
+	deletearray @bought_nameid[0], getarraysize(@bought_nameid);
+	deletearray @bought_quantity[0], getarraysize(@bought_quantity);
+	close;
+
+CaseCH:
+    switch(getarg(0))
+    {
+        Case 1:
+            set @Currency,7227;
+            setarray .ItemLists[0],5688,5137,5132,5490,5265,5386,18613,5765,5776,5809,5320,5283,5417,5340,5573,5563,5655,5595,5374,5518,5341,5363,5467,5423,5366,5415,5454,5547,5212,5310,5761,5388,5738,18596,5379,5343,5682,5466,5464;
+            setarray .ItemPrice[0],250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250;
+            return;
+        Case 2:
+            set @Currency,7227;
+            setarray .ItemLists[0],5788,5389,5401,5800,5135,5244,5470,5664,5471,5516,5610,5315,5325,5397,5592,18503,19087,18603,19245,18747,19126,5985,18657,18839,19024,19086,19162,19085,18682,19109,18576;
+            setarray .ItemPrice[0],200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200,200;
+            return;
+        Case 3:
+            set @Currency,7227;
+            setarray .ItemLists[0],18679,18859,19154,18845,18754,18844,5868,18666,19147,19153,18925,18936,18670,19095,18564,18917,19146,19150,5532,18650,18867,19139,5574,19145;
+            setarray .ItemPrice[0],150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150,150;
+            return;
+        Case 4:
+            set @Currency,7539;
+            setarray .ItemLists[0],12103,14175,13581,13577,13585,13589,13595,14223,13610,13611,13716,13718,13720,13742,13745,13751,13757,13871,13872,13873,13874,13875,13876,13926,13927,13928,13929,13930,13931,13945,13946,13947,13948,13949,13950,13973,14180,13995;
+            setarray .ItemPrice[0],5,5,20,25,25,25,25,25,20,20,25,10,10,15,15,30,30,70,70,70,70,70,70,75,75,75,75,75,75,80,80,80,80,80,80,15,15,5;
+            return;
+        Case 5:
+            set @Currency,7179;
+            setarray .ItemLists[0],2629,2630,2410,1530,2541,2383,1161;
+            setarray .ItemPrice[0],500,500,500,500,500,500,500;
+            return;
+
+		default:
+			mes "Wrong Selection / Configurations";
+			close;
+	}
+}
+
+// Função de exibição do saldo da conta e saldo do item de moeda específico
+function	script	DisplayAccountInfo	{
+    mes "[ ^FF0000Account Information^000000 ]";
+    mes "^8b8b8b____________________________^000000";    
+    mes "Name: ^0000FF"+strcharinfo(0)+"^000000";
+    mes "Zeny Balance : ^FFD700"+F_InsertComma(Zeny)+"^000000 ^FF0000z^000000";
+    mes "Cash Points Balance : ^008000"+#CASHPOINTS+"^000000";
+    mes "Kafra Points Balance : ^9932CC"+#KAFRAPOINTS+"^000000";
+    mes "^8b8b8b____________________________^000000";
+    mes "Current ^FF0000Currency^000000 Balance: ^FF0000"+countitem(@Currency)+"^000000 "+getitemname(@Currency);
+    close2; // Mantém o script ativo após exibir a mensagem, permitindo abertura da loja em seguida
+}
+*/

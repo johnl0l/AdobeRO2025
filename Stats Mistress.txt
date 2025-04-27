@@ -1,0 +1,99 @@
+/*
+prontera,155,181,5	script	Stats Mistress	757,{
+	
+	mes "[ Stats Mistress ]";
+	mes "Hello! I sell ^FF00CC1 stats for 400,000z^000000 would you like to buy!";
+	.@index = select( .stat_menu$ ) - 1;
+	input .@amount,0,( .max_stats - readparam( 13+.@index ) );
+	if ( .@amount > 0 ) {
+		.@cost = ( .cost_per_stat * .@amount );
+		mes "Stats : "+.stat$[.@index]+" +"+F_InsertComma( .@amount );
+		mes "Price : "+F_InsertComma( .@cost )+"z";
+		mes "Do you wish to continue ?";
+		
+		.@current_stat = readparam(bStr + .@index);
+		if (.@current_stat >= .max_stats) {
+			message strcharinfo(0), "You've reached the maximum "+.stat$[.@index];
+		}
+		else if ((.@current_stat+ .@amount) >= .max_stats) {
+			message strcharinfo(0), "You can't exceed the maximum stats of "+.max_stats;
+		}
+		else if ( Zeny >= .@cost ) {
+			if ( select( "Buy "+F_InsertComma( .@amount )+" ^FF00CC"+.stat$[.@index]+"^000000" ) ) {
+				Zeny -= .@cost;
+				statusup2 (bStr + .@index),.@amount;
+				message strcharinfo(0), "Gained "+F_InsertComma( .@amount )+" "+.stat$[.@index];
+			}
+		}
+	}
+	close;
+	
+	OnInit:
+		.max_stats = 300;
+		.cost_per_stat = 400000;
+		
+		setarray .stat$,
+			"STR",
+			"AGI",
+			"VIT",
+			"INT",
+			"DEX",
+			"LUK";
+		.@stat_size = getarraysize( .stat$ );
+		while ( .@i < .@stat_size ) {
+			.stat_menu$ = .stat_menu$ + "^FF00CC"+.stat$[.@i]+"^000000" + ":";
+			.@i++;
+		}
+		end;
+}
+*/
+
+
+prontera,155,181,5	script	Stats Mistress	757,{
+	
+	mes "[ Stats Mistress ]";
+	mes "Hello! I sell ^FF00CC1 stats for 400,000z^000000 would you like to buy!";
+	.@index = select( .stat_menu$ ) - 1;
+	input .@amount,0,( .max_stats - readparam( 13+.@index ) );
+	if ( .@amount > 0 ) {
+		.@cost = ( .cost_per_stat * .@amount );
+		mes "Stats : "+.stat$[.@index]+" +"+F_InsertComma( .@amount );
+		mes "Price : "+F_InsertComma( .@cost )+"z";
+		mes "Do you wish to continue ?";
+		
+		.@current_stat = readparam("b" + .@index);
+		if (.@current_stat >= .max_stats) {
+			message strcharinfo(0), "You've reached the maximum "+.stat$[.@index];
+		}
+		else if ((.@current_stat+ .@amount) >= .max_stats) {
+			message strcharinfo(0), "You can't exceed the maximum stats of "+.max_stats;
+		}
+		else if ( Zeny >= .@cost ) {
+			if ( select( "Buy "+F_InsertComma( .@amount )+" ^FF00CC"+.stat$[.@index]+"^000000" ) ) {
+				Zeny -= .@cost;
+				statusup2 ("b" + .@index),.@amount;
+				message strcharinfo(0), "Gained "+F_InsertComma( .@amount )+" "+.stat$[.@index];
+			}
+		}
+	}
+	close;
+	
+	OnInit:
+		.max_stats = 120;
+		.cost_per_stat = 40;
+		
+		setarray .stat$,
+			"STR",
+			"AGI",
+			"VIT",
+			"INT",
+			"DEX",
+			"LUK";
+		.@stat_size = getarraysize( .stat$ );
+		while ( .@i < .@stat_size ) {
+			.stat_menu$ = .stat_menu$ + "^FF00CC"+.stat$[.@i]+"^000000" + ":";
+			.@i++;
+		}
+		end;
+}
+

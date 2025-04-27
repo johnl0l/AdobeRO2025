@@ -1,0 +1,117 @@
+//===== rAthena Script =======================================
+//= Refine Challenge
+//===== Description: =========================================
+//= Players can turn in listed items for points that
+//= can be exchanged for various items.
+//===== Changelogs: ==========================================
+//= 1.0 First version [Secretdataz]
+//===== Dependency: ==========================================
+//= To use `sellitem` mode, you need to install this mod.
+//= https://github.com/secretdataz/rathena/pull/7
+//= Diff file
+//= https://github.com/secretdataz/rathena/pull/7.diff
+//============================================================
+
+//  Rewards shop
+-	pointshop	REFINESHOP	-1,SECRET_REFINE,501:100,502:200,503:300
+
+-	shop	REFINEDUMMYSHOP	-1,501:1000
+
+morocc,166,97,4	script	Refine Challenge	4_CAT_SAILOR1,{
+	disable_items;
+	mes .@n$;
+	mes "Hi, how could I help you?";
+	mes "Currently, ^0000FF" + getitemname(.itemid) + "^000000 can be turned in."; 
+	mes "Your refine point : " + SECRET_REFINE;
+	mes "Your ranking point : " + SECRET_REFINERANK;
+	next;
+	switch(select("I want to turn in listed items","I want to exchange my points","View rankings")) {
+		case 1: // Turn in
+			mes .@n$;
+			mes "You can view points that will be given before exchanging.";
+			close2;
+			npcshopattach "REFINEDUMMYSHOP";
+			callshop "REFINEDUMMYSHOP",2; // Comment this line and uncomment line below to enable `sellitem` mode.
+			//sellitem "REFINEDUMMYSHOP",SFT_ID,.itemid;
+			end;
+		case 2: // Exchange
+			close2;
+			callshop "REFINESHOP",1;
+			end;
+		case 3: // Ranking
+			.@rows = query_sql("SELECT char_id, value FROM `char_reg_num` WHERE `key` LIKE 'SECRET_REFINERANK' ORDER BY value DESC LIMIT 5", .@char_id, .@value);
+			mes .@n$;
+			if(.@rows == -1) {
+				mes "Error";
+				mes "Ranks listing failed";
+				close;
+			}
+			if(!.@rows)	{
+				mes "No one ever turned in a single item yet.";
+				close;
+			}
+			mes "Your rank may not be immediately updated after turning in items.";
+			for(.@i = 0; .@i < .@rows; ++.@i) {
+				query_sql("SELECT name FROM `char` WHERE char_id = " + .@char_id[.@i], .@name$);
+				mes (.@i+1) + ". " + .@name$ + " มี " + .@value[.@i] + " แต้ม";
+			}
+			break;
+	}
+	close;
+	end;
+	
+OnSellItem:
+	.@count = getarraysize(@sold_nameid);
+	mes .n$;
+	.@p = 1;
+	for(.@i = 0; .@i < .@count; ++.@i) {
+		if(@sold_nameid[.@i] != .itemid) {
+			mes "You turned in an item that is not listed.";
+			close;
+		}
+		.@ref = @sold_refine[.@i];
+		if(@sold_identify[.@i]) {
+			mes (.@p++) + "." + "+" + .@ref + " " + getitemname(@sold_nameid[.@i]) + " " + .refine_worth[.@ref] + " แต้ม";
+			.@tmpsto$ = .@tmpsto$ + @sold_nameid[.@i] + ":" + @sold_refine[.@i] + ":" + @sold_identify[.@i] + ":" + @sold_attribute + ":" + @sold_card1[.@i] + ":" + @sold_card2[.@i] + ":" + @sold_card3[.@i] + ":" + @sold_card4[.@i] + "|";
+			.@pts += .refine_worth[.@ref];
+		} else {
+			next;
+			mes .n$;
+			mes "There is an unidentified item.";
+			close;
+		}
+	}
+	if(!.@p){
+		next;
+		mes .n$;
+		mes "You cannot turn in this item.";
+		close;
+	}
+	mes "Turned in items are worth " + .@pts + " points.";
+	mes "Are sure sure that you want to turn these in?";
+	next;
+	menu "Confirm",-;
+	explode(.@items$, .@tmpsto$, "|");
+	.@sz = getarraysize(.@items$);
+	for(.@i = 0; .@i < .@sz; ++.@i) {
+		if(.@items$ == "") continue;
+		explode(.@iteminfo$, .@items$[.@i], ":");
+		delitem2 atoi(.@iteminfo$[0]),1,atoi(.@iteminfo$[2]),atoi(.@iteminfo$[1]),atoi(.@iteminfo$[3]),atoi(.@iteminfo$[4]),atoi(.@iteminfo$[5]),atoi(.@iteminfo$[6]),atoi(.@iteminfo$[7]);
+	}
+	SECRET_REFINE += .@pts;
+	SECRET_REFINERANK += .@pts;
+	mes .n$;
+	mes "คุณได้รับแต้มตีบวกเพิ่มขึ้น " + .@pts + " แต้ม";
+	close;
+	end;
+	
+// Customize points from each refine level
+OnInit:
+	//  				   +1,+2,+3,..,+7,+8,+9,+10,+11,+12,+13,+14,+15  ,+16,+17   ,+18  ,+19   , +20
+	setarray .refine_worth,0,0,0,0,0,0,0 ,10,25,70,150,350,800, 1700,4000,9000,20000,45000,100000,250000;
+	// Item ID of item that can be turned in.
+	.itemid = 2365;
+	// NPC Name
+	.n$ = "[ ^0000FFRefine Challenge^000000 ]";
+	waitingroom "Refine " + getitemname(.itemid),0;
+}

@@ -1,0 +1,66 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+/*
+-	script	PVP Cash Points	-1,{
+OnInit:
+set .Delay,1;		// Delay, in seconds
+end;
+OnPCDieEvent:
+if( @Delay < gettimetick(2) ){
+set .@Amount,rand(1,5);
+set #CASHPOINTS,#CASHPOINTS + .@Amount;
+dispbottom "You lost "+.@Amount+" Cash Point. Total = "+#CASHPOINTS+" Cash Points.";
+if( .Delay ) set @Delay,gettimetick(2) + .Delay;
+}
+end;
+}
+*/
+
+/*
+-	script	PVPPoint	-1,{
+ 
+OnPCDieEvent:
+    if (killerrid == getcharid(3))
+        end;
+    if (getmapflag(strcharinfo(3),mf_pvp) || getmapflag(strcharinfo(3),mf_gvg)) {
+        set .@Amount,rand(1,5);
+		set #CASHPOINTS,#CASHPOINTS - .@Amount;
+        dispbottom "You lost -"+.@Amount+" Cash Points. Total Accumulated Cash Points = "+#CASHPOINTS+" Points.";
+		specialeffect2 EF_SKIDTRAP;
+    }
+    end;
+}
+*/
+
+//Validação de mapa específica: evita penalizar em outros mapas com flag pvp/gvg.
+//Proteção contra mortes por monstros/NPCs/suicídio.
+//Previne saldo negativo de CASHPOINTS.
+//Mais fácil de manter ou expandir — só adicionar mais mapas no if.
+//Atualizado: 07:53 - 23/04/2025
+
+-	script	PVPPoint	-1,{
+
+OnPCDieEvent:
+    // Evita punição se morreu por si mesmo ou não foi morto por jogador
+    if (killerrid == getcharid(0) || !isloggedin(killerrid))
+        end;
+
+    // Mapa atual
+    .@map$ = strcharinfo(3);
+
+    // Verifica se está nos mapas PvP ou GvG válidos
+    if (.@map$ == "guild_vs1" || .@map$ == "guild_vs3" || .@map$ == "guild_vs4") {
+        set .@Amount, rand(1,5);
+        set #CASHPOINTS, max(#CASHPOINTS - .@Amount, 0);
+        dispbottom "You lost -"+.@Amount+" Cash Points. Total Accumulated Cash Points = "+#CASHPOINTS+" Points.";
+        specialeffect2 EF_SKIDTRAP;
+    }
+    end;
+}

@@ -1,0 +1,44 @@
+
+prontera,155,181,5	script	Sample#pt_warp	757,{
+	
+	.@party_id = getcharid(1);
+	
+	if ( !.@party_id ) .@fail++;
+	
+	if ( .zeny ) {
+		mes F_InsertComma( .zeny )+" Zeny";
+		if ( Zeny < .zeny ) 
+			.@fail++;
+	}
+	
+	if ( .item_size )
+		for ( .@i = 0; .@i < .item_size; .@i += 2 ) {
+			mes getitemname( .item[.@i] )+" x "+F_InsertComma( .item[.@i+1] );
+			if ( countitem( .item[.@i] ) < .item[.@i+1] )
+				.@fail++;
+		}
+	
+	if ( !.@fail ) {
+		.@leader$ = rid2name( getpartyleader( .@party_id,1 ) );
+		if ( !getmapxy( .@map$,.@x,.@y,0,.@leader$ ) && strcharinfo(0) != .@leader$ ) {
+			if ( getmapflag(.@map$,mf_nowarp ) )
+				.@fail++;
+		
+			if ( !.@fail ) {
+				for ( .@i = 0; .@i < .item_size; .@i += 2 )
+					delitem .item[.@i],.item[.@i+1];
+				Zeny -= .zeny;
+				warp .@map$,.@x,.y;
+			}
+		}
+	}
+	close;
+	
+	OnInit:
+		.zeny = 5000;
+		setarray .item,909,1;
+		.item_size = getarraysize( .item ) - 1;
+		end;
+}
+
+

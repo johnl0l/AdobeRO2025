@@ -1,0 +1,32 @@
+prontera,155,185,4	script	Shy Eclipse	4_DOG01,{
+    addtimer 1, strnpcinfo(0)+"::OnEndTalk";
+    ++.talking;
+    mes "[Eclipse]";
+    mes "!! Squik..!";
+    emotion e_panic;
+    next;
+    if ( select("Pet it.:Scare it away.") == 1 ){
+        mes "[Eclipse]";
+        mes "**Squik~**";
+        emotion e_lv;
+    } else {
+        mes "[Eclipse]";
+        mes "SQUIK!";
+        emotion e_omg;
+    }
+    close;
+OnEndTalk:
+OnPCLogoutEvent:
+    --.talking;
+    end;
+OnInit:
+    npcspeed 100;
+    while ( true ) {
+        if ( !.talking ) {
+            getmapxy .@map$, .@x, .@y, UNITTYPE_NPC;
+            while ( checkcell( .@map$, .@x2 = .@x + rand(-10,10), .@y2 = .@y + rand(-10,10), cell_chknopass ) );
+            npcwalkto .@x2, .@y2;
+        }
+        sleep rand(1000,3000);
+    }
+}

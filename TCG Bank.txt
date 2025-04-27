@@ -1,0 +1,39 @@
+prontera,131,216,5	script	TCG Bank	831,{
+	set .@item, 7227; //Item ID
+	set .@n$,"["+strnpcinfo(0)+"]";
+	mes .@n$;
+	mes "Welcome to the "+getitemname(.@item)+" Bank!";
+	mes " ";
+	mes getitemname(.@item)+": "+asdf;
+	next;
+	if (select(getitemname(.@item)+" Transaction:View Ladder") == 2) {
+		set .@z, query_sql("SELECT `char_id`,`value` FROM `global_reg_value` WHERE `str`='asdf' ORDER BY `value` DESC LIMIT 10",.@c,.@v);
+		if (!.@z) {
+			mes .@n$;
+			mes "No records found.";
+			close;
+		}
+		mes " - Top 10 - ";
+		for (set .@i, 0; .@i < getarraysize(.@c); set .@i, .@i + 1) { query_sql("SELECT `name` FROM `char` WHERE `char_id`="+.@c[.@i],.@p$); mes "["+(.@i+1)+"] "+.@p$+" "+.@v[.@i]; }
+		close;
+	}
+	setarray .@m$, "Deposit","Widthdraw";
+	for (set .@i, 0; .@i < getarraysize(.@m$); set .@i, .@i + 1) set .@menu$, .@menu$ + .@m$[.@i] + ":";
+	set .@m, select (.@menu$) - 1;
+	next;
+	mes .@n$;
+	mes "Please insert the amount of "+getitemname(7227)+" you wish to "+.@m$[.@m]+".";
+	input .@a;
+	next;
+	if (!.@a) close;
+	if (!.@m && countitem(.@item) >= .@a) { set asdf, asdf + .@a; delitem .@item,.@a; } 
+	else if (.@m && asdf >= .@a) { set asdf, asdf - .@a; getitem .@item,.@a; } 
+	else {
+		mes .@n$;
+		mes "I'm sorry you have insufficient amount of "+getitemname(.@item)+" to "+.@m$[.@m]+".";
+		close;
+	}
+	mes .@n$;
+	mes .@m$[.@m]+" successful.";
+	close;
+}

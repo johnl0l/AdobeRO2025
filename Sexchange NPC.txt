@@ -1,0 +1,87 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sexchange NPC
+// By: iamabean
+// Version 0.3
+// Tested on SVN 9650?
+// May work on a older svn BUT it can cause alot of problems on an older svn!!
+// Thanks spamrat for a little bit of help.
+// Changes-----------
+// 0.2 -Fixed it not changing you on newer svns .
+// 0.2 -Added a message after it changes you to inform them to wait for disconnect.
+// 0.3 -Added a customize the npc section.
+// 0.3 -Made the zeny stored in a variable at start of the npc. Makes it easier to customize.
+// 0.3 -Made the name stored in a variable.
+// 0.3 -Changed charcommand "#changesex " + strcharinfo(0); to atcommand "@changesex ";
+// 0.3 -Added a symbol var for the atcommand symbol. For anyone else who might use another symbol.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//NPC map location/cordinates
+//It's recommended you change it.
+
+-	script	Becky Belo#01::boyle	878,{
+
+//////////////////////////////////////////
+
+//Customize the npc!! //
+set @CDname$,"[ ^9370DBBecky Belo^000000 ]"; //Set NPCs name
+
+// Remember to set script header name as well!!//
+set @CDzeny,5000000; //Set amount of zeny it costs
+set @CDsymbol$,"@"; //Set the atcommand(gm command) symbol you use
+
+//////////////////////////////////////////
+
+mes @CDname$;
+mes "FABULOUS!!!!!!!";
+mes "Hello, how do you do!";
+mes "Do you want something diffren..";
+next;
+mes @CDname$;
+mes "I can change your sex";
+mes "Do you want it?";
+mes "I know you want it";
+next;
+mes @CDname$;
+mes "What do you think?";
+mes "That would be great, right?!";
+next;
+menu "^0000FFSure^000000, ^0000FFI want^000000!",CD_sexchange,"^696969of course no^000000!",CD_uhno;
+CD_sexchange:
+mes @CDname$;
+mes "FABULOUS!!!FANTASTIC!!!OUTSTANDING!!!WONDERFUL!!!SUPER!!!";
+mes "This operation requires ^0000FF5000000^000000 zeny and ^FF8C001^000000 ^FF4500Gym Pass^000000!";
+mes "And I'll do it now";
+next;
+menu "Do it doctor!",CD_blastoff,"I am afraid doctor!",CD_uhno;
+CD_blastoff:
+mes @CDname$;
+mes "BLAST OFF!!!";
+mes "OK we began operations!";
+next;
+if(countitem(7776)<1 || Zeny < @CDzeny) goto CD_zeny;
+delitem 7776,1;
+set Zeny, Zeny - @CDzeny;
+atcommand @CDsymbol$ + "changesex ";
+mes @CDname$;
+mes "Ok the surgery will begin, you will log off and please relog in again.";
+end;
+CD_zeny:
+mes @CDname$;
+mes "Mama mia you have not got a requirement.";
+mes "Complete the requirements!";
+mes "I'll be waiting!";
+close;
+CD_uhno:
+mes @CDname$;
+mes "Ok fine, please think again.";
+mes "If you've prepared your heart .";
+mes "I'll be waiting.";
+close;
+
+	OnInit:
+	waitingroom "Change Sex",0;
+	end;
+}
+
+//lhz_in02.gat,286,85,4 duplicate(boyle) Dokter Boyle#02 878
+
+sec_in02,158,180,2	duplicate(boyle)	Becky Belo#03	617

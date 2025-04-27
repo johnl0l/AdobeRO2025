@@ -1,0 +1,45 @@
+/*
+guild_vs3,50,51,1	script	testtesttest	111,3,3,{
+unitskillusepos getnpcid(0),"WZ_STORMGUST",10,50,51;
+end;
+
+OnInit:
+//setunitdata getnpcid(0,"testtesttest"),11,9999; // set INT 9999
+//setunitdata getnpcid(0),UNPC_ATKMAX,170;	// set NPC INT 150
+setunitdata(getnpcid(0),UNPC_PLUSALLSTAT,100);
+//setunitdata(getnpcid(0),UNPC_Int,100);
+//setunitdata(getnpcid(0),UNPC_ATKMIN,100);
+//setunitdata(getnpcid(0),UNPC_ATKMAX,200);
+end;
+}
+*/
+/*
+morocc,159,161,1	script	testtesttest	111,{
+unitskilluseid getnpcid(0),"BA_POEMBRAGI",10;
+end;
+}
+*/
+prontera,159,162,5	script	test	94,{
+menu "Apply LP",-,"Remove LP",R_LP;
+setcell "prontera",151,167,161,177,cell_landprotector,1;
+npcskilleffect 288,5,156,172;
+end;
+
+R_LP:
+setcell "prontera",151,167,161,177,cell_landprotector,0;
+end;
+
+end;
+}
+
+/*
+prt_fild01,97,180,5	script	Teste 1	CLEAR_NPC,{
+OnInit:
+	setunitdata (getnpcid(0),UNPC_SEX,SEX_FEMALE);
+	setunitdata (getnpcid(0),UNPC_CLASS,JOB_RUNE_KNIGHT);
+	setunitdata (getnpcid(0),UNPC_HAIRSTYLE,4);
+	setunitdata (getnpcid(0),UNPC_HAIRCOLOR,2);
+	setunitdata (getnpcid(0),UNPC_HEADTOP,1361);
+end;
+}
+*/

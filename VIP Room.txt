@@ -1,0 +1,40 @@
+//Made by Hendra susanto
+//o item obrigatório "7859" deseja ser substituído, fique à vontade
+//se os itens condicionais não quiserem desaparecer, desabilite a linha 19
+ 
+prontera,147,165,5	script	Room	89,{
+ 
+set .@amount, countitem(7859);
+if (.@amount == 0) {
+mes "[ ^008000 ... ^000000 ]";
+mes "Sorry, you don't have any items to enter this room.";
+mes "To enter this room you need ^0000ff1^000000 ^008000Game Ticket^000000 [Item ID# ^0000ff7859^000000]";
+close;
+}
+mes "[^008000 ... ^000000]";
+mes "Are you sure you want to enter this room?";
+next;
+switch(select("Yes:No")) {
+case 1:
+delitem 7859,1;
+warp "quiz_02" ,337,74;
+close;
+ 
+case 2:
+mes "[^008000 ... ^000000]";
+mes "Bye Bye.";
+close;
+}
+}
+
+quiz_02	mapflag	nowarp
+quiz_02	mapflag	nowarpto
+quiz_02	mapflag	noteleport
+quiz_02	mapflag	monster_noteleport
+quiz_02	mapflag	nosave
+quiz_02	mapflag	nomemo
+quiz_02	mapflag	nobranch
+quiz_02	mapflag	nopenalty
+quiz_02	mapflag	noreturn
+quiz_02	mapflag	hidemobhpbar
+quiz_02	mapflag	fog

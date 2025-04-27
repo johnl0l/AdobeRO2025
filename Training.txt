@@ -1,0 +1,50 @@
+-	script	Test Your Might	-1,{
+
+OnInit:
+
+monster "prontera",152,232,"Test Your Might",1905,1,"Test Your Might::OnDummyKill";
+
+monster "prontera",157,228,"Test Your Might",1905,1,"Test Your Might::OnDummyKill3";
+
+monster "prontera",159,232,"Test Your Might",1905,1,"Test Your Might::OnDummyKill2";
+
+monster "prontera",154,228,"Test Your Might",1905,1,"Test Your Might::OnDummyKill4";
+
+setmapflag( "prontera",mf_monster_noteleport );
+
+end;
+
+OnDummyKill:
+
+monster "prontera",152,232,"Test Your Might",1905,1,"Test Your Might::OnDummyKill";
+
+end;
+
+OnDummyKill2:
+
+monster "prontera",159,232,"Test Your Might",1905,1,"Test Your Might::OnDummyKill2";
+
+end;
+
+OnDummyKill3:
+
+monster "prontera",157,228,"Test Your Might",1905,1,"Test Your Might::OnDummyKill3";
+
+end;
+
+OnDummyKill4:
+
+monster "prontera",154,228,"Test Your Might",1905,1,"Test Your Might::OnDummyKill4";
+
+end;
+
+
+OnPCAttackEvent:
+
+if ( !@test_punch ) end;
+
+@dps_damage += @damage;
+
+end;
+
+}

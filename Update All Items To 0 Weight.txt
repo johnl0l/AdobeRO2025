@@ -1,0 +1,27 @@
+/*
+________________     ______            ________       
+___    |_____  /________  /______      ___  __ \_____ 
+__  /| |  __  /_  __ \_  __ \  _ \     __  /_/ /  __ \
+_  ___ / /_/ / / /_/ /  /_/ /  __/     _  _, _// /_/ /
+/_/  |_\__,_/  \____//_.___/\___/      /_/ |_| \____/ 
+
+*/
+
+-	script	0 weight	-1,{
+OnInit:
+initnpctimer;
+if ( getgmlevel() >= 99 || getgroupid() >= 5 ){
+set .@i,501;
+while( .@i < 32767 ){
+	if( getitemname( .@i ) != "null" )
+		if( setiteminfo( .@i,6,0 ) != -1 )
+			set .@update,.@update + 1;
+	set .@i,.@i + 1;
+	if( .@i % 500 == 0 ) sleep 1;
+}
+debugmes "Consumed "+( getnpctimer(0) / 1000 )+" seconds to set "+.@update+" items to 0 weight..";
+stopnpctimer;
+// relog is required for other online characters.
+end;
+}
+}
